@@ -1,0 +1,5 @@
+/node_modules
+
+# .gitignore
+services/react-firebase-project-5e24c-firebase-adminsdk-lsz48-028e1b9429.json
+/.env

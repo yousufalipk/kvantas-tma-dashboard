@@ -10,11 +10,11 @@ import RegisterForm from '../../Components/Forms/SignUpForm/SignUpForm';
 
 import UserProtected from '../../Components/Protected/UserProtected';
 
-const AdminLayout = (props) => {
+const AdminLayout = () => {
   return (
     <>  
         {/* Side Bar */}
-        <div className='flex flex-row'>
+        <div className='flex flex-row bg-custom-image bg-cover bg-center h-screen'>
           <div className='w-1/5'>
             <SideBar />
           </div> 

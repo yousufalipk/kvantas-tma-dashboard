@@ -9,16 +9,16 @@ const HomePage = () => {
             <h1 className='font-bold mx-10'>
               {userType === 'admin' ? (
                 <>
-                  Admin Dashbaord 
+                  Admin Dashboard 
                 </>
               ):(
                 <>
-                  User Dashbaord
+                  User Dashboard
                 </>
               )}
 
             </h1>
-            <hr className='my-5 border-1 border-[black] mx-2'/> 
+            <hr className='my-5 border-1 border-white mx-2'/> 
         </div>
     </>
   )

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
@@ -47,7 +46,7 @@ const LoginForm = () => {
             <h3 className='text-2xl mx-2 font-bold text-white'>Welcome!</h3>
             <h2 className='text-2xl mx-2 text-white'>Sign into your account</h2>
             <form onSubmit={formik.handleSubmit} className='flex flex-col'>
-                <input className='p-3 mx-2 my-3 border-2 rounded-xl'
+                <input className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
                     id='email'
                     name='email'
@@ -61,7 +60,7 @@ const LoginForm = () => {
                     <div className='text-red-600 text-center'>{formik.errors.email}</div>
                 ) : null}
 
-                <input className='p-3 mx-2 my-2 border-2 rounded-xl'
+                <input className='p-3 mx-2 my-2 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='password'
                     id='password'
                     name='password'
@@ -75,7 +74,7 @@ const LoginForm = () => {
                     <div className='text-red-600 text-center'>{formik.errors.password}</div>
                 ) : null}
 
-                <button type='submit' className='bg-bluebtn w-28 p-3 mx-2 my-1 rounded-md text-white'>
+                <button type='submit' className='w-28 p-3 mx-2 my-1 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'>
                     Sign In
                 </button>
             </form>

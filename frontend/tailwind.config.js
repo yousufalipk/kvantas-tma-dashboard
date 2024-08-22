@@ -9,7 +9,7 @@ module.exports = {
         'custom-image': "url('/src/Assets/bg.png')",
       },
       colors: {
-        bluebtn: '#2596be'
+        bluebtn: '#2fedbf'
       }
     },
   },

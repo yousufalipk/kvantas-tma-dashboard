@@ -14,7 +14,7 @@ import AuthImage from '../../Assets/auth-img.png';
 const AuthLayout = () => {
   return (
     <>
-    <div className='flex bg-custom-image bg-cover bg-center h-screen'>
+    <div className='flex bg-custom-image bg-cover bg-center h-full items-center'>
       {/* Left Auth */}
       <div className=' w-1/2 p-20'>
         {/* Nav Bar */} 
@@ -24,7 +24,7 @@ const AuthLayout = () => {
         <div>
           <Routes>
             <Route path="*" element={<LoginPage />} />
-            <Route path="/register" element={<SignUpPage toggle={false} />} />
+            <Route path="/register" element={<SignUpPage toggle={false} tick={false} />} />
           </Routes>
         </div>
       </div>

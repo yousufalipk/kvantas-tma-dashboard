@@ -4,10 +4,12 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
+import axios from 'axios';
 
 const SignUpForm = (props) => {
   const { registerUser } = useFirebase();
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const formik = useFormik({
     initialValues: {
@@ -33,29 +35,30 @@ const SignUpForm = (props) => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        if(values.password !== values.confirmPassword){
-          toast.error("Password did't Match!");
-        }
-        else{
-          if(props.tick){
-            const response = await registerUser(values.fname, values.lname, values.email, values.password, true);
-            if(response.success){
-              toast.success("User Added Successfuly!");
-              navigate('/manage-users');
-            }
-            else{
-              toast.error("Registration Failed");
-            }
+        if (props.tick) {
+          const response = await axios.post(`${apiUrl}/registerUser`, {
+            fname: values.fname,
+            lname: values.lname,
+            email: values.email,
+            password: values.password,
+            confirmPassword: values.confirmPassword
+          });
+          if (response.data.status === 'success') {
+            toast.success("User Added Successfuly!");
+            navigate('/manage-users');
           }
-          else{
-            const response = await registerUser(values.fname, values.lname, values.email, values.password, false);
-            if(response.success){
-              toast.success("Account Created Successfully!");
-              navigate('/admin');
-            }
-            else{
-              toast.error("Registration Failed");
-            }
+          else {
+            toast.error("Registration Failed");
+          }
+        }
+        else {
+          const response = await registerUser(values.fname, values.lname, values.email, values.password, false);
+          if (response.success) {
+            toast.success("Account Created Successfully!");
+            navigate('/admin');
+          }
+          else {
+            toast.error("Registration Failed");
           }
         }
       } catch (error) {
@@ -86,24 +89,24 @@ const SignUpForm = (props) => {
             </h1>
             <div className='w-2/4 max-10 flex flex-row justify-end'>
               <button
-                className='mx-2 bg-red-500 py-1 px-4 rounded-md text-white hover:text-black'
+                className='mx-2 bg-red-500 text-white py-1 px-4 rounded-md hover:bg-transparent hover:border-2 hover:border-red-500 hover:text-red-500'
                 onClick={handleBack}
               >
                 Back
               </button>
               <button
-                className='mx-2 bg-bluebtn py-1 px-4 rounded-md text-white hover:text-gray-600'
+                className='mx-2 py-1 px-4 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'
                 onClick={formik.handleSubmit}
               >
                 Create
               </button>
             </div>
           </div>
-          <hr className='my-5 border-1 border-[black] mx-2' />
+          <hr className='my-5 border-1 border-[white] mx-2' />
         </>
       )}
-      <form onSubmit={formik.handleSubmit} className='flex flex-col'>
-        <input className='p-3 mx-2 my-3 border-2 rounded-xl'
+      <form onSubmit={formik.handleSubmit} className={`flex flex-col ${props.toggle ? 'w-2/4' : 'w-full'} mx-auto`}>
+        <input className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
           type='text'
           id='fname'
           name='fname'
@@ -117,7 +120,7 @@ const SignUpForm = (props) => {
           <div className='text-red-600 text-center'>{formik.errors.fname}</div>
         ) : null}
 
-        <input className='p-3 mx-2 my-3 border-2 rounded-xl'
+        <input className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
           type='text'
           id='lname'
           name='lname'
@@ -131,7 +134,7 @@ const SignUpForm = (props) => {
           <div className='text-red-600 text-center'>{formik.errors.lname}</div>
         ) : null}
 
-        <input className='p-3 mx-2 my-3 border-2 rounded-xl'
+        <input className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
           type='text'
           id='email'
           name='email'
@@ -145,7 +148,7 @@ const SignUpForm = (props) => {
           <div className='text-red-600 text-center'>{formik.errors.email}</div>
         ) : null}
 
-        <input className='p-3 mx-2 my-3 border-2 rounded-xl'
+        <input className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
           type='password'
           id='password'
           name='password'
@@ -159,7 +162,7 @@ const SignUpForm = (props) => {
           <div className='text-red-600 text-center'>{formik.errors.password}</div>
         ) : null}
 
-        <input className='p-3 mx-2 my-2 border-2 rounded-xl'
+        <input className='p-3 mx-2 my-2 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
           type='password'
           id='confirmPassword'
           name='confirmPassword'
@@ -172,8 +175,8 @@ const SignUpForm = (props) => {
         {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
           <div className='text-red-600 text-center'>{formik.errors.confirmPassword}</div>
         ) : null}
-        {!props.toggle &&(
-          <button type='submit' className='bg-bluebtn w-36 p-3 mx-2 my-1 rounded-md text-white'>
+        {!props.toggle && (
+          <button type='submit' className='bg-bluebtn w-36 p-3 mx-2 my-1 rounded-md text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'>
             Create Account
           </button>
         )}

@@ -50,30 +50,30 @@ const UpdateUserForm = () => {
     <>
       <div className='flex flex-row justify-between'>
         <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
-          Update User (<span className='text-blue-500'>{email}</span>)
+          Update User (<span className='text-bluebtn'>{email}</span>)
         </h1>
         <div className='w-2/4 max-w-10 flex flex-row justify-end'>
           <button
-            className='mx-2 bg-red-500 py-1 px-4 rounded-md text-white hover:text-black'
+            className='mx-2 bg-red-500 text-white py-1 px-4 rounded-md hover:bg-transparent hover:border-2 hover:border-red-500 hover:text-red-500'
             onClick={handleBack}
           >
             Back
           </button>
           <button
             type='submit'
-            className='mx-2 bg-blue-500 py-1 px-4 rounded-md text-white hover:text-gray-600'
+            className='mx-2 py-1 px-4 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'
             onClick={formik.handleSubmit}
           >
             Update
           </button>
         </div>
       </div>
-      <hr className='my-5 border-1 border-black mx-2' />
+      <hr className='my-5 border-1 border-white mx-2' />
       <div className='h-4/5 flex flex-col justify-center items-center'>
         <form className='flex flex-col w-full' onSubmit={formik.handleSubmit}>
           <label htmlFor='fname' className='w-2/4 mx-auto px-5 font-semibold'>First Name</label>
           <input 
-            className='p-3 my-3 border-2 rounded-xl w-2/4 mx-auto'
+            className='p-3 my-3 border-2 rounded-xl w-2/4 mx-auto placeholder:text-gray-700 text-gray-700'
             type='text'
             id='fname'
             name='fname'
@@ -89,7 +89,7 @@ const UpdateUserForm = () => {
 
           <label htmlFor='lname' className='w-2/4 mx-auto px-5 font-semibold'>Last Name</label>
           <input 
-            className='p-3 my-2 border-2 rounded-xl w-2/4 mx-auto'
+            className='p-3 my-2 border-2 rounded-xl w-2/4 mx-auto placeholder:text-gray-700 text-gray-700'
             type='text'
             id='lname'
             name='lname'
@@ -102,13 +102,6 @@ const UpdateUserForm = () => {
           {formik.touched.lname && formik.errors.lname ? (
             <div className='text-red-600 text-center'>{formik.errors.lname}</div>
           ) : null}
-
-          <button
-            type='submit'
-            className='mx-auto bg-blue-500 py-2 px-6 rounded-md text-white hover:text-gray-600 mt-4'
-          >
-            Update
-          </button>
         </form>
       </div>
     </>

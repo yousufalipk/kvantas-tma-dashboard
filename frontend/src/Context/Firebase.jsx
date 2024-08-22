@@ -1,26 +1,24 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, deleteUser } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, deleteUser } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, updateDoc, query, where } from 'firebase/firestore';
-// Import Firebase Functions if used
-import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBUBsEywMKqo7oWfhzcmtkhPcQMWAL0QAY",
-    authDomain: "react-firebase-project-5e24c.firebaseapp.com",
-    databaseURL: "https://react-firebase-project-5e24c-default-rtdb.firebaseio.com",
-    projectId: "react-firebase-project-5e24c",
-    storageBucket: "react-firebase-project-5e24c.appspot.com",
-    messagingSenderId: "597020078395",
-    appId: "1:597020078395:web:851c8a14c4be9c5249c71e"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
+
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 const firestore = getFirestore(firebaseApp);
-const functions = getFunctions(firebaseApp);
 
 const FirebaseContext = createContext(null);
 
@@ -32,8 +30,42 @@ export const FirebaseProvider = (props) => {
     const [userType, setUserType] = useState(null);
     const [isAuth, setAuth] = useState(false);
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+
+    // Function to refresh auth state on page load/refresh
+    useEffect(() => {
+        setLoading(true); // Start loading
+        const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+            if (user) {
+                const uid = user.uid;
+                setUserId(uid);
+                setAuth(true);
+
+                const userRef = doc(firestore, 'users', uid);
+                const docSnap = await getDoc(userRef);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    setUsername(`${userData.fname} ${userData.lname}`);
+                    setUserType(userData.userType);
+                }
+            } else {
+                // Clear the data if the user is not authenticated
+                setAuth(false);
+                setUsername(null);
+                setUserId(null);
+                setUserType(null);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
 
     const registerUser = async (fname, lname, email, password, tick) => {
+        setLoading(true);
         try {
             const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
             const user = userCredential.user;
@@ -49,7 +81,8 @@ export const FirebaseProvider = (props) => {
 
             if (tick) {
                 return { success: true };
-            } else {
+            }
+            else {
                 setUserId(uid);
                 setAuth(true);
                 setUsername(`${fname} ${lname}`);
@@ -59,10 +92,13 @@ export const FirebaseProvider = (props) => {
         } catch (error) {
             console.error("Error during registration:", error);
             return { success: false, message: "Error creating user!" };
+        } finally {
+            setLoading(false);
         }
     };
 
     const loginUser = async (email, password) => {
+        setLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
             const user = userCredential.user;
@@ -85,10 +121,13 @@ export const FirebaseProvider = (props) => {
         } catch (error) {
             console.error("Error logging in:", error);
             return { success: false, message: "Error logging in!" };
+        } finally {
+            setLoading(false);
         }
     };
 
     const logoutUser = async () => {
+        setLoading(true);
         try {
             await signOut(firebaseAuth);
             setAuth(false);
@@ -99,6 +138,8 @@ export const FirebaseProvider = (props) => {
         } catch (error) {
             console.error("Error during logout:", error);
             return { success: false, message: "Error logging out!" };
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -115,31 +156,8 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const removeUser = async (userId) => {
-        try {
-            // Delete the user document from Firestore
-            await deleteDoc(doc(firestore, 'users', userId));
-
-            const auth = getAuth();
-            const user = auth.currentUser; // Make sure the user is authenticated
-
-            if (user) {
-                try {
-                    await deleteUser(user);
-                    return { success: true };
-                } catch (error) {
-                    return { success: false };
-                }
-            } else {
-                return { success: false };
-            }
-        } catch (error) {
-            console.error("Error deleting user and data:", error);
-            return { success: false, message: "Error deleting user and data." };
-        }
-    };
-
     const updateUser = async (id, firstName, lastName) => {
+        setLoading(true);
         try {
             await updateDoc(doc(firestore, 'users', id), {
                 fname: firstName,
@@ -148,11 +166,13 @@ export const FirebaseProvider = (props) => {
             return { success: true };
         } catch (error) {
             return { success: false };
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, removeUser, updateUser, userId, username, isAuth, users, userType }}>
+        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, updateUser, setLoading, userId, username, isAuth, users, userType, loading }}>
             {props.children}
         </FirebaseContext.Provider>
     );

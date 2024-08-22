@@ -9,7 +9,7 @@ const SignupPage = (props) => {
     <>
         <div className='p-10'>
             {/* SignUp Form */}
-            <SignUpForm setAuth={props.setAuth} toggle={props.toggle} />
+            <SignUpForm setAuth={props.setAuth} toggle={props.toggle} tick={props.false}/>
             <p className='pl-4 text-white'>
               Already have an account? <span className='text-bluebtn'><Link to="/"> Log In</Link></span>
             </p>

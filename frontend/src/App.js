@@ -14,41 +14,11 @@ import AdminLayout from './Layouts/AdminLayout/AdminLayout';
 import ProtectedRoute from './Components/Protected/Protected';
 
 function App() {
-  const { isAuth } = useFirebase();
-  const [userType, setUserType] = useState(false);
+  const { isAuth, loading } = useFirebase();
 
-  const [loading, setLoading] = useState(true);
-  const apiUrl = process.env.REACT_APP_API_URL;
-  /*
-useEffect(() => {
-  const refreshToken = async () => {
-    try {
-      const response = await axios.post(`${apiUrl}/refresh`, null, {
-        withCredentials: true,
-      });
-
-      if (response.data.auth) {
-        console.log("Tokens Refreshed!");
-        setAuth(true);
-      } else {
-        setAuth(false);
-        console.log("Auth Set False!");
-      }
-    } catch (error) {
-      setAuth(false);
-      console.log("Internal Server Error!", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  refreshToken();
-}, [isAuth]);
-
- 
- if (loading) {
-  return <Loader />;
-}  */
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>
