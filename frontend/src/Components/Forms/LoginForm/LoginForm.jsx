@@ -44,8 +44,8 @@ const LoginForm = () => {
 
     return (
         <div>
-            <h3 className='text-2xl mx-2 font-bold'>Welcome!</h3>
-            <h2 className='text-2xl mx-2'>Sign into your account</h2>
+            <h3 className='text-2xl mx-2 font-bold text-white'>Welcome!</h3>
+            <h2 className='text-2xl mx-2 text-white'>Sign into your account</h2>
             <form onSubmit={formik.handleSubmit} className='flex flex-col'>
                 <input className='p-3 mx-2 my-3 border-2 rounded-xl'
                     type='text'

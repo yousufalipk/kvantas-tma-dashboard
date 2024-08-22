@@ -14,9 +14,9 @@ import AuthImage from '../../Assets/auth-img.png';
 const AuthLayout = () => {
   return (
     <>
-    <div className='flex'>
+    <div className='flex bg-custom-image bg-cover bg-center h-screen'>
       {/* Left Auth */}
-      <div className=' w-1/2'>
+      <div className=' w-1/2 p-20'>
         {/* Nav Bar */} 
         <div>
           <NavBar />
@@ -29,8 +29,8 @@ const AuthLayout = () => {
         </div>
       </div>
       {/* Right Image */}
-      <div className='w-1/2'>
-        <img className='h-screen w-screen' src={AuthImage} alt="Vector Image" />
+      <div className='w-2/2'>
+        <img className='h-screen px-5 ml-3' src={AuthImage} alt="Vector Image" />
       </div>
     </div>
     </>
