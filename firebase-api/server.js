@@ -11,10 +11,13 @@ const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 const app = express();
 app.use(express.json());
 
-// CORS configuration
-app.use(cors({
-  origin: FRONTEND_ORIGIN
-}));
+const corsOptions = {
+  origin: FRONTEND_ORIGIN,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 
 app.delete('/removeUser/:uid', async (req, res) => {
   const { uid } = req.params;
