@@ -3,23 +3,24 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../Context/Firebase';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 const ManageUser = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const { users, fetchUsers } = useFirebase();
+  const { users, fetchUsers, setLoading } = useFirebase();
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    try { 
+    try {
       await fetchUsers();
     } catch (error) {
       console.log('Error', error);
     } finally {
     }
   }
-  
+
 
   useEffect(() => {
     fetchData();
@@ -28,20 +29,20 @@ const ManageUser = () => {
 
   const handleDeleteUser = async (uid, email) => {
     const shouldDelete = window.confirm(`Are you sure you want remove ${email}?`);
-    if(!shouldDelete){
+    if (!shouldDelete) {
       return
     }
-    else{
-      try{
+    else {
+      try {
         const response = await axios.delete(`${apiUrl}/removeUser/${uid}`);
-        if(response.data.status === 'success'){
+        if (response.data.status === 'success') {
           fetchData();
           toast.success(response.data.message);
         }
-        else{
+        else {
           toast.error(response.data.message);
         }
-      }catch(error){
+      } catch (error) {
         toast.error("Internal Server Error!")
       }
     }
@@ -54,7 +55,34 @@ const ManageUser = () => {
   const handleAddUser = () => {
     navigate(`/add-user`);
   }
-  
+
+  const handleDownloadData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${apiUrl}/downloadUsersData`, {
+        responseType: 'blob', // Important to handle the binary data
+      });
+
+      // Extract the filename from the headers if needed
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = 'userdata.xlsx';
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?(.+)"?/);
+        if (match) {
+          filename = match[1];
+        }
+      }
+
+      // Use FileSaver to save the file
+      saveAs(new Blob([response.data]), filename);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <>
       {users && (
@@ -71,6 +99,14 @@ const ManageUser = () => {
                 >
                   Add User
                 </button>
+                <button
+                  className='mx-2 py-1 px-4 rounded-md bg-blue-800 text-white hover:bg-transparent hover:border-2 hover:border-blue-800 hover:text-blue-800'
+                  onClick={handleDownloadData}
+                >
+                  Download User Data
+                </button>
+
+
               </div>
             </div>
             <hr className='my-5 border-1 border-[white] mx-2' />
@@ -93,7 +129,7 @@ const ManageUser = () => {
                     <tr key={key}>
                       <th scope="row" className='border-b border-gray-200'>
                         <span style={{ fontWeight: "bold" }}>
-                          {key+1}
+                          {key + 1}
                         </span>
                       </th>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>

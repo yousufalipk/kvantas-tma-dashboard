@@ -1,7 +1,8 @@
 const express = require('express');
-const admin = require('./firebase-admin'); // Ensure this file initializes the Firebase Admin SDK
+const admin = require('./firebase-admin');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const XLSX = require('xlsx');
 
 dotenv.config();
 
@@ -80,6 +81,58 @@ app.post('/registerUser', async (req, res) => {
     });
   }
 });
+
+
+
+app.get('/downloadUsersData', async (req, res) => {
+  try {
+
+    // Fetch all users from Firebase Authentication
+    const listUsersResult = await admin.auth().listUsers();
+
+    // Initialize an array for storing the user data
+    let usersData = [['UID', 'First Name' , 'Last Name', 'Email', 'User Type']];
+
+    for (const userRecord of listUsersResult.users) {
+      // Fetch user data from Firestore
+      const userDoc = await admin.firestore().collection('users').doc(userRecord.uid).get();
+      const userData = userDoc.data();
+
+      // Add user data to the array
+      usersData.push([
+        userRecord.uid,
+        userData?.fname || '',  // Fetch first name from Firestore
+        userData?.lname || '',  // Fetch first name from Firestore
+        userRecord.email,       // Fetch email from Auth
+        userData?.userType || '' // Fetch userType from Firestore
+      ]);
+    }
+
+    // Create a new workbook and sheet with the user data
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(usersData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Users Data');
+
+    // Generate an Excel file buffer
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    // Set headers for file download
+    res.setHeader('Content-Disposition', 'attachment; filename="users_data.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    // Send the file
+    res.send(excelBuffer);
+
+  } catch (error) {
+    console.error('Error fetching users data:', error);
+    res.status(500).json({
+      status: 'failed',
+      message: `Error fetching users data! Error: ${error.message}`
+    });
+  }
+});
+
+
 
 app.get('/', (req, res) => {
   res.send("Firebase API runs correctly!");
