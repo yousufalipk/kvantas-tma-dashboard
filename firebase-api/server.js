@@ -13,8 +13,7 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: FRONTEND_ORIGIN,
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: FRONTEND_ORIGIN
 }));
 
 app.delete('/removeUser/:uid', async (req, res) => {
@@ -102,10 +101,10 @@ app.get('/downloadUsersData', async (req, res) => {
       // Add user data to the array
       usersData.push([
         userRecord.uid,
-        userData?.fname || '',  // Fetch first name from Firestore
-        userData?.lname || '',  // Fetch first name from Firestore
-        userRecord.email,       // Fetch email from Auth
-        userData?.userType || '' // Fetch userType from Firestore
+        userData?.fname || '',  
+        userData?.lname || '',  
+        userRecord.email,       
+        userData?.userType || '' 
       ]);
     }
 
