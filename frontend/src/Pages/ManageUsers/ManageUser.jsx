@@ -75,8 +75,11 @@ const ManageUser = () => {
       }
 
       // Use FileSaver to save the file
-      saveAs(new Blob([response.data]), filename);
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      saveAs(blob, filename);
+      toast.success("Data Downloaded Successfuly!")
     } catch (error) {
+      toast.error("Error Downloading Data!")
       console.error('Error downloading the file:', error);
     } finally {
       setLoading(false);

@@ -13,7 +13,8 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: FRONTEND_ORIGIN
+  origin: FRONTEND_ORIGIN,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.delete('/removeUser/:uid', async (req, res) => {
