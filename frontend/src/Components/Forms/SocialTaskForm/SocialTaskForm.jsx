@@ -87,7 +87,7 @@ const SocialTaskForm = () => {
                         type='submit'
                         onClick={formik.handleSubmit}
                     >
-                        {tick === 'true' ? 'Create' : 'Update'}
+                        {tick === 'true' ? 'Create Task' : 'Confirm Changes'}
                     </button>
                 </div>
             </div>

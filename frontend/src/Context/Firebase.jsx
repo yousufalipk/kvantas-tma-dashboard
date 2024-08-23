@@ -7,11 +7,11 @@ import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, quer
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.REACT_APP_FIREBASE_APP_ID
+    //databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
 };
 
 
@@ -27,16 +27,21 @@ export const useFirebase = () => useContext(FirebaseContext);
 export const FirebaseProvider = (props) => {
     const [userId, setUserId] = useState(null);
     const [username, setUsername] = useState(null);
-    const [userType, setUserType] = useState(null);
-    const [isAuth, setAuth] = useState(false);
+
+    const [userType, setUserType] = useState('admin'); //Temp change to admin otherwise null
+
+    const [isAuth, setAuth] = useState(true);   // Temp changed to true otherwise null
+
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false); //Temp set to false otherwise true
+
     const [tasks, setTasks] = useState([]);
 
 
     // Function to refresh auth state on page load/refresh
     useEffect(() => {
-        setLoading(true); // Start loading
+        /*
+        setLoading(true); 
         const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
             if (user) {
                 const uid = user.uid;
@@ -62,10 +67,12 @@ export const FirebaseProvider = (props) => {
         });
 
         return () => unsubscribe();
+        */
     }, []);
 
 
     const registerUser = async (fname, lname, email, password, tick) => {
+        /*
         setLoading(true);
         try {
             const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
@@ -95,10 +102,11 @@ export const FirebaseProvider = (props) => {
             return { success: false, message: "Error creating user!" };
         } finally {
             setLoading(false);
-        }
+        } */
     };
 
     const loginUser = async (email, password) => {
+        /*
         setLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
@@ -124,10 +132,11 @@ export const FirebaseProvider = (props) => {
             return { success: false, message: "Error logging in!" };
         } finally {
             setLoading(false);
-        }
+        } */
     };
 
     const logoutUser = async () => {
+        /*
         setLoading(true);
         try {
             await signOut(firebaseAuth);
@@ -141,10 +150,11 @@ export const FirebaseProvider = (props) => {
             return { success: false, message: "Error logging out!" };
         } finally {
             setLoading(false);
-        }
+        } */
     };
 
     const fetchUsers = async () => {
+        /*
         try {
             const usersQuery = query(collection(firestore, 'users'), where('userType', '!=', 'admin'));
             const querySnapshot = await getDocs(usersQuery);
@@ -154,10 +164,11 @@ export const FirebaseProvider = (props) => {
         } catch (error) {
             console.error("Error fetching non-admin users:", error);
             return { success: false, message: "Error fetching users!" };
-        }
+        } */
     };
 
     const updateUser = async (id, firstName, lastName) => {
+        /*
         setLoading(true);
         try {
             await updateDoc(doc(firestore, 'users', id), {
@@ -169,7 +180,7 @@ export const FirebaseProvider = (props) => {
             return { success: false };
         } finally {
             setLoading(false);
-        }
+        } */
     };
 
     const createTask = async (values) => {

@@ -126,7 +126,7 @@ const SocialTask = () => {
                       className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
                       onClick={() => handleUpdateTask(cls.id, cls.type, cls.title, cls.link, cls.reward)}
                     >
-                      Update
+                      Edit
                     </button>
                   </td>
                   <td className='px-6 py-4 border-b border-gray-200 text-sm text-center '>
