@@ -93,7 +93,7 @@ const ManageUser = () => {
           <div>
             <div className='flex flex-row justify-between'>
               <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
-                Add User
+                Manage Users
               </h1>
               <div className='w-2/4 max-10 flex flex-row justify-end'>
                 <button

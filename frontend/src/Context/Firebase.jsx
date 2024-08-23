@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, deleteUser } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, updateDoc, query, where } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc} from 'firebase/firestore';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -31,6 +31,7 @@ export const FirebaseProvider = (props) => {
     const [isAuth, setAuth] = useState(false);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [tasks, setTasks] = useState([]);
 
 
     // Function to refresh auth state on page load/refresh
@@ -171,8 +172,79 @@ export const FirebaseProvider = (props) => {
         }
     };
 
+    const createTask = async (values) => {
+        try {
+            setLoading(true);
+            // Reference to the tasks collection
+            const tasksCollection = collection(firestore, 'tasks');
+
+            // Add a new document to the tasks collection
+            await addDoc(tasksCollection, {
+                type: values.type,
+                title: values.title,
+                link: values.link,
+                reward: values.reward
+            });
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error }
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchTasks = async () => {
+        try {
+            const tasksRef = collection(firestore, 'tasks');
+            const snapshot = await getDocs(tasksRef);
+            if (snapshot.empty) {
+                return { success: false, message: 'No tasks found!' };
+            }
+
+            const tasksData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setTasks(tasksData);
+            return { success: true };
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+            return { success: false, message: "Error fetching tasks!" };
+        }
+    };
+
+    const updateTask = async ({ uid, type, title, link, reward }) => {
+        try{
+            setLoading(true);
+            await updateDoc(doc(firestore, 'tasks', uid), {
+                type,
+                title,
+                link,
+                reward
+            });
+            return { success: true };
+        } catch (error){
+            return { success: false };
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const deleteTask = async (uid) => {
+        try {
+            setLoading(true);
+            await deleteDoc(doc(firestore, 'tasks', uid));
+            return { success: true };
+        } catch (error) {
+            return { success: false };
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
     return (
-        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, updateUser, setLoading, userId, username, isAuth, users, userType, loading }}>
+        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, updateUser, setLoading, createTask, fetchTasks, updateTask, deleteTask,  userId, username, isAuth, users, userType, loading, tasks }}>
             {props.children}
         </FirebaseContext.Provider>
     );

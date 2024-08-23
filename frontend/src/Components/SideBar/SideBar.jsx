@@ -44,6 +44,10 @@ const SideBar = () => {
             {userType === 'admin' ? (
               <>
                 <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-users' >Manage Users</Link>
+                <hr className='border-1 border-[gray] w-4/5 mx-auto' />
+                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/social-tasks' >Social Tasks</Link>
+                <hr className='border-1 border-[gray] w-4/5 mx-auto' />
+                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-users' >Users</Link>
               </>
             ) : (
               <>
