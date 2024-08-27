@@ -5,23 +5,26 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
-const SocialTaskForm = () => {
-    const { createTask, updateTask } = useFirebase();
-    const { tick, uid, type, title, link, reward } = useParams();
+const AnnoucementForm = () => {
+    const { createAnnoucement, updateAnnoucement } = useFirebase();
+    const { tick, uid, title, description, status, imageName } = useParams();
     const navigate = useNavigate();
 
     const initialValues = {
-        type: type || '',
         title: title || '',
-        link: link || '',
-        reward: reward || null
+        description: description || '',
+        status: status || '',  
+        image: imageName || ''
     };
-    
+
     const validationSchema = Yup.object({
-        type: Yup.string().required('Type is required'),
         title: Yup.string().required('Title is required'),
-        link: Yup.string().required('Link is required'),
-        reward: Yup.number().required('Reward is required')
+        description: Yup.string().required('Description is required'),
+        status: Yup.boolean().required('Status is required'),
+        image: Yup.mixed()
+            .required('Image is required')
+            .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024)) // 2 MB limit
+            .test('fileType', 'Unsupported file format', value => !value || ['image/jpeg', 'image/png'].includes(value.type))  // Accepts only JPEG and PNG
     });
 
     const formik = useFormik({
@@ -30,34 +33,32 @@ const SocialTaskForm = () => {
         onSubmit: async (values, { resetForm }) => {
             try {
                 if (tick === 'true') {
-                    // Create task
-                    const response = await createTask(values);
+                    // Create Announcement
+                    const response = await createAnnoucement(values);
                     if (response.success) {
-                        navigate('/social-tasks');
+                        navigate('/annoucements');
                         setTimeout(() => {
-                            toast.success("Task Added Successfully!");
+                            toast.success("Annoucement Created Successfuly!");
                         }, 2000);
                     } else {
-                        console.log("dcdscds", response.data.error);
-                        toast.error("Error Creating Task!");
+                        toast.error("Error Creating Announcement!");
                     }
-                } 
-                else {
-                    // Update task
-                    const response = await updateTask({
+                } else {
+                    console.log("uid", uid, title, description, status
+                    )
+                    // Update Announcement
+                    const response = await updateAnnoucement({
                         uid,
-                        type: values.type,
                         title: values.title,
-                        link: values.link,
-                        reward: values.reward,
+                        description: values.description,
+                        status: values.status,
+                        image: values.image
                     });
                     if (response.success) {
-                        navigate('/social-tasks');
-                        setTimeout(() => {
-                            toast.success("Task Updated Successfully!");
-                        }, 2000);
+                        navigate('/annoucements');
+                        toast.success("Announcement Updated Successfully!");
                     } else {
-                        toast.error("Error Updating Task!");
+                        toast.error("Error Updating Announcement!");
                     }
                 }
             } catch (error) {
@@ -70,7 +71,12 @@ const SocialTaskForm = () => {
     });
 
     const handleBack = () => {
-        navigate('/social-tasks');
+        navigate('/annoucements');
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.currentTarget.files[0];
+        formik.setFieldValue('image', file);
     };
 
     return (
@@ -91,30 +97,12 @@ const SocialTaskForm = () => {
                         type='submit'
                         onClick={formik.handleSubmit}
                     >
-                        {tick === 'true' ? 'Create Task' : 'Confirm Changes'}
+                        {tick === 'true' ? 'Create Announcement' : 'Confirm Changes'}
                     </button>
                 </div>
             </div>
             <hr className='my-5 border-gray-300' />
             <form onSubmit={formik.handleSubmit} className='flex flex-col w-3/4 max-w-md mx-auto'>
-                <select
-                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
-                    id='type'
-                    name='type'
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.type}
-                >
-                    <option value='' disabled>Select Type</option>
-                    <option value='Telegram'>Telegram</option>
-                    <option value='Twitter'>Twitter</option>
-                    <option value='Instagram'>Instagram</option>
-                    <option value='Youtube'>Youtube</option>
-                    <option value='Website'>Website</option>
-                </select>
-                {formik.touched.type && formik.errors.type ? (
-                    <div className='text-red-600 text-center'>{formik.errors.type}</div>
-                ) : null}
 
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
@@ -133,33 +121,46 @@ const SocialTaskForm = () => {
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
-                    id='link'
-                    name='link'
-                    placeholder='Link'
+                    id='description'
+                    name='description'
+                    placeholder='Description'
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.link}
+                    value={formik.values.description}
                 />
-                {formik.touched.link && formik.errors.link ? (
-                    <div className='text-red-600 text-center'>{formik.errors.link}</div>
+                {formik.touched.description && formik.errors.description ? (
+                    <div className='text-red-600 text-center'>{formik.errors.description}</div>
+                ) : null}
+
+                <select
+                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                    id='status'
+                    name='status'
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.status}
+                >
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                </select>
+                {formik.touched.status && formik.errors.status ? (
+                    <div className='text-red-600 text-center'>{formik.errors.status}</div>
                 ) : null}
 
                 <input
-                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
-                    type='number'
-                    id='reward'
-                    name='reward'
-                    placeholder='Reward'
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.reward}
+                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700 bg-white'
+                    type='file'
+                    id='image'
+                    name='image'
+                    onChange={handleFileChange}
                 />
-                {formik.touched.reward && formik.errors.reward ? (
-                    <div className='text-red-600 text-center'>{formik.errors.reward}</div>
+                {formik.touched.image && formik.errors.image ? (
+                    <div className='text-red-600 text-center'>{formik.errors.image}</div>
                 ) : null}
+
             </form>
         </div>
     );
 };
 
-export default SocialTaskForm;
+export default AnnoucementForm;

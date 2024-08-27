@@ -135,6 +135,55 @@ app.get('/downloadUsersData', async (req, res) => {
   }
 });
 
+app.get('/downloadTelegramUsersData', async (req, res) => {
+  try {
+    // Initialize an array for storing the user data with headers
+    let usersData = [['UID', 'Telegram Id', 'Username', 'First Name', 'Last Name', 'Wallet Address', 'Twitter Username']];
+
+    // Fetch all documents from the telegramUsers collection
+    const telegramUsersSnapshot = await admin.firestore().collection('telegramUsers').get();
+
+    // Loop through each document
+    telegramUsersSnapshot.forEach(doc => {
+      const telegramUser = doc.data();
+
+      // Add user data to the array
+      usersData.push([
+        doc.id,  // UID (document ID)
+        telegramUser.telegramId || 'notSet',
+        telegramUser.username || 'notSet',
+        telegramUser.firstName || 'notSet',
+        telegramUser.lastName || 'notSet',
+        telegramUser.walletAddress || 'notSet',
+        telegramUser.twitterUserName || 'notSet'
+      ]);
+    });
+
+    // Create a new workbook and sheet with the user data
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(usersData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Telegram Users Data');
+
+    // Generate an Excel file buffer
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    // Set headers for file download
+    res.setHeader('Content-Disposition', 'attachment; filename="users_data.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    // Send the file
+    res.send(excelBuffer);
+
+  } catch (error) {
+    console.error('Error fetching Telegram users data:', error);
+    res.status(500).json({
+      status: 'failed',
+      message: `Error fetching Telegram users data! Error: ${error.message}`
+    });
+  }
+});
+
+
 
 
 app.get('/', (req, res) => {

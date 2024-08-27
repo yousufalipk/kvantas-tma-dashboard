@@ -7,7 +7,7 @@ import { useFirebase } from '../../../Context/Firebase';
 import axios from 'axios';
 
 const SignUpForm = (props) => {
-  const { registerUser } = useFirebase();
+  const { registerUser, setLoading } = useFirebase();
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -35,6 +35,7 @@ const SignUpForm = (props) => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        setLoading(true);
         if (props.tick) {
           const response = await axios.post(`${apiUrl}/registerUser`, {
             fname: values.fname,
@@ -65,6 +66,7 @@ const SignUpForm = (props) => {
         console.log(error);
         toast.error('Registration Failed!');
       } finally {
+        setLoading(false);
         resetForm(); // Clear form data
       }
     }

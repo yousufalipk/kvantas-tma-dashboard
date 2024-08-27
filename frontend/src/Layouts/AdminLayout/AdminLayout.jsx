@@ -15,6 +15,13 @@ import RegisterForm from '../../Components/Forms/SignUpForm/SignUpForm';
 import SocialTaskPage from '../../Pages/SocialTask/SocialTask';
 import SocialTaskFrom from '../../Components/Forms/SocialTaskForm/SocialTaskForm';
 
+//Telegram Users
+import ManageTelegramUsers from '../../Pages/ManageTelegramUsers/ManageTelegramUsers';
+
+//Anoucements
+import Annoucement from '../../Pages/Annoucements/Annoucement';
+import AnnoucementForm from '../../Components/Forms/AnnoucementForm/AnnoucementForm';
+
 import UserProtected from '../../Components/Protected/UserProtected';
 
 const AdminLayout = () => {
@@ -41,6 +48,15 @@ const AdminLayout = () => {
             <Route path='/social-tasks' element={<UserProtected ><SocialTaskPage /></UserProtected>}/>
             <Route path='/social-tasks-form/:tick' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
             <Route path='/social-tasks-form-update/:tick/:uid/:type/:title/:link/:reward' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
+
+            {/* Manage User Routes  */}
+            <Route path='/manage-telegram-users' element={<UserProtected ><ManageTelegramUsers /></UserProtected>}/>
+
+            {/* Annoucements */}
+            <Route path='/annoucements' element={<UserProtected ><Annoucement /></UserProtected>}/>
+            <Route path='/annoucement-form/:tick' element={<UserProtected ><AnnoucementForm /></UserProtected>}/>
+            <Route path='/annoucement-form-update/:tick/:uid/:title/:description/:status/:imageName' element={<UserProtected ><AnnoucementForm /></UserProtected>}/>
+
           </Routes>
           </div>
         </div>

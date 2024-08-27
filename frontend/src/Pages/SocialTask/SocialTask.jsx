@@ -12,6 +12,7 @@ const SocialTask = () => {
   const fetchData = async () => {
     try {
       await fetchTasks();
+      console.log("Tasks", tasks);
     } catch (error) {
       console.log('Error', error);
     } 
@@ -56,7 +57,7 @@ const SocialTask = () => {
             toast.success("Task Deleted Succesfuly!")
           }
           else{
-            toast.error("Error Deleting Succesfuly!")
+            toast.error("Error Deleting Task!")
           }
         } catch(error) {
           toast.error("Internal Server Error!")

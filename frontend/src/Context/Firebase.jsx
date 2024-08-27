@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc} from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc } from 'firebase/firestore';
+import { getStorage, deleteObject } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -11,7 +13,6 @@ const firebaseConfig = {
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.REACT_APP_FIREBASE_APP_ID
-    //databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
 };
 
 
@@ -19,6 +20,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 const firestore = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp);
 
 const FirebaseContext = createContext(null);
 
@@ -26,22 +28,27 @@ export const useFirebase = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = (props) => {
     const [userId, setUserId] = useState(null);
+
     const [username, setUsername] = useState(null);
 
-    const [userType, setUserType] = useState('admin'); //Temp change to admin otherwise null
+    const [userType, setUserType] = useState(null); //Temp change to admin otherwise null
 
-    const [isAuth, setAuth] = useState(true);   // Temp changed to true otherwise null
+    const [isAuth, setAuth] = useState(null);   // Temp changed to true otherwise null
 
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(false); //Temp set to false otherwise true
+
+    const [telegramUsers, setTelegramUsers] = useState([]);
+
+    const [annoucement, setAnnoucement] = useState([]);
+
+    const [loading, setLoading] = useState(false);
 
     const [tasks, setTasks] = useState([]);
 
 
     // Function to refresh auth state on page load/refresh
     useEffect(() => {
-        /*
-        setLoading(true); 
+        setLoading(true);
         const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
             if (user) {
                 const uid = user.uid;
@@ -67,12 +74,10 @@ export const FirebaseProvider = (props) => {
         });
 
         return () => unsubscribe();
-        */
     }, []);
 
 
     const registerUser = async (fname, lname, email, password, tick) => {
-        /*
         setLoading(true);
         try {
             const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
@@ -102,11 +107,10 @@ export const FirebaseProvider = (props) => {
             return { success: false, message: "Error creating user!" };
         } finally {
             setLoading(false);
-        } */
+        }
     };
 
     const loginUser = async (email, password) => {
-        /*
         setLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
@@ -132,11 +136,10 @@ export const FirebaseProvider = (props) => {
             return { success: false, message: "Error logging in!" };
         } finally {
             setLoading(false);
-        } */
+        }
     };
 
     const logoutUser = async () => {
-        /*
         setLoading(true);
         try {
             await signOut(firebaseAuth);
@@ -150,11 +153,10 @@ export const FirebaseProvider = (props) => {
             return { success: false, message: "Error logging out!" };
         } finally {
             setLoading(false);
-        } */
+        }
     };
 
     const fetchUsers = async () => {
-        /*
         try {
             const usersQuery = query(collection(firestore, 'users'), where('userType', '!=', 'admin'));
             const querySnapshot = await getDocs(usersQuery);
@@ -164,11 +166,27 @@ export const FirebaseProvider = (props) => {
         } catch (error) {
             console.error("Error fetching non-admin users:", error);
             return { success: false, message: "Error fetching users!" };
-        } */
+        }
     };
 
+    const fetchTelegramUsers = async () => {
+        try {
+            const telegramUsersQuery = query(collection(firestore, 'telegramUsers'));
+            const telegramUsersSnapshot = await getDocs(telegramUsersQuery);
+            const telegramUsers = telegramUsersSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setTelegramUsers(telegramUsers);
+            return { success: true, telegramUsers: telegramUsers };
+        } catch (error) {
+            console.error("Error fetching telegram users:", error);
+            return { success: false, message: "Error fetching telegram users!" };
+        }
+    };
+
+
     const updateUser = async (id, firstName, lastName) => {
-        /*
         setLoading(true);
         try {
             await updateDoc(doc(firestore, 'users', id), {
@@ -180,14 +198,14 @@ export const FirebaseProvider = (props) => {
             return { success: false };
         } finally {
             setLoading(false);
-        } */
+        }
     };
 
     const createTask = async (values) => {
         try {
             setLoading(true);
             // Reference to the tasks collection
-            const tasksCollection = collection(firestore, 'tasks');
+            const tasksCollection = collection(firestore, 'socialTask');
 
             // Add a new document to the tasks collection
             await addDoc(tasksCollection, {
@@ -196,6 +214,7 @@ export const FirebaseProvider = (props) => {
                 link: values.link,
                 reward: values.reward
             });
+
             return { success: true };
         } catch (error) {
             return { success: false, error: error }
@@ -206,7 +225,7 @@ export const FirebaseProvider = (props) => {
 
     const fetchTasks = async () => {
         try {
-            const tasksRef = collection(firestore, 'tasks');
+            const tasksRef = collection(firestore, 'socialTask');
             const snapshot = await getDocs(tasksRef);
             if (snapshot.empty) {
                 return { success: false, message: 'No tasks found!' };
@@ -225,26 +244,27 @@ export const FirebaseProvider = (props) => {
     };
 
     const updateTask = async ({ uid, type, title, link, reward }) => {
-        try{
+        try {
             setLoading(true);
-            await updateDoc(doc(firestore, 'tasks', uid), {
+            await updateDoc(doc(firestore, 'socialTask', uid), {
                 type,
                 title,
                 link,
                 reward
             });
             return { success: true };
-        } catch (error){
+        } catch (error) {
+            console.log("Error updating task", error);
             return { success: false };
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const deleteTask = async (uid) => {
         try {
             setLoading(true);
-            await deleteDoc(doc(firestore, 'tasks', uid));
+            await deleteDoc(doc(firestore, 'socialTask', uid));
             return { success: true };
         } catch (error) {
             return { success: false };
@@ -253,9 +273,138 @@ export const FirebaseProvider = (props) => {
         }
     }
 
+    const createAnnoucement = async (values) => {
+        try {
+            setLoading(true);
+    
+            let downloadURL = '';
+    
+            if (values.image) {
+                const storageRef = ref(storage, `announcements/${Date.now()}_${values.image.name}`);
+
+                const snapshot = await uploadBytes(storageRef, values.image);
+
+                downloadURL = await getDownloadURL(snapshot.ref);
+            }
+    
+            // Add the announcement to Firestore
+            const annoucementCollection = collection(firestore, 'announcements');
+    
+            await addDoc(annoucementCollection, {
+                title: values.title,
+                description: values.description,
+                status: values.status || 'active', 
+                image: downloadURL || null,
+                imageName: values.image.name || null
+            });
+    
+            return { success: true };
+        } catch (error) {
+            console.error("Error creating announcement:", error);
+            return { success: false, error: error.message };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchAnnoucement = async () => {
+        try {
+            const tasksRef = collection(firestore, 'announcements');
+            const snapshot = await getDocs(tasksRef);
+            if (snapshot.empty) {
+                return { success: false, message: 'No annoucements found!' };
+            }
+
+            const tasksData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setAnnoucement(tasksData);
+            return { success: true };
+        } catch (error) {
+            console.error("Error fetching annoucement:", error);
+            return { success: false, message: "Error fetching annoucements!" };
+        }
+    };
+
+    const updateAnnoucement = async ({ uid, title, description, time, status, image }) => {
+        try {
+            setLoading(true);
+    
+            // Fetch the existing announcement document
+            const announcementDocRef = doc(firestore, 'announcements', uid);
+            const announcementSnapshot = await getDoc(announcementDocRef);
+    
+            if (!announcementSnapshot.exists()) {
+                throw new Error('Announcement not found');
+            }
+    
+            const announcementData = announcementSnapshot.data();
+            let downloadURL = announcementData.image || '';
+            let imageName = announcementData.imageName || ''; 
+    
+            // Delete the existing image if a new image is provided
+            if (image && announcementData.image) {
+                const imageRef = ref(storage, announcementData.image); 
+                await deleteObject(imageRef); // Delete the existing image
+            }
+    
+            // Upload the new image if provided
+            if (image) {
+                const storageRef = ref(storage, `announcements/${Date.now()}_${image.name}`);
+                const snapshot = await uploadBytes(storageRef, image);
+                downloadURL = await getDownloadURL(snapshot.ref);
+                imageName = image.name; // Update image name with the new one
+            }
+    
+            // Update the announcement document in Firestore
+            await updateDoc(announcementDocRef, {
+                title: title,
+                description: description,
+                status: status || 'active',
+                image: downloadURL || null,
+                imageName: imageName || null,
+            });
+    
+            return { success: true };
+        } catch (error) {
+            console.error("Error updating announcement:", error);
+            return { success: false, error: error.message };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deleteAnnoucement = async (uid) => {
+        try {
+            setLoading(true);
+        
+            const announcementDoc = await getDoc(doc(firestore, 'announcements', uid));
+            
+            if (announcementDoc.exists()) {
+                const announcementData = announcementDoc.data();
+                const imagePath = announcementData.image; 
+        
+                await deleteDoc(doc(firestore, 'announcements', uid));
+
+                if (imagePath) {
+                    const imageRef = ref(storage, imagePath);
+                    await deleteObject(imageRef);
+                }
+            }
+        
+            return { success: true };
+        } catch (error) {
+            console.error("Error deleting announcement:", error);
+            return { success: false, error: error.message };
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
-        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, updateUser, setLoading, createTask, fetchTasks, updateTask, deleteTask,  userId, username, isAuth, users, userType, loading, tasks }}>
+        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, fetchTelegramUsers, updateUser, setLoading, createTask, fetchTasks, updateTask, deleteTask, setTelegramUsers, createAnnoucement, fetchAnnoucement, updateAnnoucement, deleteAnnoucement, userId, username, isAuth, users, userType, loading, tasks, telegramUsers, annoucement }}>
             {props.children}
         </FirebaseContext.Provider>
     );
