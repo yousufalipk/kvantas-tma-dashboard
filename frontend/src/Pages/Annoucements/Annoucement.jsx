@@ -100,7 +100,8 @@ const Annoucement = () => {
                 <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Title</th>
                 <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Description</th>
                 <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Status</th>
-                <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Image</th>
+                <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">File Name</th>
+                <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Thumbnail</th>
                 <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Update</th>
                 <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Delete</th>
               </tr>
@@ -125,6 +126,9 @@ const Annoucement = () => {
                     </td>
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                       {cls.imageName}
+                    </td>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto'/>
                     </td>
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                       <button

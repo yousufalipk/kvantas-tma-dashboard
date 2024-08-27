@@ -206,10 +206,9 @@ export const FirebaseProvider = (props) => {
             setLoading(true);
             // Reference to the tasks collection
             const tasksCollection = collection(firestore, 'socialTask');
-
             // Add a new document to the tasks collection
             await addDoc(tasksCollection, {
-                type: values.type,
+                image: values.type,
                 title: values.title,
                 link: values.link,
                 reward: values.reward
@@ -247,7 +246,7 @@ export const FirebaseProvider = (props) => {
         try {
             setLoading(true);
             await updateDoc(doc(firestore, 'socialTask', uid), {
-                type,
+                image: type,
                 title,
                 link,
                 reward

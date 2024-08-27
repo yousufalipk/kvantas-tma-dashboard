@@ -106,11 +106,11 @@ const SocialTaskForm = () => {
                     value={formik.values.type}
                 >
                     <option value='' disabled>Select Type</option>
-                    <option value='Telegram'>Telegram</option>
-                    <option value='Twitter'>Twitter</option>
-                    <option value='Instagram'>Instagram</option>
-                    <option value='Youtube'>Youtube</option>
-                    <option value='Website'>Website</option>
+                    <option value='telegram'>Telegram</option>
+                    <option value='twitter'>Twitter</option>
+                    <option value='instagram'>Instagram</option>
+                    <option value='youtube'>Youtube</option>
+                    <option value='discord'>Website</option>
                 </select>
                 {formik.touched.type && formik.errors.type ? (
                     <div className='text-red-600 text-center'>{formik.errors.type}</div>

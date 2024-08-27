@@ -154,7 +154,7 @@ app.get('/downloadTelegramUsersData', async (req, res) => {
         telegramUser.username || 'notSet',
         telegramUser.firstName || 'notSet',
         telegramUser.lastName || 'notSet',
-        telegramUser.walletAddress || 'notSet',
+        telegramUser.tonWalletAddress  || 'notSet',
         telegramUser.twitterUserName || 'notSet'
       ]);
     });

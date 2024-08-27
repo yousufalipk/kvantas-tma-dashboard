@@ -62,13 +62,6 @@ const ManageTelegramUsers = () => {
                 Manage Telegram User's
               </h1>
               <div className='w-2/4 max-10 flex flex-row justify-end'>
-                {/*
-                <button
-                  className='mx-2 py-1 px-4 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'
-                  onClick={handleAddUser}
-                >
-                  Add User
-                </button> */}
                 <button
                   className='mx-2 py-1 px-4 rounded-md bg-blue-800 text-white hover:bg-transparent hover:border-2 hover:border-blue-800 hover:text-blue-800'
                   onClick={handleDownloadData}
@@ -115,25 +108,6 @@ const ManageTelegramUsers = () => {
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         {cls.twitterUserName || "undefined"}
                       </td>
-                      {/* 
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                        <button
-                          className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                          onClick={() => handleUpdateUser(cls.id, cls.fname, cls.lname, cls.email)}
-                        >
-                          Update
-                        </button>
-                      </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center '>
-                        <button
-                          className="p-2"
-                          onClick={() => handleDeleteUser(cls.id, cls.email)}
-                        >
-                          <RiDeleteBin5Line className="text-bluebtn w-5 h-5 hover:text-gray-700" />
-                        </button>
-
-                      </td>
-                      */}
                     </tr>
                   ))
                 }
