@@ -63,7 +63,7 @@ const ManageUser = () => {
     try {
       setLoading(true);
       const response = await axios.get(`${apiUrl}/downloadUsersData`, {
-        responseType: 'blob', 
+        responseType: 'blob',
       });
 
       // Extract the filename from the headers if needed
@@ -91,7 +91,7 @@ const ManageUser = () => {
 
   return (
     <>
-      {users && (
+      {users ? (
         <>
           <div>
             <div className='flex flex-row justify-between'>
@@ -170,6 +170,10 @@ const ManageUser = () => {
               </tbody>
             </table>
           </div>
+        </>
+      ) : (
+        <>
+          <div className='flex justify-center items-center py-64 font-semibold italic text-2xl'> Loading...</div>
         </>
       )}
     </>

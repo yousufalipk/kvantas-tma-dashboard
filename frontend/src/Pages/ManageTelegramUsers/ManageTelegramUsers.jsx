@@ -54,7 +54,7 @@ const ManageTelegramUsers = () => {
 
   return (
     <>
-      {telegramUsers && (
+      {telegramUsers ? (
         <>
           <div>
             <div className='flex flex-row justify-between'>
@@ -103,7 +103,7 @@ const ManageTelegramUsers = () => {
                         {cls.lastName || "undefined"}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                        {cls.tonWalletAddress  || "undefined"}
+                        {cls.tonWalletAddress || "undefined"}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         {cls.twitterUserName || "undefined"}
@@ -115,7 +115,11 @@ const ManageTelegramUsers = () => {
             </table>
           </div>
         </>
-      )}
+      ) : (
+      <>
+        <div className='flex justify-center items-center py-64 font-semibold italic text-2xl'> Loading...</div>
+      </>
+    )}
     </>
   )
 }

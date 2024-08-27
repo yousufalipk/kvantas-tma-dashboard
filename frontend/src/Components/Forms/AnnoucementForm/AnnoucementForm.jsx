@@ -7,20 +7,18 @@ import { useFirebase } from '../../../Context/Firebase';
 
 const AnnoucementForm = () => {
     const { createAnnoucement, updateAnnoucement } = useFirebase();
-    const { tick, uid, title, description, status, imageName } = useParams();
+    const { tick, uid, title, description, imageName } = useParams();
     const navigate = useNavigate();
 
     const initialValues = {
         title: title || '',
         description: description || '',
-        status: status || '',  
         image: imageName || ''
     };
 
     const validationSchema = Yup.object({
         title: Yup.string().required('Title is required'),
         description: Yup.string().required('Description is required'),
-        status: Yup.boolean().required('Status is required'),
         image: Yup.mixed()
             .required('Image is required')
             .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024)) // 2 MB limit
@@ -31,8 +29,10 @@ const AnnoucementForm = () => {
         initialValues,
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
+            console.log("Tick", tick);
             try {
                 if (tick === 'true') {
+                    console.log("creating...");
                     // Create Announcement
                     const response = await createAnnoucement(values);
                     if (response.success) {
@@ -44,14 +44,12 @@ const AnnoucementForm = () => {
                         toast.error("Error Creating Announcement!");
                     }
                 } else {
-                    console.log("uid", uid, title, description, status
-                    )
+                    console.log("updating...");
                     // Update Announcement
                     const response = await updateAnnoucement({
                         uid,
                         title: values.title,
                         description: values.description,
-                        status: values.status,
                         image: values.image
                     });
                     if (response.success) {
@@ -83,7 +81,7 @@ const AnnoucementForm = () => {
         <div className='p-4'>
             <div className='flex flex-row justify-between items-center mb-5'>
                 <h1 className='font-bold text-left text-xl'>
-                    {tick === 'true' ? 'Add Task' : 'Edit Task'}
+                    {tick === 'true' ? 'Add Announcement' : 'Edit Announcement'}
                 </h1>
                 <div className='flex'>
                     <button
@@ -103,7 +101,6 @@ const AnnoucementForm = () => {
             </div>
             <hr className='my-5 border-gray-300' />
             <form onSubmit={formik.handleSubmit} className='flex flex-col w-3/4 max-w-md mx-auto'>
-
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
@@ -130,21 +127,6 @@ const AnnoucementForm = () => {
                 />
                 {formik.touched.description && formik.errors.description ? (
                     <div className='text-red-600 text-center'>{formik.errors.description}</div>
-                ) : null}
-
-                <select
-                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
-                    id='status'
-                    name='status'
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.status}
-                >
-                    <option value={true}>Active</option>
-                    <option value={false}>Inactive</option>
-                </select>
-                {formik.touched.status && formik.errors.status ? (
-                    <div className='text-red-600 text-center'>{formik.errors.status}</div>
                 ) : null}
 
                 <input

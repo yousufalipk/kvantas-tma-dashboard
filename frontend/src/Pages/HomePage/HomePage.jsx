@@ -1,6 +1,9 @@
 import React from 'react';
 import { useFirebase } from '../../Context/Firebase';
 
+import AdminHome from '../AdminHome/AdminHome';
+import UserHome from '../UserHome/UserHome';
+
 const HomePage = () => {
   const { userType } = useFirebase();
   return (
@@ -9,16 +12,14 @@ const HomePage = () => {
             <h1 className='font-bold mx-10'>
               {userType === 'admin' ? (
                 <>
-                  Admin Dashboard 
+                  <AdminHome />
                 </>
               ):(
                 <>
-                  User Dashboard
+                  <UserHome />
                 </>
               )}
-
             </h1>
-            <hr className='my-5 border-1 border-white mx-2'/> 
         </div>
     </>
   )

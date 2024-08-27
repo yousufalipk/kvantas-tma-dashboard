@@ -55,7 +55,7 @@ const AdminLayout = () => {
             {/* Annoucements */}
             <Route path='/annoucements' element={<UserProtected ><Annoucement /></UserProtected>}/>
             <Route path='/annoucement-form/:tick' element={<UserProtected ><AnnoucementForm /></UserProtected>}/>
-            <Route path='/annoucement-form-update/:tick/:uid/:title/:description/:status/:imageName' element={<UserProtected ><AnnoucementForm /></UserProtected>}/>
+            <Route path='/annoucement-form-update/:tick/:uid/:title/:description/:imageName' element={<UserProtected ><AnnoucementForm /></UserProtected>}/>
 
           </Routes>
           </div>

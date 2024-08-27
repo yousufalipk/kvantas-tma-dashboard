@@ -292,7 +292,7 @@ export const FirebaseProvider = (props) => {
             await addDoc(annoucementCollection, {
                 title: values.title,
                 description: values.description,
-                status: values.status || 'active', 
+                status: false, 
                 image: downloadURL || null,
                 imageName: values.image.name || null
             });
@@ -326,7 +326,7 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const updateAnnoucement = async ({ uid, title, description, time, status, image }) => {
+    const updateAnnoucement = async ({ uid, title, description, image }) => {
         try {
             setLoading(true);
     
@@ -353,17 +353,46 @@ export const FirebaseProvider = (props) => {
                 const storageRef = ref(storage, `announcements/${Date.now()}_${image.name}`);
                 const snapshot = await uploadBytes(storageRef, image);
                 downloadURL = await getDownloadURL(snapshot.ref);
-                imageName = image.name; // Update image name with the new one
+                imageName = image.name; 
             }
     
             // Update the announcement document in Firestore
             await updateDoc(announcementDocRef, {
                 title: title,
                 description: description,
-                status: status || 'active',
+                status: false,
                 image: downloadURL || null,
                 imageName: imageName || null,
             });
+    
+            return { success: true };
+        } catch (error) {
+            console.error("Error updating announcement:", error);
+            return { success: false, error: error.message };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleAnnoucementStatus = async (uid, status) => {
+        try {
+            console.log("Status", status, "Uid", uid);
+            setLoading(true);
+    
+            // Fetch the existing announcement document
+            const announcementDocRef = doc(firestore, 'announcements', uid);
+    
+            // Update the announcement document in Firestore
+            if(status){
+                await updateDoc(announcementDocRef, {
+                    status: false
+                });
+            }
+            else{
+                await updateDoc(announcementDocRef, {
+                    status: true
+                });
+            }
     
             return { success: true };
         } catch (error) {
@@ -401,9 +430,67 @@ export const FirebaseProvider = (props) => {
         }
     };
 
+    const calculateDashboardMetrics = async () => {
+        try {
+            // Fetch users data
+            const usersCollectionRef = collection(firestore, 'users');
+            const usersSnapshot = await getDocs(usersCollectionRef);
+
+            const telegramUsersCollectionRef = collection(firestore, 'telegramUsers');
+            const telegramUsersSnapshot = await getDocs(telegramUsersCollectionRef);
+            
+            const totalUsers = usersSnapshot.size; // Total number of users
+            const totalTelegramUsers = telegramUsersSnapshot.size; // Total number of Telegram users
+            
+            const userTypes = {};
+            usersSnapshot.forEach((doc) => {
+                const userType = doc.data().userType;
+                if (userTypes[userType]) {
+                    userTypes[userType] += 1;
+                } else {
+                    userTypes[userType] = 1;
+                }
+            });
+    
+            // Fetch announcements data
+            const announcementsCollectionRef = collection(firestore, 'announcements');
+            const activeAnnouncementsQuery = query(announcementsCollectionRef, where("status", "==", true));
+            const activeAnnouncementsSnapshot = await getDocs(activeAnnouncementsQuery);
+            const activeAnnouncements = activeAnnouncementsSnapshot.size; 
+    
+            // Fetch tasks data
+            const tasksCollectionRef = collection(firestore, 'socialTask');
+            const tasksSnapshot = await getDocs(tasksCollectionRef);
+            const totalTasks = tasksSnapshot.size; 
+    
+            const tasksByType = {};
+            tasksSnapshot.forEach((doc) => {
+                const taskType = doc.data().image;
+                if (tasksByType[taskType]) {
+                    tasksByType[taskType] += 1;
+                } else {
+                    tasksByType[taskType] = 1;
+                }
+            });
+    
+            // Return the calculated metrics
+            return {
+                totalUsers,
+                totalTelegramUsers,
+                userTypes, 
+                activeAnnouncements,
+                totalTasks,
+                tasksByType 
+            };
+        } catch (error) {
+            console.error("Error calculating dashboard metrics:", error);
+            return { success: false, message: "Error calculating metrics" };
+        }
+    };
+
 
     return (
-        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, fetchTelegramUsers, updateUser, setLoading, createTask, fetchTasks, updateTask, deleteTask, setTelegramUsers, createAnnoucement, fetchAnnoucement, updateAnnoucement, deleteAnnoucement, userId, username, isAuth, users, userType, loading, tasks, telegramUsers, annoucement }}>
+        <FirebaseContext.Provider value={{ registerUser, loginUser, logoutUser, fetchUsers, fetchTelegramUsers, updateUser, setLoading, createTask, fetchTasks, updateTask, deleteTask, setTelegramUsers, createAnnoucement, fetchAnnoucement, updateAnnoucement, deleteAnnoucement, calculateDashboardMetrics, toggleAnnoucementStatus, userId, username, isAuth, users, userType, loading, tasks, telegramUsers, annoucement }}>
             {props.children}
         </FirebaseContext.Provider>
     );
