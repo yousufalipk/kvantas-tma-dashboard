@@ -37,9 +37,9 @@ const ManageTelegramUsers = () => {
 
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       saveAs(blob, filename);
-      toast.success("Data Downloaded Successfully!")
+      toast.success("Data Downloaded Successfully!");
     } catch (error) {
-      toast.error("Error Downloading Data!")
+      toast.error("Error Downloading Data!");
       console.error('Error downloading the file:', error);
     } finally {
       setLoading(false);
@@ -53,7 +53,9 @@ const ManageTelegramUsers = () => {
   const formatDate = (timestamp) => {
     if (timestamp && timestamp.toDate) {
       const date = timestamp.toDate(); // Converts Firestore Timestamp to JavaScript Date object
-      return format(date, 'MM/dd/yyyy'); // Formats the date to MM/DD/YYYY format using date-fns
+      const formattedDate = format(date, 'MM/dd/yyyy'); // Formats the date
+      const formattedTime = format(date, 'hh:mm a'); // Formats the time
+      return `${formattedDate}\n${formattedTime}`; // Returns date and time on separate lines
     }
     return 'Invalid Date'; // Handle case where timestamp is undefined or invalid
   };
@@ -100,7 +102,7 @@ const ManageTelegramUsers = () => {
                         {cls.userId || "undefined"}
                       </span>
                     </th>
-                    <td className="px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td className="px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "pre-line" }}>
                       {formatDate(cls.createdAt) || "undefined"}
                     </td>
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
@@ -128,9 +130,7 @@ const ManageTelegramUsers = () => {
           </div>
         </>
       ) : (
-        <>
-          <div className='flex justify-center items-center py-64 font-semibold italic text-2xl'> Loading...</div>
-        </>
+        <div className='flex justify-center items-center py-64 font-semibold italic text-2xl'>Loading...</div>
       )}
     </>
   )

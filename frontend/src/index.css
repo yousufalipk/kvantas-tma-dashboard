@@ -5,3 +5,13 @@
 body{
     color: white;
 }
+
+/* For Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    display: none; /* Hide scrollbar */
+  }
+  
+  /* For Firefox */
+  html {
+    scrollbar-width: none; /* Hide scrollbar */
+  }

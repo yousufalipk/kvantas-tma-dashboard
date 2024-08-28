@@ -28,7 +28,7 @@ const AdminLayout = () => {
   return (
     <>  
         {/* Side Bar */}
-        <div className='flex flex-row bg-custom-image bg-cover bg-center h-screen'>
+        <div className='flex flex-row bg-custom-image bg-cover bg-center'>
           <div className='w-1/5'>
             <SideBar />
           </div> 
