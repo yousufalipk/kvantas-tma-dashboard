@@ -7,7 +7,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 
 const SocialTask = () => {
   const navigate = useNavigate();
-  const { tasks, fetchTasks, deleteTask} = useFirebase();
+  const { tasks, fetchTasks, deleteTask } = useFirebase();
 
   const fetchData = async () => {
     try {
@@ -15,7 +15,7 @@ const SocialTask = () => {
       console.log("Tasks", tasks);
     } catch (error) {
       console.log('Error', error);
-    } 
+    }
   }
 
 
@@ -34,10 +34,10 @@ const SocialTask = () => {
     }
   }
 
-  const handleUpdateTask = async (uid, type, title, link, reward) => {
+  const handleUpdateTask = async (uid, type, priority, title, link, reward) => {
     try {
       //navigate to update user
-      navigate(`/social-tasks-form-update/${false}/${uid}/${type}/${title}/${link}/${reward}`);
+      navigate(`/social-tasks-form-update/${false}/${uid}/${priority}/${type}/${title}/${link}/${reward}`);
     } catch (error) {
       console.log(error);
       toast.error("Internal Server Error")
@@ -50,16 +50,16 @@ const SocialTask = () => {
       if (!shouldDelete) {
         return
       }
-      else{
+      else {
         try {
           const response = deleteTask(uid);
-          if(response.data.success){
+          if (response.data.success) {
             toast.success("Task Deleted Succesfuly!")
           }
-          else{
+          else {
             toast.error("Error Deleting Task!")
           }
-        } catch(error) {
+        } catch (error) {
           toast.error("Internal Server Error!")
         }
       }
@@ -92,7 +92,7 @@ const SocialTask = () => {
         <table className="min-w-full bg-transparent border-collapse border border-gray-200">
           <thead className="thead-dark">
             <tr>
-              <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Sr.No</th>
+              <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Priority</th>
               <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Type</th>
               <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Title</th>
               <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Link</th>
@@ -103,44 +103,48 @@ const SocialTask = () => {
           </thead>
           <tbody>
             {
-              tasks.map((cls, key) => (
-                <tr key={key}>
-                  <th scope="row" className='border-b border-gray-200'>
-                    <span style={{ fontWeight: "bold" }}>
-                      {key + 1}
-                    </span>
-                  </th>
-                  <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                    {cls.image}
-                  </td>
-                  <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                    {cls.title}
-                  </td>
-                  <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                    {cls.link}
-                  </td>
-                  <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                    {cls.reward}
-                  </td>
-                  <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                    <button
-                      className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                      onClick={() => handleUpdateTask(cls.id, cls.image, cls.title, cls.link, cls.reward)}
+              tasks
+                .sort((a, b) => a.priority - b.priority) // Sort tasks based on priority in ascending order
+                .map((cls, key) => (
+                  <tr key={key}>
+                    <th scope="row" className='border-b border-gray-200'>
+                      <span style={{ fontWeight: "bold" }}>
+                        {cls.priority}
+                      </span>
+                    </th>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      {cls.image}
+                    </td>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      {cls.title}
+                    </td>
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center cursor-pointer hover:text-bluebtn'
+                      onClick={() => window.open(`https://${cls.link}`, '_blank')}
                     >
-                      Edit
-                    </button>
-                  </td>
-                  <td className='px-6 py-4 border-b border-gray-200 text-sm text-center '>
-                    <button
-                      className="p-2"
-                      onClick={() => handleDeleteTask(cls.id, cls.title)}
-                    >
-                      <RiDeleteBin5Line className="text-bluebtn w-5 h-5 hover:text-gray-700" />
-                    </button>
-
-                  </td>
-                </tr>
-              ))
+                      {cls.link}
+                    </td>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      {cls.reward}
+                    </td>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <button
+                        className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
+                        onClick={() => handleUpdateTask(cls.id, cls.image, cls.priority, cls.title, cls.link, cls.reward)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <button
+                        className="p-2"
+                        onClick={() => handleDeleteTask(cls.id, cls.title)}
+                      >
+                        <RiDeleteBin5Line className="text-bluebtn w-5 h-5 hover:text-gray-700" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
             }
           </tbody>
         </table>

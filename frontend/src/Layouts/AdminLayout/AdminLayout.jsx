@@ -47,7 +47,7 @@ const AdminLayout = () => {
             {/* Manage Social Tasks */}
             <Route path='/social-tasks' element={<UserProtected ><SocialTaskPage /></UserProtected>}/>
             <Route path='/social-tasks-form/:tick' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
-            <Route path='/social-tasks-form-update/:tick/:uid/:type/:title/:link/:reward' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
+            <Route path='/social-tasks-form-update/:tick/:uid/:priority/:type/:title/:link/:reward' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
 
             {/* Manage User Routes  */}
             <Route path='/manage-telegram-users' element={<UserProtected ><ManageTelegramUsers /></UserProtected>}/>

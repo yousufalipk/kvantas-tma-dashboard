@@ -7,17 +7,19 @@ import { useFirebase } from '../../../Context/Firebase';
 
 const SocialTaskForm = () => {
     const { createTask, updateTask } = useFirebase();
-    const { tick, uid, type, title, link, reward } = useParams();
+    const { tick, uid, priority, type, title, link, reward } = useParams();
     const navigate = useNavigate();
 
     const initialValues = {
+        priority: priority || '',
         type: type || '',
         title: title || '',
         link: link || '',
         reward: reward || null
     };
-    
+
     const validationSchema = Yup.object({
+        priority: Yup.number().required('Priority is required'),
         type: Yup.string().required('Type is required'),
         title: Yup.string().required('Title is required'),
         link: Yup.string().required('Link is required'),
@@ -38,14 +40,16 @@ const SocialTaskForm = () => {
                             toast.success("Task Added Successfully!");
                         }, 2000);
                     } else {
-                        console.log("dcdscds", response.data.error);
-                        toast.error("Error Creating Task!");
+                        setTimeout(() => {
+                            toast.error(response.message);
+                        }, 1000);
                     }
-                } 
+                }
                 else {
                     // Update task
                     const response = await updateTask({
                         uid,
+                        priority: values.priority,
                         type: values.type,
                         title: values.title,
                         link: values.link,
@@ -57,7 +61,9 @@ const SocialTaskForm = () => {
                             toast.success("Task Updated Successfully!");
                         }, 2000);
                     } else {
-                        toast.error("Error Updating Task!");
+                        setTimeout(() => {
+                            toast.error(response.message);
+                        }, 1000);
                     }
                 }
             } catch (error) {
@@ -97,6 +103,20 @@ const SocialTaskForm = () => {
             </div>
             <hr className='my-5 border-gray-300' />
             <form onSubmit={formik.handleSubmit} className='flex flex-col w-3/4 max-w-md mx-auto'>
+                <input
+                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                    type='number'
+                    id='priority'
+                    name='priority'
+                    placeholder='Priority'
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.priority}
+                />
+                {formik.touched.priority && formik.errors.priority ? (
+                    <div className='text-red-600 text-center'>{formik.errors.priority}</div>
+                ) : null}
+
                 <select
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     id='type'
@@ -110,7 +130,7 @@ const SocialTaskForm = () => {
                     <option value='twitter'>Twitter</option>
                     <option value='instagram'>Instagram</option>
                     <option value='youtube'>Youtube</option>
-                    <option value='discord'>Website</option>
+                    <option value='moreLink'>Website</option>
                 </select>
                 {formik.touched.type && formik.errors.type ? (
                     <div className='text-red-600 text-center'>{formik.errors.type}</div>

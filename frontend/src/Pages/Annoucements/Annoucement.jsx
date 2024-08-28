@@ -160,7 +160,9 @@ const Annoucement = () => {
                         {cls.imageName}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
-                        <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto' />
+                        <a href={cls.image} target="_blank" rel="noopener noreferrer">
+                          <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto' />
+                        </a>
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         <button

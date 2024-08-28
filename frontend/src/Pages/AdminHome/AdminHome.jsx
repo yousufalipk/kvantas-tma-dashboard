@@ -2,22 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useFirebase } from '../../Context/Firebase';
 
 const AdminHome = () => {
-    const { calculateDashboardMetrics, setLoading } = useFirebase();
-    const [metrics, setMetrics] = useState(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await calculateDashboardMetrics();
-                setMetrics(data);
-                console.log("Metrics", metrics);
-            } catch (error) {
-                console.error("Error fetching metrics:", error);
-            }
-        };
-
-        fetchData();
-    }, [calculateDashboardMetrics, setLoading]);
+    const { metrics } = useFirebase();
 
     return (
         <>
@@ -66,7 +51,7 @@ const AdminHome = () => {
                             </div>
                             {/* Tasks C2 */}
                             <div className="flex-1 text-center">
-                                <div className="font-thin text-md tracking-tight m-2">Discord {metrics.tasksByType.discord}</div>
+                                <div className="font-thin text-md tracking-tight m-2">Website {metrics.tasksByType.moreLink}</div>
                                 <div className="font-thin text-md tracking-tight m-2">Twitter {metrics.tasksByType.twitter}</div>
                             </div>
                             {/* Tasks C3 */}
