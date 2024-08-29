@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFirebase } from '../../Context/Firebase';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 const ManageTelegramUsers = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const { telegramUsers, fetchTelegramUsers, setLoading } = useFirebase();
+  const [filter, setFilter] = useState('balance'); 
 
   const fetchData = async () => {
     try {
@@ -16,7 +17,7 @@ const ManageTelegramUsers = () => {
     } catch (error) {
       console.log('Error', error);
     }
-  }
+  };
 
   const handleDownloadData = async () => {
     try {
@@ -44,20 +45,33 @@ const ManageTelegramUsers = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchData();
-  }, [])
+  }, []);
 
   const formatDate = (timestamp) => {
     if (timestamp && timestamp.toDate) {
-      const date = timestamp.toDate(); // Converts Firestore Timestamp to JavaScript Date object
-      const formattedDate = format(date, 'MM/dd/yyyy'); // Formats the date
-      const formattedTime = format(date, 'hh:mm a'); // Formats the time
-      return `${formattedDate}\n${formattedTime}`; // Returns date and time on separate lines
+      const date = timestamp.toDate(); 
+      const formattedDate = format(date, 'MM/dd/yyyy'); 
+      const formattedTime = format(date, 'hh:mm a'); 
+      return `${formattedDate}\n${formattedTime}`;
     }
-    return 'Invalid Date'; // Handle case where timestamp is undefined or invalid
+    return 'Invalid Date'; 
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value); 
+  };
+
+  const sortUsers = (users) => {
+    if (filter === 'balance') {
+      return users.sort((a, b) => b.balance - a.balance);
+    } else if (filter === 'a-z') {
+      return users.sort((a, b) => a.username.localeCompare(b.username)); 
+    }
+    return users;
   };
 
   return (
@@ -70,6 +84,14 @@ const ManageTelegramUsers = () => {
                 Manage Telegram Users
               </h1>
               <div className='w-2/4 max-10 flex flex-row justify-end'>
+                <select
+                  className='mx-2 py-1 px-4 rounded-md bg-gray-200 text-gray-900 border-none'
+                  value={filter}
+                  onChange={handleFilterChange}
+                >
+                  <option value="balance">Balance</option>
+                  <option value="a-z">A-Z</option>
+                </select>
                 <button
                   className='mx-2 py-1 px-4 rounded-md bg-blue-800 text-white hover:bg-transparent hover:border-2 hover:border-blue-800 hover:text-blue-800'
                   onClick={handleDownloadData}
@@ -95,7 +117,7 @@ const ManageTelegramUsers = () => {
                 </tr>
               </thead>
               <tbody>
-                {telegramUsers.map((cls, key) => (
+                {sortUsers(telegramUsers).map((cls, key) => (
                   <tr key={key}>
                     <th scope="row" className='border-b border-gray-200 w-1/6'>
                       <span style={{ fontWeight: "bold", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
@@ -133,7 +155,7 @@ const ManageTelegramUsers = () => {
         <div className='flex justify-center items-center py-64 font-semibold italic text-2xl'>Loading...</div>
       )}
     </>
-  )
+  );
 }
 
 export default ManageTelegramUsers;

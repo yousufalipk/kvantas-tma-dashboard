@@ -12,7 +12,8 @@ const firebaseConfig = {
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
 
@@ -409,22 +410,25 @@ export const FirebaseProvider = (props) => {
         try {
             console.log("Status", status, "Uid", uid);
             setLoading(true);
-
+    
             // Fetch the existing announcement document
             const announcementDocRef = doc(firestore, 'announcements', uid);
-
+    
+            // Check if there's another active announcement
+            const activeAnnouncementQuery = query(collection(firestore, 'announcements'), where('status', '==', true));
+            const activeAnnouncementSnapshot = await getDocs(activeAnnouncementQuery);
+    
+            if (activeAnnouncementSnapshot.size > 0 && !status) {
+                // If there is another active announcement, return a message
+                console.log("Another Annoucement is already active!");
+                return { success: false, message: "Another announcement is already active!" };
+            }
+    
             // Update the announcement document in Firestore
-            if (status) {
-                await updateDoc(announcementDocRef, {
-                    status: false
-                });
-            }
-            else {
-                await updateDoc(announcementDocRef, {
-                    status: true
-                });
-            }
-
+            await updateDoc(announcementDocRef, {
+                status: !status
+            });
+    
             return { success: true };
         } catch (error) {
             console.error("Error updating announcement:", error);
@@ -433,6 +437,7 @@ export const FirebaseProvider = (props) => {
             setLoading(false);
         }
     };
+    
 
     const deleteAnnoucement = async (uid) => {
         try {

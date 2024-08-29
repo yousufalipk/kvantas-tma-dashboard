@@ -1,5 +1,4 @@
 import React from 'react';
-import Logo from '../../Assets/Logo/logo.png';
 import { Link } from 'react-router-dom';
 import { FiLogOut } from "react-icons/fi";
 import { toast } from 'react-toastify';

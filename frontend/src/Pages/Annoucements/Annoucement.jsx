@@ -80,12 +80,16 @@ const Annoucement = () => {
       }
       else {
         try {
-          const response = toggleAnnoucementStatus(uid, status);
-          if (response.data.success) {
-            toast.success("Status Updated Successfuly!")
+          const response = await toggleAnnoucementStatus(uid, status);
+          if (response.success) {
+            setTimeout(() => {
+              toast.success("Status Updated Successfuly!");
+            }, 1000); 
           }
           else {
-            toast.error("Error updating Status!")
+            setTimeout(() => {
+              toast.error(response.message);
+            }, 1000); 
           }
         } catch (error) {
           toast.error("Internal Server Error!")

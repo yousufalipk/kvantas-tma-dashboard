@@ -104,7 +104,7 @@ const SocialTask = () => {
           <tbody>
             {
               tasks
-                .sort((a, b) => a.priority - b.priority) // Sort tasks based on priority in ascending order
+                .sort((a, b) => a.priority - b.priority)
                 .map((cls, key) => (
                   <tr key={key}>
                     <th scope="row" className='border-b border-gray-200'>
