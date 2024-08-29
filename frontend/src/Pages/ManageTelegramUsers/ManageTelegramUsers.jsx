@@ -181,8 +181,8 @@ const ManageTelegramUsers = () => {
                         color: 'white', 
                       },
                       '& .MuiPaginationItem-root:hover': {
-                        backgroundColor: '#fff',
-                        color: '#000',
+                        backgroundColor: '#fff !important',
+                        color: '#000 !important',
                       },
                     }}
                   />
