@@ -12,7 +12,7 @@ const ManageTelegramUsers = () => {
   const { telegramUsers, fetchTelegramUsers, setLoading } = useFirebase();
   const [filter, setFilter] = useState('balance');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 10;
 
   const fetchData = async () => {
     try {

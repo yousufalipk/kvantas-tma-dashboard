@@ -7,7 +7,7 @@ const NavBar = () => {
     <>
         <div>
           <Link to='/'>
-            <p className='mt-8 mx-5 px-7 text-5xl text-white'> Kvantas</p>
+            <p className='mt-8 mx-5 px-7 text-5xl text-white'>Kvants AI</p>
           </Link>
         </div>
     </>
