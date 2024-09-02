@@ -48,6 +48,8 @@ const SideBar = () => {
                 <hr className='border-1 border-[gray] w-4/5 mx-auto' />
                 <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/social-tasks' >Social Tasks</Link>
                 <hr className='border-1 border-[gray] w-4/5 mx-auto' />
+                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/daily-tasks' >Daily Tasks</Link>
+                <hr className='border-1 border-[gray] w-4/5 mx-auto' />
                 <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/annoucements' >Annoucements</Link>
               </>
             ) : (

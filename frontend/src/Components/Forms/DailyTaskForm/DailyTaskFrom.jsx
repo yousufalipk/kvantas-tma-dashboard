@@ -5,8 +5,8 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
-const SocialTaskForm = () => {
-    const { createTask, updateTask } = useFirebase();
+const DailyTaskForm = () => {
+    const { createDailyTask, updateDailyTask } = useFirebase();
     const { tick, uid, priority, type, title, link, reward } = useParams();
     const navigate = useNavigate();
 
@@ -33,9 +33,9 @@ const SocialTaskForm = () => {
             try {
                 if (tick === 'true') {
                     // Create task
-                    const response = await createTask(values);
+                    const response = await createDailyTask(values);
                     if (response.success) {
-                        navigate('/social-tasks');
+                        navigate('/daily-tasks');
                         setTimeout(() => {
                             toast.success("Task Added Successfully!");
                         }, 2000);
@@ -47,7 +47,7 @@ const SocialTaskForm = () => {
                 }
                 else {
                     // Update task
-                    const response = await updateTask({
+                    const response = await updateDailyTask({
                         uid,
                         priority: values.priority,
                         type: values.type,
@@ -56,7 +56,7 @@ const SocialTaskForm = () => {
                         reward: values.reward,
                     });
                     if (response.success) {
-                        navigate('/social-tasks');
+                        navigate('/daily-tasks');
                         setTimeout(() => {
                             toast.success("Task Updated Successfully!");
                         }, 2000);
@@ -76,14 +76,14 @@ const SocialTaskForm = () => {
     });
 
     const handleBack = () => {
-        navigate('/social-tasks');
+        navigate('/daily-tasks');
     };
 
     return (
         <div className='p-4'>
             <div className='flex flex-row justify-between items-center mb-5'>
                 <h1 className='font-bold text-left text-xl'>
-                    {tick === 'true' ? 'Add Social Task' : 'Edit Social Task'}
+                    {tick === 'true' ? 'Add Daily Task' : 'Edit Daily Task'}
                 </h1>
                 <div className='flex'>
                     <button
@@ -182,4 +182,4 @@ const SocialTaskForm = () => {
     );
 };
 
-export default SocialTaskForm;
+export default DailyTaskForm;

@@ -46,6 +46,8 @@ export const FirebaseProvider = (props) => {
 
     const [tasks, setTasks] = useState([]);
 
+    const [dailyTasks, setDailyTasks] = useState([]);
+
     const [metrics, setMetrics] = useState(null);
 
 
@@ -304,6 +306,107 @@ export const FirebaseProvider = (props) => {
         }
     }
 
+
+    const createDailyTask = async (values) => {
+        try {
+            setLoading(true);
+            // Reference to the tasks collection
+            const tasksCollection = collection(firestore, 'dailyTask');
+
+            // Check if the priority is already taken
+            const snapshot = await getDocs(query(tasksCollection, where("priority", "==", values.priority)));
+            if (!snapshot.empty) {
+                console.log("Priority taken");
+                return { success: false, message: "Priority is already taken!" };
+            }
+
+            // Add a new document to the tasks collection
+            await addDoc(tasksCollection, {
+                image: values.type,
+                priority: values.priority,
+                title: values.title,
+                link: values.link,
+                reward: values.reward,
+                createdAt: new Date()
+            });
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: "Internal Server Error!" };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchDailyTask = async () => {
+        try {
+            console.log("Fetching data!")
+            const tasksRef = collection(firestore, 'dailyTask');
+            // Create a query that orders tasks by priority in ascending order
+            const q = query(tasksRef, orderBy("priority", "asc"));
+            const snapshot = await getDocs(q);
+
+            if (snapshot.empty) {
+                console.log("Empty!")
+                return { success: false, message: 'No tasks found!' };
+            }
+
+            const tasksData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setDailyTasks(tasksData); // Store the sorted tasks
+            return { success: true };
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+            return { success: false, message: "Error fetching tasks!" };
+        }
+    };
+
+
+    const updateDailyTask = async ({ uid, type, priority, title, link, reward }) => {
+        try {
+            setLoading(true);
+
+            // Check if the priority is already taken by another task
+            const tasksCollection = collection(firestore, 'dailyTask');
+            const snapshot = await getDocs(query(tasksCollection, where("priority", "==", priority)));
+            if (!snapshot.empty && snapshot.docs[0].id !== uid) {
+                console.log("Priority taken");
+                return { success: false, message: "Priority is already taken!" };
+            }
+
+            // Update the task if the priority is available
+            await updateDoc(doc(firestore, 'dailyTask', uid), {
+                image: type,
+                priority,
+                title,
+                link,
+                reward,
+                createdAt: new Date()
+            });
+
+            return { success: true };
+        } catch (error) {
+            console.log("Error updating task", error);
+            return { success: false };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deleteDailyTask = async (uid) => {
+        try {
+            setLoading(true);
+            await deleteDoc(doc(firestore, 'dailyTask', uid));
+            return { success: true };
+        } catch (error) {
+            return { success: false };
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const createAnnoucement = async (values) => {
         try {
             setLoading(true);
@@ -525,6 +628,9 @@ export const FirebaseProvider = (props) => {
     };
 
 
+    
+
+
     return (
         <FirebaseContext.Provider value={{
             registerUser,
@@ -553,7 +659,13 @@ export const FirebaseProvider = (props) => {
             userType,
             tasks,
             annoucement,
-            metrics
+            metrics,
+            createDailyTask,
+            fetchDailyTask,
+            updateDailyTask,
+            deleteDailyTask,
+            setDailyTasks,
+            dailyTasks
         }}>
             {props.children}
         </FirebaseContext.Provider>
