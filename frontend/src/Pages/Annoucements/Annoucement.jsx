@@ -35,10 +35,10 @@ const Annoucement = () => {
     }
   }
 
-  const handleUpdateAnnoucment = async (uid, title, description, imageName) => {
+  const handleUpdateAnnoucment = async (uid, title, subtitle, description, reward, imageName) => {
     try {
       //navigate to update Annoucement
-      navigate(`/annoucement-form-update/${false}/${uid}/${title}/${description}/${imageName}`);
+      navigate(`/annoucement-form-update/${false}/${uid}/${title}/${subtitle}/${description}/${reward}/${imageName}`);
     } catch (error) {
       console.log(error);
       toast.error("Internal Server Error")
@@ -128,7 +128,9 @@ const Annoucement = () => {
                 <tr>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Sr.No</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Title</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Subtitle</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Description</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Reward</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Toggle Status</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">File Name</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Thumbnail</th>
@@ -149,7 +151,13 @@ const Annoucement = () => {
                         {cls.title}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                        {cls.subtitle}
+                      </td>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         {cls.description}
+                      </td>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                        {cls.reward}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'
                       >
@@ -171,7 +179,7 @@ const Annoucement = () => {
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.description, cls.imageName)}
+                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.description, cls.reward, cls.imageName)}
                         >
                           Edit
                         </button>

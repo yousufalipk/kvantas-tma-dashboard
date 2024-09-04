@@ -426,7 +426,9 @@ export const FirebaseProvider = (props) => {
 
             await addDoc(annoucementCollection, {
                 title: values.title,
+                subtitle: values.subtitle,
                 description: values.description,
+                reward: values.reward,
                 status: false,
                 image: downloadURL || null,
                 imageName: values.image.name || null
@@ -461,7 +463,7 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const updateAnnoucement = async ({ uid, title, description, image }) => {
+    const updateAnnoucement = async ({ uid, title, subtitle, description, reward, image }) => {
         try {
             setLoading(true);
 
@@ -494,7 +496,9 @@ export const FirebaseProvider = (props) => {
             // Update the announcement document in Firestore
             await updateDoc(announcementDocRef, {
                 title: title,
+                subtitle: subtitle,
                 description: description,
+                reward: reward,
                 status: false,
                 image: downloadURL || null,
                 imageName: imageName || null,

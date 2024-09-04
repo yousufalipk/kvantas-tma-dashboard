@@ -7,18 +7,22 @@ import { useFirebase } from '../../../Context/Firebase';
 
 const AnnoucementForm = () => {
     const { createAnnoucement, updateAnnoucement } = useFirebase();
-    const { tick, uid, title, description, imageName } = useParams();
+    const { tick, uid, title, subtitle, description, reward, imageName } = useParams();
     const navigate = useNavigate();
 
     const initialValues = {
         title: title || '',
+        subtitle: subtitle || '',
         description: description || '',
+        reward: reward || '',
         image: imageName || ''
     };
 
     const validationSchema = Yup.object({
         title: Yup.string().required('Title is required'),
+        subtitle: Yup.string().required('Subtitle is required'),
         description: Yup.string().required('Description is required'),
+        reward: Yup.number().required('Reward is required'),
         image: Yup.mixed()
             .required('Image is required')
             .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024)) // 2 MB limit
@@ -49,7 +53,9 @@ const AnnoucementForm = () => {
                     const response = await updateAnnoucement({
                         uid,
                         title: values.title,
+                        subtitle: values.subtitle,
                         description: values.description,
+                        reward: values.reward,
                         image: values.image
                     });
                     if (response.success) {
@@ -118,6 +124,20 @@ const AnnoucementForm = () => {
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
+                    id='subtitle'
+                    name='subtitle'
+                    placeholder='Sub Title'
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.subtitle}
+                />
+                {formik.touched.subtitle && formik.errors.subtitle ? (
+                    <div className='text-red-600 text-center'>{formik.errors.subtitle}</div>
+                ) : null}
+
+                <input
+                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                    type='text'
                     id='description'
                     name='description'
                     placeholder='Description'
@@ -127,6 +147,20 @@ const AnnoucementForm = () => {
                 />
                 {formik.touched.description && formik.errors.description ? (
                     <div className='text-red-600 text-center'>{formik.errors.description}</div>
+                ) : null}
+
+                <input
+                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                    type='number'
+                    id='reward'
+                    name='reward'
+                    placeholder='Reward'
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.reward}
+                />
+                {formik.touched.reward && formik.errors.reward ? (
+                    <div className='text-red-600 text-center'>{formik.errors.reward}</div>
                 ) : null}
 
                 <input
