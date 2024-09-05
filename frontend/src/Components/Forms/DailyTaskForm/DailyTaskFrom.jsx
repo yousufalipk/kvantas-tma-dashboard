@@ -7,14 +7,16 @@ import { useFirebase } from '../../../Context/Firebase';
 
 const DailyTaskForm = () => {
     const { createDailyTask, updateDailyTask } = useFirebase();
-    const { tick, uid, priority, type, title, link, reward } = useParams();
+    const { tick, uid, priority, type, title, reward, link } = useParams();
+
+    const decodedLink = decodeURIComponent(link);
     const navigate = useNavigate();
 
     const initialValues = {
         priority: priority || '',
         type: type || '',
         title: title || '',
-        link: link || '',
+        link: decodedLink || '',
         reward: reward || null
     };
 
@@ -46,6 +48,7 @@ const DailyTaskForm = () => {
                     }
                 }
                 else {
+                    console.log("Updating!");
                     // Update task
                     const response = await updateDailyTask({
                         uid,

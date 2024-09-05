@@ -51,12 +51,12 @@ const AdminLayout = () => {
             {/* Manage Social Tasks */}
             <Route path='/social-tasks' element={<UserProtected ><SocialTaskPage /></UserProtected>}/>
             <Route path='/social-tasks-form/:tick' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
-            <Route path='/social-tasks-form-update/:tick/:uid/:priority/:type/:title/:link/:reward' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
+            <Route path='/social-tasks-form-update/:tick/:uid/:priority/:type/:title/:reward/:link' element={<UserProtected ><SocialTaskFrom /></UserProtected>}/>
             
             {/* Manage Daily Tasks */}
             <Route path='/daily-tasks' element={<UserProtected ><DailyTaskPage /></UserProtected>}/>
             <Route path='/daily-tasks-form/:tick' element={<UserProtected ><DailyTaskFrom /></UserProtected>}/>
-            <Route path='/daily-tasks-form-update/:tick/:uid/:priority/:type/:title/:link/:reward' element={<UserProtected ><DailyTaskFrom /></UserProtected>}/>
+            <Route path='/daily-tasks-form-update/:tick/:uid/:priority/:type/:title/:reward/:link' element={<UserProtected ><DailyTaskFrom /></UserProtected>}/>
 
             {/* Manage User Routes  */}
             <Route path='/manage-telegram-users' element={<UserProtected ><ManageTelegramUsers /></UserProtected>}/>

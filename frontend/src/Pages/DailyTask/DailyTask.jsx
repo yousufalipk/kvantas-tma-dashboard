@@ -37,7 +37,8 @@ const DailyTask = () => {
     const handleUpdateTask = async (uid, type, priority, title, link, reward) => {
         try {
             //navigate to update user
-            navigate(`/daily-tasks-form-update/${false}/${uid}/${priority}/${type}/${title}/${link}/${reward}`);
+            const encodedLink = encodeURIComponent(link);
+            navigate(`/daily-tasks-form-update/${false}/${uid}/${priority}/${type}/${title}/${reward}/${encodedLink}`);
         } catch (error) {
             console.log(error);
             toast.error("Internal Server Error")
