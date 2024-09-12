@@ -29,6 +29,13 @@ const FirebaseContext = createContext(null);
 export const useFirebase = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = (props) => {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
+
     const [userId, setUserId] = useState(null);
 
     const [username, setUsername] = useState(null);
@@ -674,7 +681,9 @@ export const FirebaseProvider = (props) => {
             setDailyTasks,
             dailyTasks,
             authPage,
-            setAuthPage
+            setAuthPage, 
+            toggleSidebar, 
+            isOpen
         }}>
             {props.children}
         </FirebaseContext.Provider>
