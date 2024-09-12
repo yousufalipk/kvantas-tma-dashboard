@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../Context/Firebase';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
@@ -12,15 +15,16 @@ const ManageUser = () => {
   const { users, fetchUsers, setLoading } = useFirebase();
   const navigate = useNavigate();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   const fetchData = async () => {
     try {
       await fetchUsers();
     } catch (error) {
       console.log('Error', error);
-    } finally {
-    }
+    } 
   }
-
 
   useEffect(() => {
     fetchData();
@@ -89,6 +93,16 @@ const ManageUser = () => {
     }
   }
 
+  // Pagination Logic
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentUsers = users.slice(startIndex, endIndex);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       {users ? (
@@ -111,8 +125,6 @@ const ManageUser = () => {
                 >
                   Download User Data
                 </button>
-
-
               </div>
             </div>
             <hr className='my-5 border-1 border-[white] mx-2' />
@@ -131,7 +143,7 @@ const ManageUser = () => {
               </thead>
               <tbody>
                 {
-                  users.map((cls, key) => (
+                  currentUsers.map((cls, key) => (
                     <tr key={key}>
                       <th scope="row" className='border-b border-gray-200'>
                         <span style={{ fontWeight: "bold" }}>
@@ -169,6 +181,36 @@ const ManageUser = () => {
                 }
               </tbody>
             </table>
+            <div className='flex mt-5'>
+              <div className='my-5 w-1/2'> 
+                {/* Buttons */}
+                <Stack spacing={2} className='text-white'>
+                  <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    shape="rounded"
+                    onChange={handlePageChange}
+                    sx={{
+                      '& .MuiPaginationItem-root': {
+                        color: 'white',
+                      },
+                      '& .MuiPaginationItem-root.Mui-selected': {
+                        backgroundColor: '#1E40AF', 
+                        color: 'white', 
+                      },
+                      '& .MuiPaginationItem-root:hover': {
+                        backgroundColor: '#fff !important',
+                        color: '#000 !important',
+                      },
+                    }}
+                  />
+                </Stack>
+              </div>
+            <div className='my-5 w-1/2 text-white text-end'> 
+                {/* Page of Pages  */}
+                  Page {currentPage} of {totalPages}
+            </div>
+            </div>
           </div>
         </>
       ) : (

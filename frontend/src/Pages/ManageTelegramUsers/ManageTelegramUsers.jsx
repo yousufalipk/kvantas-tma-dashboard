@@ -10,9 +10,10 @@ import Stack from '@mui/material/Stack';
 const ManageTelegramUsers = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const { telegramUsers, fetchTelegramUsers, setLoading } = useFirebase();
+
   const [filter, setFilter] = useState('balance');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   const fetchData = async () => {
     try {

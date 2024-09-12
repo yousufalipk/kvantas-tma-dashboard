@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useFirebase } from '../../Context/Firebase';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
@@ -9,6 +11,8 @@ const Annoucement = () => {
   const navigate = useNavigate();
   const { annoucement, fetchAnnoucement, deleteAnnoucement, toggleAnnoucementStatus } = useFirebase();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 2;
 
   const fetchData = async () => {
     try {
@@ -84,12 +88,12 @@ const Annoucement = () => {
           if (response.success) {
             setTimeout(() => {
               toast.success("Status Updated Successfuly!");
-            }, 1000); 
+            }, 1000);
           }
           else {
             setTimeout(() => {
               toast.error(response.message);
-            }, 1000); 
+            }, 1000);
           }
         } catch (error) {
           toast.error("Internal Server Error!")
@@ -101,6 +105,16 @@ const Annoucement = () => {
       toast.error("Internal Server Error")
     }
   }
+
+  // Pagination Logic
+  const totalPages = Math.ceil(annoucement.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentAnnoucement = annoucement.slice(startIndex, endIndex);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -140,7 +154,7 @@ const Annoucement = () => {
               </thead>
               <tbody>
                 {
-                  annoucement.map((cls, key) => (
+                  currentAnnoucement.map((cls, key) => (
                     <tr key={key}>
                       <th scope="row" className='border-b border-gray-200'>
                         <span style={{ fontWeight: "bold" }}>
@@ -198,6 +212,36 @@ const Annoucement = () => {
                 }
               </tbody>
             </table>
+            <div className='flex mt-5'>
+              <div className='my-5 w-1/2'>
+                {/* Buttons */}
+                <Stack spacing={2} className='text-white'>
+                  <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    shape="rounded"
+                    onChange={handlePageChange}
+                    sx={{
+                      '& .MuiPaginationItem-root': {
+                        color: 'white',
+                      },
+                      '& .MuiPaginationItem-root.Mui-selected': {
+                        backgroundColor: '#1E40AF',
+                        color: 'white',
+                      },
+                      '& .MuiPaginationItem-root:hover': {
+                        backgroundColor: '#fff !important',
+                        color: '#000 !important',
+                      },
+                    }}
+                  />
+                </Stack>
+              </div>
+              <div className='my-5 w-1/2 text-white text-end'>
+                {/* Page of Pages  */}
+                Page {currentPage} of {totalPages}
+              </div>
+            </div>
           </div>
         </>
       )}

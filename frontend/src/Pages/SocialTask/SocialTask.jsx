@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../Context/Firebase';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 const SocialTask = () => {
   const navigate = useNavigate();
   const { tasks, fetchTasks, deleteTask } = useFirebase();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const fetchData = async () => {
     try {
@@ -71,6 +76,16 @@ const SocialTask = () => {
     }
   }
 
+  // Pagination Logic
+  const totalPages = Math.ceil(tasks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentTasks = tasks.slice(startIndex, endIndex);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div>
@@ -104,7 +119,7 @@ const SocialTask = () => {
           </thead>
           <tbody>
             {
-              tasks
+              currentTasks
                 .sort((a, b) => a.priority - b.priority)
                 .map((cls, key) => (
                   <tr key={key}>
@@ -149,6 +164,36 @@ const SocialTask = () => {
             }
           </tbody>
         </table>
+        <div className='flex mt-5'>
+          <div className='my-5 w-1/2'>
+            {/* Buttons */}
+            <Stack spacing={2} className='text-white'>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                shape="rounded"
+                onChange={handlePageChange}
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: 'white',
+                  },
+                  '& .MuiPaginationItem-root.Mui-selected': {
+                    backgroundColor: '#1E40AF',
+                    color: 'white',
+                  },
+                  '& .MuiPaginationItem-root:hover': {
+                    backgroundColor: '#fff !important',
+                    color: '#000 !important',
+                  },
+                }}
+              />
+            </Stack>
+          </div>
+          <div className='my-5 w-1/2 text-white text-end'>
+            {/* Page of Pages  */}
+            Page {currentPage} of {totalPages}
+          </div>
+        </div>
       </div>
     </>
   )
