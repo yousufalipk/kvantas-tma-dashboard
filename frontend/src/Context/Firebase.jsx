@@ -60,6 +60,8 @@ export const FirebaseProvider = (props) => {
 
     const [authPage, setAuthPage] = useState("login");
 
+    const [isModalOpen, setModalOpen] = useState(false);
+
 
     // Function to refresh auth state on page load/refresh
     useEffect(() => {
@@ -683,7 +685,9 @@ export const FirebaseProvider = (props) => {
             authPage,
             setAuthPage, 
             toggleSidebar, 
-            isOpen
+            isOpen, 
+            setModalOpen,
+            isModalOpen
         }}>
             {props.children}
         </FirebaseContext.Provider>

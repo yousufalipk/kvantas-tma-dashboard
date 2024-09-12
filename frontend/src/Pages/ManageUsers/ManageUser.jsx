@@ -7,13 +7,17 @@ import { saveAs } from 'file-saver';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
+import ViewMore from '../../Components/ViewMoreModal/ViewMore';
+
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 const ManageUser = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const { users, fetchUsers, setLoading } = useFirebase();
+  const { users, fetchUsers, setLoading, isModalOpen, setModalOpen } = useFirebase();
   const navigate = useNavigate();
+
+  const [viewText, setViewText] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -103,12 +107,21 @@ const ManageUser = () => {
     setCurrentPage(page);
   };
 
+  const handleModalOpen = (text) => {
+    setViewText(text);
+    setModalOpen(true);
+    console.log("Openning model", isModalOpen);
+  }
+
   return (
     <>
       {users ? (
-        <>
+        <>  
+          {isModalOpen && (
+              <ViewMore text={viewText} />
+          )}
           <div>
-            <div className='flex flex-row justify-between'>
+            <div className='flex flex-row justify-between overflow-hidden'>
               <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
                 Manage Users
               </h1>
@@ -150,13 +163,25 @@ const ManageUser = () => {
                           {key + 1}
                         </span>
                       </th>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td 
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                        onClick={()=>handleModalOpen(cls.fname)}
+                      >
                         {cls.fname}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td 
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                        onClick={()=>handleModalOpen(cls.lname)}
+                      >
                         {cls.lname}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td 
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                        onClick={()=>handleModalOpen(cls.email)}
+                      >
                         {cls.email}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
