@@ -130,7 +130,7 @@ const ManageUser = () => {
             <hr className='my-5 border-1 border-[white] mx-2' />
           </div>
           <div className='mx-2 my-10'>
-            <table className="min-w-full bg-transparent border-collapse border border-gray-200">
+            <table className="bg-transparent border-collapse border border-gray-200 w-full table-fixed">
               <thead className="thead-dark">
                 <tr>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Sr.No</th>
@@ -150,16 +150,16 @@ const ManageUser = () => {
                           {key + 1}
                         </span>
                       </th>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.fname}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.lname}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.email}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
                           onClick={() => handleUpdateUser(cls.id, cls.fname, cls.lname, cls.email)}
@@ -167,7 +167,7 @@ const ManageUser = () => {
                           Update
                         </button>
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center '>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center ' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         <button
                           className="p-2"
                           onClick={() => handleDeleteUser(cls.id, cls.email)}

@@ -12,7 +12,7 @@ const Annoucement = () => {
   const { annoucement, fetchAnnoucement, deleteAnnoucement, toggleAnnoucementStatus } = useFirebase();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
 
   const fetchData = async () => {
     try {
@@ -137,7 +137,7 @@ const Annoucement = () => {
             <hr className='my-5 border-1 border-[white] mx-2' />
           </div>
           <div className='mx-2 my-10'>
-            <table className="min-w-full bg-transparent border-collapse border border-gray-200">
+            <table className="bg-transparent border-collapse border border-gray-200 w-full table-fixed">
               <thead className="thead-dark">
                 <tr>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Sr.No</th>
@@ -161,39 +161,42 @@ const Annoucement = () => {
                           {key + 1}
                         </span>
                       </th>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.title}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.subtitle}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.description}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.reward}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                       >
                         <button
                           className="p-2 hover:bg-bluebtn rounded-lg"
                           onClick={() => handleStatusToggle(cls.id, cls.title, cls.status)}
+                          style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           {cls.status ? (<p className='text-green-500 hover:text-black'>Active</p>) : (<p className='text-red-500 hover:text-black'>In Active</p>)}
                         </button>
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.imageName}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         <a href={cls.image} target="_blank" rel="noopener noreferrer">
                           <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto' />
                         </a>
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
                           onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.description, cls.reward, cls.imageName)}
+                          style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           Edit
                         </button>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
+import { Link } from 'react-router-dom';
 
 import SideBar from '../../Components/SideBar/SideBar';
-import NavBar from '../../Components/NavBar/NavBar';
 import MobileNav from '../../Components/MobileNav/MobileNav';
 
 import HomePage from '../../Pages/HomePage/HomePage';
@@ -38,9 +38,10 @@ const AdminLayout = () => {
 
   return (
     <>
-      <div className='w-screen h-screen md:flex md:flex-row bg-custom-image bg-cover bg-center items-center'>
+      <div className='w-screen h-screen md:flex md:flex-row bg-custom-image bg-cover bg-center items-center overflow-hidden'>
         {/* Open Side bar */}
-        <div className='md:hidden w-screen p-2 flex justify-end'>
+        <div className='md:hidden w-screen p-2 flex justify-between mb-3'>
+          <h1 className='italic text-2xl mx-5'><Link to='/'>Kvantas</Link></h1>
           <IoMenu className='text-4xl md:hidden mr-2' onClick={toggleSidebar} />
         </div>
 

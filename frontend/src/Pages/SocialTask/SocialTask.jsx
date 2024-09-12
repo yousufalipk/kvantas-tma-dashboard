@@ -105,7 +105,7 @@ const SocialTask = () => {
         <hr className='my-5 border-1 border-[white] mx-2' />
       </div>
       <div className='mx-2 my-10'>
-        <table className="min-w-full bg-transparent border-collapse border border-gray-200">
+        <table className="bg-transparent border-collapse border border-gray-200 w-full table-fixed">
           <thead className="thead-dark">
             <tr>
               <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Priority</th>
@@ -128,30 +128,32 @@ const SocialTask = () => {
                         {cls.priority}
                       </span>
                     </th>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.image}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.title}
                     </td>
                     <td
                       className='px-6 py-4 border-b border-gray-200 text-sm text-center cursor-pointer hover:text-bluebtn'
                       onClick={() => window.open(`https://${cls.link}`, '_blank')}
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                     >
                       {cls.link}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.reward}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       <button
                         className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
                         onClick={() => handleUpdateTask(cls.id, cls.image, cls.priority, cls.title, cls.link, cls.reward)}
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                       >
                         Edit
                       </button>
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
+                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       <button
                         className="p-2"
                         onClick={() => handleDeleteTask(cls.id, cls.title)}
