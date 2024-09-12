@@ -51,6 +51,8 @@ export const FirebaseProvider = (props) => {
 
     const [metrics, setMetrics] = useState(null);
 
+    const [authPage, setAuthPage] = useState("login");
+
 
     // Function to refresh auth state on page load/refresh
     useEffect(() => {
@@ -670,7 +672,9 @@ export const FirebaseProvider = (props) => {
             updateDailyTask,
             deleteDailyTask,
             setDailyTasks,
-            dailyTasks
+            dailyTasks,
+            authPage,
+            setAuthPage
         }}>
             {props.children}
         </FirebaseContext.Provider>

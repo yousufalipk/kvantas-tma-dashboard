@@ -89,7 +89,6 @@ app.post('/registerUser', async (req, res) => {
 
 app.get('/downloadUsersData', async (req, res) => {
   try {
-
     // Fetch all users from Firebase Authentication
     const listUsersResult = await admin.auth().listUsers();
 

@@ -80,8 +80,8 @@ const SignUpForm = (props) => {
     <div>
       {!props.toggle ? (
         <>
-          <h3 className='text-2xl font-bold mx-2 text-white'>Welcome!</h3>
-          <h2 className='text-2xl mx-2 text-white'>Create Your New Account</h2>
+          <h3 className='md:text-2xl text-lg font-bold mx-2 text-white'>Welcome!</h3>
+          <h2 className='md:text-2xl text-lg mx-2 text-white'>Create Your New Account</h2>
         </>
       ) : (
         <>
