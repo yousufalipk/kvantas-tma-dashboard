@@ -22,7 +22,7 @@ const AuthLayout = () => {
     <>  
     <div className={`w-screen h-screen md:flex md:flex-row flex flex-col-reverse bg-custom-image bg-cover bg-center items-center overflow-hidden ${authPage === 'signup' && `overflow-scroll`}`}>
       {/* Left Auth */}
-      <div className={`md:w-1/2 md:p-20 md:h-screen w-screen h-[60%] ${authPage === 'signup' && `h-[200%]`}`}>
+      <div className={`md:w-1/2 md:p-20 md:h-screen w-screen h-[60%] ${authPage === 'signup' && `h-screen`}`}>
         {/* Nav Bar */} 
         <div className='hidden md:flex'>
           <NavBar />
