@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -6,18 +6,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
 const DailyTaskForm = () => {
-    const { createDailyTask, updateDailyTask } = useFirebase();
-    const { tick, uid, priority, type, title, reward, link } = useParams();
+    const { createDailyTask, updateDailyTask, sendData } = useFirebase();
 
-    const decodedLink = decodeURIComponent(link);
     const navigate = useNavigate();
 
+
+    useEffect(()=> {
+        console.log("dataaa", sendData);
+    },[])
     const initialValues = {
-        priority: priority || '',
-        type: type || '',
-        title: title || '',
-        link: decodedLink || '',
-        reward: reward || null
+        priority: sendData.priority || '',
+        type: sendData.type || '',
+        title: sendData.title || '',
+        link: sendData.link || '',
+        reward: sendData.reward || null
     };
 
     const validationSchema = Yup.object({
@@ -33,7 +35,7 @@ const DailyTaskForm = () => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                if (tick === 'true') {
+                if (sendData.tick === 'true') {
                     // Create task
                     const response = await createDailyTask(values);
                     if (response.success) {
@@ -51,7 +53,7 @@ const DailyTaskForm = () => {
                     console.log("Updating!");
                     // Update task
                     const response = await updateDailyTask({
-                        uid,
+                        uid : sendData.uid,
                         priority: values.priority,
                         type: values.type,
                         title: values.title,
@@ -86,7 +88,7 @@ const DailyTaskForm = () => {
         <div className='p-4'>
             <div className='flex flex-row justify-between items-center mb-5'>
                 <h1 className='font-bold text-left text-xl'>
-                    {tick === 'true' ? 'Add Daily Task' : 'Edit Daily Task'}
+                    {sendData.tick === true ? 'Add Daily Task' : 'Edit Daily Task'}
                 </h1>
                 <div className='flex'>
                     <button
@@ -100,7 +102,7 @@ const DailyTaskForm = () => {
                         type='submit'
                         onClick={formik.handleSubmit}
                     >
-                        {tick === 'true' ? 'Create Task' : 'Confirm Changes'}
+                        {sendData.tick === 'true' ? 'Create Task' : 'Confirm Changes'}
                     </button>
                 </div>
             </div>

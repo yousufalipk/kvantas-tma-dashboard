@@ -29,6 +29,9 @@ import ManageTelegramUsers from '../../Pages/ManageTelegramUsers/ManageTelegramU
 import Annoucement from '../../Pages/Annoucements/Annoucement';
 import AnnoucementForm from '../../Components/Forms/AnnoucementForm/AnnoucementForm';
 
+//History
+import History from '../../Pages/History/History';
+
 import UserProtected from '../../Components/Protected/UserProtected';
 
 import { useFirebase } from '../../Context/Firebase';
@@ -66,21 +69,24 @@ const AdminLayout = () => {
 
               {/* Manage Social Tasks */}
               <Route path='/social-tasks' element={<UserProtected ><SocialTaskPage /></UserProtected>} />
-              <Route path='/social-tasks-form/:tick' element={<UserProtected ><SocialTaskFrom /></UserProtected>} />
-              <Route path='/social-tasks-form-update/:tick/:uid/:priority/:type/:title/:reward/:link' element={<UserProtected ><SocialTaskFrom /></UserProtected>} />
+              <Route path='/social-tasks-form' element={<UserProtected ><SocialTaskFrom /></UserProtected>} />
+              <Route path='/social-tasks-form-update' element={<UserProtected ><SocialTaskFrom /></UserProtected>} />
 
               {/* Manage Daily Tasks */}
               <Route path='/daily-tasks' element={<UserProtected ><DailyTaskPage /></UserProtected>} />
-              <Route path='/daily-tasks-form/:tick' element={<UserProtected ><DailyTaskFrom /></UserProtected>} />
-              <Route path='/daily-tasks-form-update/:tick/:uid/:priority/:type/:title/:reward/:link' element={<UserProtected ><DailyTaskFrom /></UserProtected>} />
+              <Route path='/daily-tasks-form' element={<UserProtected ><DailyTaskFrom /></UserProtected>} />
+              <Route path='/daily-tasks-form-update' element={<UserProtected ><DailyTaskFrom /></UserProtected>} />
 
               {/* Manage User Routes  */}
               <Route path='/manage-telegram-users' element={<UserProtected ><ManageTelegramUsers /></UserProtected>} />
 
               {/* Annoucements */}
               <Route path='/annoucements' element={<UserProtected ><Annoucement /></UserProtected>} />
-              <Route path='/annoucement-form/:tick' element={<UserProtected ><AnnoucementForm /></UserProtected>} />
-              <Route path='/annoucement-form-update/:tick/:uid/:title/:subtitle/:description/:reward/:imageName' element={<UserProtected ><AnnoucementForm /></UserProtected>} />
+              <Route path='/annoucement-form' element={<UserProtected ><AnnoucementForm /></UserProtected>} />
+              <Route path='/annoucement-form-update' element={<UserProtected ><AnnoucementForm /></UserProtected>} />
+
+              {/* History */}
+              <Route path='/history' element={<UserProtected ><History /></UserProtected>} />
               
             </Routes>
           </div>

@@ -5,11 +5,15 @@ import { useFirebase } from '../../Context/Firebase';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
+import ViewMore from '../../Components/ViewMoreModal/ViewMore';
+
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 const SocialTask = () => {
   const navigate = useNavigate();
-  const { tasks, fetchTasks, deleteTask } = useFirebase();
+  const { tasks, fetchTasks, deleteTask, setSendData, isModalOpen, setModalOpen } = useFirebase();
+
+  const [viewText, setViewText] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -31,8 +35,12 @@ const SocialTask = () => {
 
   const handleCreateTask = async () => {
     try {
+      const taskData = {
+        tick: true
+      }
+      setSendData(taskData);
       //Navigate to Create form
-      navigate(`/social-tasks-form/${true}`)
+      navigate(`/social-tasks-form`)
     } catch (error) {
       console.log(error);
       toast.error("Internal Server Error")
@@ -41,9 +49,17 @@ const SocialTask = () => {
 
   const handleUpdateTask = async (uid, type, priority, title, link, reward) => {
     try {
+      const taskData = {
+        uid: uid,
+        type: type,
+        priority: priority,
+        title: title,
+        link: link,
+        reward: reward
+      }
       //navigate to update user
-      const encodedLink = encodeURIComponent(link);
-      navigate(`/social-tasks-form-update/${false}/${uid}/${priority}/${type}/${title}/${reward}/${encodedLink}`);
+      setSendData(taskData);
+      navigate(`/social-tasks-form-update`);
     } catch (error) {
       console.log(error);
       toast.error("Internal Server Error")
@@ -86,8 +102,17 @@ const SocialTask = () => {
     setCurrentPage(page);
   };
 
+  const handleModalOpen = (text) => {
+    setViewText(text);
+    setModalOpen(true);
+    console.log("Openning model", isModalOpen);
+  }
+
   return (
     <>
+      {isModalOpen && (
+        <ViewMore text={viewText} />
+      )}
       <div>
         <div className='flex flex-row justify-between'>
           <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
@@ -131,12 +156,16 @@ const SocialTask = () => {
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.image}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center cursor-pointer hover:text-bluebtn' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.title)} 
+                    >
                       {cls.title}
                     </td>
                     <td
                       className='px-6 py-4 border-b border-gray-200 text-sm text-center cursor-pointer hover:text-bluebtn'
-                      onClick={() => window.open(`https://${cls.link}`, '_blank')}
+                      onClick={()=>handleModalOpen(cls.link)} 
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                     >
                       {cls.link}

@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc, orderBy } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc, orderBy, writeBatch  } from 'firebase/firestore';
 import { getStorage, deleteObject } from 'firebase/storage';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import axios from 'axios';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -29,6 +30,8 @@ const FirebaseContext = createContext(null);
 export const useFirebase = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = (props) => {
+
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -61,6 +64,8 @@ export const FirebaseProvider = (props) => {
     const [authPage, setAuthPage] = useState("login");
 
     const [isModalOpen, setModalOpen] = useState(false);
+
+    const [sendData, setSendData] = useState(false);
 
 
     // Function to refresh auth state on page load/refresh
@@ -527,27 +532,42 @@ export const FirebaseProvider = (props) => {
 
     const toggleAnnoucementStatus = async (uid, status) => {
         try {
-            console.log("Status", status, "Uid", uid);
             setLoading(true);
-    
+
             // Fetch the existing announcement document
             const announcementDocRef = doc(firestore, 'announcements', uid);
-    
+
             // Check if there's another active announcement
-            const activeAnnouncementQuery = query(collection(firestore, 'announcements'), where('status', '==', true));
+            const activeAnnouncementQuery = query(
+                collection(firestore, 'announcements'),
+                where('status', '==', true)
+            );
             const activeAnnouncementSnapshot = await getDocs(activeAnnouncementQuery);
-    
-            if (activeAnnouncementSnapshot.size > 0 && !status) {
-                // If there is another active announcement, return a message
-                console.log("Another Annoucement is already active!");
-                return { success: false, message: "Another announcement is already active!" };
+
+            // If there's an active announcement other than the current one
+            if (activeAnnouncementSnapshot.size > 0) {
+                // Get all active announcements
+                const batch = writeBatch(firestore);
+
+                activeAnnouncementSnapshot.forEach(docSnapshot => {
+                    const activeAnnouncementRef = docSnapshot.ref;
+                    // Only update announcements that are not the current one
+                    if (activeAnnouncementRef.id !== uid) {
+                        batch.update(activeAnnouncementRef, { status: false });
+                    }
+                });
+
+                // Commit the batch
+                await batch.commit();
             }
-    
-            // Update the announcement document in Firestore
-            await updateDoc(announcementDocRef, {
-                status: !status
-            });
-    
+
+            const response = await axios.get(`${apiUrl}/update-users-status`);
+            if(response.data.success === 'failed'){
+                return { success: false, error: response.data.message };
+            }
+            // Update the status of the current announcement
+            await updateDoc(announcementDocRef, { status: true });
+
             return { success: true };
         } catch (error) {
             console.error("Error updating announcement:", error);
@@ -556,7 +576,8 @@ export const FirebaseProvider = (props) => {
             setLoading(false);
         }
     };
-    
+
+
 
     const deleteAnnoucement = async (uid) => {
         try {
@@ -644,7 +665,7 @@ export const FirebaseProvider = (props) => {
     };
 
 
-    
+
 
 
     return (
@@ -683,11 +704,13 @@ export const FirebaseProvider = (props) => {
             setDailyTasks,
             dailyTasks,
             authPage,
-            setAuthPage, 
-            toggleSidebar, 
-            isOpen, 
+            setAuthPage,
+            toggleSidebar,
+            isOpen,
             setModalOpen,
-            isModalOpen
+            isModalOpen,
+            setSendData,
+            sendData
         }}>
             {props.children}
         </FirebaseContext.Provider>

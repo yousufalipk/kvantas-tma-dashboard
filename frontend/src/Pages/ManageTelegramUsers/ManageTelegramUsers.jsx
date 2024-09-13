@@ -7,9 +7,13 @@ import { format } from 'date-fns';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
+import ViewMore from '../../Components/ViewMoreModal/ViewMore';
+
 const ManageTelegramUsers = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const { telegramUsers, fetchTelegramUsers, setLoading } = useFirebase();
+  const { telegramUsers, fetchTelegramUsers, setLoading, isModalOpen, setModalOpen } = useFirebase();
+
+  const [viewText, setViewText] = useState();
 
   const [filter, setFilter] = useState('balance');
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,10 +93,19 @@ const ManageTelegramUsers = () => {
     setCurrentPage(page);
   };
 
+  const handleModalOpen = (text) => {
+    setViewText(text);
+    setModalOpen(true);
+    console.log("Openning model", isModalOpen);
+  }
+
   return (
     <>
       {telegramUsers ? (
         <>
+          {isModalOpen && (
+            <ViewMore text={viewText} />
+          )}
           <div>
             <div className='flex flex-row justify-between'>
               <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
@@ -142,19 +155,39 @@ const ManageTelegramUsers = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "pre-line" }}>
                       {formatDate(cls.createdAt) || "undefined"}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.username)}  
+                    >
                       {cls.username || "undefined"}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.firstName)} 
+                    >
                       {cls.firstName || "undefined"}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.lastName)} 
+                    >
                       {cls.lastName || "undefined"}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.tonWalletAddress)}   
+                    >
                       {cls.tonWalletAddress || "undefined"}
                     </td>
-                    <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.twitterUserName)}   
+                    >
                       {cls.twitterUserName || "undefined"}
                     </td>
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>

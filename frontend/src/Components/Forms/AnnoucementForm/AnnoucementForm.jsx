@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -6,16 +6,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
 const AnnoucementForm = () => {
-    const { createAnnoucement, updateAnnoucement } = useFirebase();
-    const { tick, uid, title, subtitle, description, reward, imageName } = useParams();
+    const { createAnnoucement, updateAnnoucement, sendData } = useFirebase();
+    
     const navigate = useNavigate();
 
     const initialValues = {
-        title: title || '',
-        subtitle: subtitle || '',
-        description: description || '',
-        reward: reward || '',
-        image: imageName || ''
+        title: sendData.title || '',
+        subtitle: sendData.subtitle || '',
+        description: sendData.description || '',
+        reward: sendData.reward || '',
+        image: sendData.imageName || ''
     };
 
     const validationSchema = Yup.object({
@@ -33,9 +33,9 @@ const AnnoucementForm = () => {
         initialValues,
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
-            console.log("Tick", tick);
+            console.log("Tick", sendData.tick);
             try {
-                if (tick === 'true') {
+                if (sendData.tick === 'true') {
                     console.log("creating...");
                     // Create Announcement
                     const response = await createAnnoucement(values);
@@ -51,7 +51,7 @@ const AnnoucementForm = () => {
                     console.log("updating...");
                     // Update Announcement
                     const response = await updateAnnoucement({
-                        uid,
+                        uid: sendData.uid,
                         title: values.title,
                         subtitle: values.subtitle,
                         description: values.description,
@@ -87,7 +87,7 @@ const AnnoucementForm = () => {
         <div className='p-4'>
             <div className='flex flex-row justify-between items-center mb-5'>
                 <h1 className='font-bold text-left text-xl'>
-                    {tick === 'true' ? 'Add Announcement' : 'Edit Announcement'}
+                    {sendData.tick === true ? 'Add Announcement' : 'Edit Announcement'}
                 </h1>
                 <div className='flex'>
                     <button
@@ -101,7 +101,7 @@ const AnnoucementForm = () => {
                         type='submit'
                         onClick={formik.handleSubmit}
                     >
-                        {tick === 'true' ? 'Create Announcement' : 'Confirm Changes'}
+                        {sendData.tick === 'true' ? 'Create Announcement' : 'Confirm Changes'}
                     </button>
                 </div>
             </div>

@@ -6,18 +6,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
 const SocialTaskForm = () => {
-    const { createTask, updateTask } = useFirebase();
-    const { tick, uid, priority, type, title, reward, link } = useParams();
+    const { createTask, updateTask, sendData } = useFirebase();
 
-    const decodedLink = decodeURIComponent(link);
     const navigate = useNavigate();
 
     const initialValues = {
-        priority: priority || '',
-        type: type || '',
-        title: title || '',
-        link: decodedLink || '',
-        reward: reward || null
+        priority: sendData.priority || '',
+        type: sendData.type || '',
+        title: sendData.title || '',
+        link: sendData.link || '',
+        reward: sendData.reward || null
     };
 
     const validationSchema = Yup.object({
@@ -33,7 +31,7 @@ const SocialTaskForm = () => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                if (tick === 'true') {
+                if (sendData.tick === 'true') {
                     // Create task
                     const response = await createTask(values);
                     if (response.success) {
@@ -50,7 +48,7 @@ const SocialTaskForm = () => {
                 else {
                     // Update task
                     const response = await updateTask({
-                        uid,
+                        uid: sendData.uid,
                         priority: values.priority,
                         type: values.type,
                         title: values.title,
@@ -85,7 +83,7 @@ const SocialTaskForm = () => {
         <div className='p-4'>
             <div className='flex flex-row justify-between items-center mb-5'>
                 <h1 className='font-bold text-left text-xl'>
-                    {tick === 'true' ? 'Add Social Task' : 'Edit Social Task'}
+                    {sendData.tick === true ? 'Add Social Task' : 'Edit Social Task'}
                 </h1>
                 <div className='flex'>
                     <button
@@ -99,7 +97,7 @@ const SocialTaskForm = () => {
                         type='submit'
                         onClick={formik.handleSubmit}
                     >
-                        {tick === 'true' ? 'Create Task' : 'Confirm Changes'}
+                        {sendData.tick === 'true' ? 'Create Task' : 'Confirm Changes'}
                     </button>
                 </div>
             </div>

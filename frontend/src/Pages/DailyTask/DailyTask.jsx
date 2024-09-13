@@ -5,12 +5,15 @@ import { useFirebase } from '../../Context/Firebase';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
+import ViewMore from '../../Components/ViewMoreModal/ViewMore';
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 const DailyTask = () => {
     const navigate = useNavigate();
-    const { dailyTasks, fetchDailyTask, deleteDailyTask } = useFirebase();
+    const { dailyTasks, fetchDailyTask, deleteDailyTask, setSendData, isModalOpen, setModalOpen } = useFirebase();
+
+    const [viewText, setViewText] = useState();
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -32,8 +35,13 @@ const DailyTask = () => {
 
     const handleCreateTask = async () => {
         try {
+            const dailyTaskData = {
+                tick: true
+            }
+            setSendData(dailyTaskData);
             //Navigate to Create form
-            navigate(`/daily-tasks-form/${true}`)
+            navigate(`/daily-tasks-form`)
+
         } catch (error) {
             console.log(error);
             toast.error("Internal Server Error")
@@ -42,9 +50,18 @@ const DailyTask = () => {
 
     const handleUpdateTask = async (uid, type, priority, title, link, reward) => {
         try {
+            const dailyTaskData = {
+                tick: false,
+                uid: uid,
+                type: type,
+                priority: priority,
+                title: title,
+                link: link,
+                reward: reward
+            }
+            setSendData(dailyTaskData);
             //navigate to update user
-            const encodedLink = encodeURIComponent(link);
-            navigate(`/daily-tasks-form-update/${false}/${uid}/${priority}/${type}/${title}/${reward}/${encodedLink}`);
+            navigate(`/daily-tasks-form-update`);
         } catch (error) {
             console.log(error);
             toast.error("Internal Server Error")
@@ -91,8 +108,17 @@ const DailyTask = () => {
         setCurrentPage(page);
     };
 
+    const handleModalOpen = (text) => {
+        setViewText(text);
+        setModalOpen(true);
+        console.log("Openning model", isModalOpen);
+    }
+
     return (
         <>
+            {isModalOpen && (
+                <ViewMore text={viewText} />
+            )}
             <div>
                 <div className='flex flex-row justify-between'>
                     <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
@@ -136,12 +162,16 @@ const DailyTask = () => {
                                         <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                                             {cls.image}
                                         </td>
-                                        <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                                        <td 
+                                            className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:cursor-pointer hover:text-bluebtn' 
+                                            onClick={()=>handleModalOpen(cls.title)} 
+                                            style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                                        >
                                             {cls.title}
                                         </td>
                                         <td
                                             className='px-6 py-4 border-b border-gray-200 text-sm text-center cursor-pointer hover:text-bluebtn'
-                                            onClick={() => window.open(`https://${cls.link}`, '_blank')}
+                                            onClick={()=>handleModalOpen(cls.link)} 
                                             style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                                         >
                                             {cls.link}

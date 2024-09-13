@@ -183,6 +183,55 @@ app.get('/downloadTelegramUsersData', async (req, res) => {
 });
 
 
+app.get('/update-users-status', async (req, res) => {
+  try {
+    // Get a reference to the Firestore database
+    const db = admin.firestore();
+    
+    // Fetch all documents from the 'telegramUsers' collection
+    const usersSnapshot = await db.collection('telegramUsers').get();
+
+    if (usersSnapshot.empty) {
+      return res.status(200).json({ 
+        status: 'failed',
+        message: 'No telegram users found' 
+      });
+    }
+
+    // Initialize a batch for updating multiple documents
+    const batch = db.batch();
+
+    // Loop through each document in 'telegramUsers'
+    usersSnapshot.forEach((doc) => {
+      const docRef = db.collection('telegramUsers').doc(doc.id);
+      const announcementReward = doc.data().announcementReward;
+
+      // If 'announcementReward' exists, update the fields
+      if (announcementReward) {
+        batch.update(docRef, {
+          'announcementReward.link': '',
+          'announcementReward.status': 'notVerified',
+        });
+      }
+    });
+
+    // Commit the batch update
+    await batch.commit();
+
+    // Send success response
+    return res.status(200).json({ 
+      status: 'success',
+      message: 'Telegram users updated successfully' 
+    });
+  } catch (error) {
+    console.error('Error updating telegram users:', error);
+    return res.status(500).json({ 
+      status: 'failed',
+      message: 'Internal server error'
+    });
+  }
+});
+
 
 
 app.get('/', (req, res) => {

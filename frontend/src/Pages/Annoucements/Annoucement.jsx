@@ -9,7 +9,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 
 const Annoucement = () => {
   const navigate = useNavigate();
-  const { annoucement, fetchAnnoucement, deleteAnnoucement, toggleAnnoucementStatus } = useFirebase();
+  const { annoucement, fetchAnnoucement, deleteAnnoucement, toggleAnnoucementStatus, setSendData } = useFirebase();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -17,7 +17,6 @@ const Annoucement = () => {
   const fetchData = async () => {
     try {
       await fetchAnnoucement();
-      console.log("Annoucement", annoucement);
     } catch (error) {
       console.log('Error', error);
     }
@@ -26,12 +25,16 @@ const Annoucement = () => {
 
   useEffect(() => {
     fetchData();
-  }, [])
+  },[])
 
   const handleCreateAnnoucment = async () => {
     try {
+      const annoucementData = {
+        tick: true
+    }
+    setSendData(annoucementData);
       //Navigate to Create Annoucement
-      navigate(`/annoucement-form/${true}`)
+      navigate(`/annoucement-form`)
 
     } catch (error) {
       console.log(error);
@@ -40,9 +43,18 @@ const Annoucement = () => {
   }
 
   const handleUpdateAnnoucment = async (uid, title, subtitle, description, reward, imageName) => {
+    const annoucementData = {
+      tick: false,
+      uid: uid,
+      title: title,
+      subtitle: subtitle,
+      description: description,
+      reward: reward,
+      imageName: imageName
+    }
     try {
-      //navigate to update Annoucement
-      navigate(`/annoucement-form-update/${false}/${uid}/${title}/${subtitle}/${description}/${reward}/${imageName}`);
+      navigate(`/annoucement-form-update`);
+      setSendData(annoucementData);
     } catch (error) {
       console.log(error);
       toast.error("Internal Server Error")
@@ -78,8 +90,8 @@ const Annoucement = () => {
 
   const handleStatusToggle = async (uid, title, status) => {
     try {
-      const shouldDelete = window.confirm(`Are you sure you want toggle status of ${title}?`);
-      if (!shouldDelete) {
+      const shouldToggle = window.confirm(`Are you sure you want toggle status of ${title}. This will in-Activate all other annoucements & status of all user will be rest!`);
+      if (!shouldToggle) {
         return
       }
       else {
