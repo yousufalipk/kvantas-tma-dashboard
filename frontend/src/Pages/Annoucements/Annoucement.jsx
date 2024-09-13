@@ -7,9 +7,13 @@ import Stack from '@mui/material/Stack';
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 
+import ViewMore from '../../Components/ViewMoreModal/ViewMore';
+
 const Annoucement = () => {
   const navigate = useNavigate();
-  const { annoucement, fetchAnnoucement, deleteAnnoucement, toggleAnnoucementStatus, setSendData } = useFirebase();
+  const { annoucement, fetchAnnoucement, deleteAnnoucement, toggleAnnoucementStatus, setSendData, isModalOpen, setModalOpen } = useFirebase();
+
+  const [viewText, setViewText] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -25,14 +29,14 @@ const Annoucement = () => {
 
   useEffect(() => {
     fetchData();
-  },[])
+  }, [])
 
   const handleCreateAnnoucment = async () => {
     try {
       const annoucementData = {
         tick: true
-    }
-    setSendData(annoucementData);
+      }
+      setSendData(annoucementData);
       //Navigate to Create Annoucement
       navigate(`/annoucement-form`)
 
@@ -128,8 +132,17 @@ const Annoucement = () => {
     setCurrentPage(page);
   };
 
+  const handleModalOpen = (text) => {
+    setViewText(text);
+    setModalOpen(true);
+    console.log("Openning model", isModalOpen);
+  }
+
   return (
     <>
+      {isModalOpen && (
+        <ViewMore text={viewText} />
+      )}
       {annoucement && (
         <>
           <div>
@@ -173,13 +186,23 @@ const Annoucement = () => {
                           {key + 1}
                         </span>
                       </th>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td 
+                        onClick={()=>handleModalOpen(cls.title)} 
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      >
                         {cls.title}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td 
+                        onClick={()=>handleModalOpen(cls.subtitle)} 
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.subtitle}
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td 
+                        onClick={()=>handleModalOpen(cls.description)} 
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.description}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
@@ -196,14 +219,34 @@ const Annoucement = () => {
                           {cls.status ? (<p className='text-green-500 hover:text-black'>Active</p>) : (<p className='text-red-500 hover:text-black'>In Active</p>)}
                         </button>
                       </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                        {cls.imageName}
-                      </td>
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                        <a href={cls.image} target="_blank" rel="noopener noreferrer">
-                          <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto' />
-                        </a>
-                      </td>
+                      {cls.imageName ? (
+                        <td 
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                          onClick={()=>handleModalOpen(cls.imageName)}  
+                          style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                        >
+                          {cls.imageName}
+                        </td>
+                      ) : (
+                        <td
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center text-red-500 italic'
+                        > 
+                          null
+                        </td>
+                      )}
+                      {cls.image ? (
+                        <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                          <a href={cls.image} target="_blank" rel="noopener noreferrer">
+                            <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto' />
+                          </a>
+                        </td>
+                      ):(
+                        <td
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center text-red-500 italic'
+                        >
+                          null
+                        </td>
+                      )}
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"

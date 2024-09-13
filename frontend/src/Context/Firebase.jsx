@@ -67,6 +67,7 @@ export const FirebaseProvider = (props) => {
 
     const [sendData, setSendData] = useState(false);
 
+    const [annoucementHistory, setAnnoucementHistory] = useState(null);
 
     // Function to refresh auth state on page load/refresh
     useEffect(() => {
@@ -461,6 +462,26 @@ export const FirebaseProvider = (props) => {
     };
 
     const fetchAnnoucement = async () => {
+        try {
+            const tasksRef = collection(firestore, 'announcements');
+            const snapshot = await getDocs(tasksRef);
+            if (snapshot.empty) {
+                return { success: false, message: 'No annoucements found!' };
+            }
+
+            const tasksData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setAnnoucement(tasksData);
+            return { success: true };
+        } catch (error) {
+            console.error("Error fetching annoucement:", error);
+            return { success: false, message: "Error fetching annoucements!" };
+        }
+    };
+
+    const fetchAnnoucementHistory = async () => {
         try {
             const tasksRef = collection(firestore, 'announcements');
             const snapshot = await getDocs(tasksRef);

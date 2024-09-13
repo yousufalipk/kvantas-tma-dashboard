@@ -35,7 +35,7 @@ const DailyTaskForm = () => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                if (sendData.tick === 'true') {
+                if (sendData.tick === true) {
                     // Create task
                     const response = await createDailyTask(values);
                     if (response.success) {

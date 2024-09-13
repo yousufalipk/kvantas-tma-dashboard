@@ -31,7 +31,7 @@ const SocialTaskForm = () => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                if (sendData.tick === 'true') {
+                if (sendData.tick === true) {
                     // Create task
                     const response = await createTask(values);
                     if (response.success) {

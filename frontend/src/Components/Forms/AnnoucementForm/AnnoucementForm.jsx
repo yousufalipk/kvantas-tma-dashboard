@@ -24,7 +24,6 @@ const AnnoucementForm = () => {
         description: Yup.string().required('Description is required'),
         reward: Yup.number().required('Reward is required'),
         image: Yup.mixed()
-            .required('Image is required')
             .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024)) // 2 MB limit
             .test('fileType', 'Unsupported file format', value => !value || ['image/jpeg', 'image/png'].includes(value.type))  // Accepts only JPEG and PNG
     });
@@ -35,7 +34,7 @@ const AnnoucementForm = () => {
         onSubmit: async (values, { resetForm }) => {
             console.log("Tick", sendData.tick);
             try {
-                if (sendData.tick === 'true') {
+                if (sendData.tick === true) {
                     console.log("creating...");
                     // Create Announcement
                     const response = await createAnnoucement(values);
