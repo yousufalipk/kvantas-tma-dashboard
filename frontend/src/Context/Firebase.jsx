@@ -241,16 +241,26 @@ export const FirebaseProvider = (props) => {
                 console.log("Priority taken");
                 return { success: false, message: "Priority is already taken!" };
             }
-
+            if(values.link === ''){
+                await addDoc(tasksCollection, {
+                    image: values.type,
+                    priority: values.priority,
+                    title: values.title,
+                    reward: values.reward,
+                    createdAt: new Date()
+                });
+            }
+            else{
+                await addDoc(tasksCollection, {
+                    image: values.type,
+                    priority: values.priority,
+                    title: values.title,
+                    link: values.link || "",
+                    reward: values.reward,
+                    createdAt: new Date()
+                });
+            }
             // Add a new document to the tasks collection
-            await addDoc(tasksCollection, {
-                image: values.type,
-                priority: values.priority,
-                title: values.title,
-                link: values.link || "",
-                reward: values.reward,
-                createdAt: new Date()
-            });
 
             return { success: true };
         } catch (error) {
@@ -275,7 +285,7 @@ export const FirebaseProvider = (props) => {
                 id: doc.id,
                 ...doc.data(),
             }));
-
+            tasksData.sort((a, b) => a.priority - b.priority);
             setTasks(tasksData); // Store the sorted tasks
             return { success: true };
         } catch (error) {
@@ -377,6 +387,7 @@ export const FirebaseProvider = (props) => {
                 id: doc.id,
                 ...doc.data(),
             }));
+            tasksData.sort((a, b) => a.priority - b.priority);
             setDailyTasks(tasksData); // Store the sorted tasks
             return { success: true };
         } catch (error) {
@@ -827,8 +838,6 @@ export const FirebaseProvider = (props) => {
             fetchAnnoucementHistory,
             fetchSocialTaskHistory,
             fetchDailyTaskHistory
-            
-
         }}>
             {props.children}
         </FirebaseContext.Provider>
