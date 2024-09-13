@@ -14,25 +14,24 @@ const History = () => {
 
     useEffect(() => {
         if (filter === 'annoucement') {
-            console.log("fetching annoucmeents..");
             fetchAnnoucementHistory();
-            setData(annoucementHistory);
-        }
-        else if (filter === 'social') {
-            console.log("fetching social..");
+        } else if (filter === 'social') {
             fetchSocialTaskHistory();
-            setData(socialTaskHistory);
-        }
-        else if (filter === 'daily') {
-            console.log("fetching daily..");
+        } else if (filter === 'daily') {
             fetchDailyTaskHistory();
+        }
+    }, [filter, fetchAnnoucementHistory, fetchSocialTaskHistory, fetchDailyTaskHistory]);
+
+    // Update data when the history data changes
+    useEffect(() => {
+        if (filter === 'annoucement') {
+            setData(annoucementHistory);
+        } else if (filter === 'social') {
+            setData(socialTaskHistory);
+        } else if (filter === 'daily') {
             setData(dailyTaskHistory);
         }
-
-        setTimeout(() => {
-            console.log("Data", data);
-        }, 1000)
-    }, [filter])
+    }, [filter, annoucementHistory, socialTaskHistory, dailyTaskHistory]);
 
     const handleClick = (data) => {
         setActiveId(data.id);
