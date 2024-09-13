@@ -22,9 +22,10 @@ const SocialTaskForm = () => {
         priority: Yup.number().required('Priority is required'),
         type: Yup.string().required('Type is required'),
         title: Yup.string().required('Title is required'),
-        link: Yup.string().required('Link is required'),
-        reward: Yup.number().required('Reward is required')
+        link: Yup.string(),
+        reward: Yup.number().required('Reward is required'),
     });
+    
 
     const formik = useFormik({
         initialValues,
@@ -153,7 +154,7 @@ const SocialTaskForm = () => {
                 ) : null}
 
 
-                {formik.values.title === 'phone' || 'email' && (
+                {formik.values.type !== 'phone' && formik.values.type !== 'email' && (
                     <>
                         <input
                             className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
