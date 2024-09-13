@@ -520,17 +520,17 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const fetchSocialTaskHistory = async () => {
+    const fetchDailyTaskHistory = async () => {
         try {
             // Step 1: Get all documents from announcementHistory collection
-            const announcementHistoryRef = collection(firestore, 'announcementHistory');
+            const announcementHistoryRef = collection(firestore, 'dailyTasksHistory');
             const announcementHistorySnapshot = await getDocs(announcementHistoryRef);
 
             // Step 2: Iterate over each document and fetch the nested users collection
-            const announcementHistoryData = await Promise.all(
+            const dailyTaskHistoryData = await Promise.all(
                 announcementHistorySnapshot.docs.map(async (announcementDoc) => {
                     // Fetch all documents from the nested users collection within this announcement document
-                    const usersRef = collection(firestore, `announcementHistory/${announcementDoc.id}/users`);
+                    const usersRef = collection(firestore, `dailyTasksHistory/${announcementDoc.id}/users`);
                     const usersSnapshot = await getDocs(usersRef);
 
                     // Extract users data
@@ -549,23 +549,23 @@ export const FirebaseProvider = (props) => {
             );
 
             // Step 3: Output the final result
-            setAnnoucementHistory(announcementHistoryData);
+            setDailyTaskHistory(dailyTaskHistoryData);
         } catch (error) {
             console.error("Error fetching announcement history and users:", error);
         }
     };
 
-    const fetchDailyTaskHistory = async () => {
+    const fetchSocialTaskHistory = async () => {
         try {
             // Step 1: Get all documents from announcementHistory collection
-            const announcementHistoryRef = collection(firestore, 'announcementHistory');
+            const announcementHistoryRef = collection(firestore, 'socialTasksHistory');
             const announcementHistorySnapshot = await getDocs(announcementHistoryRef);
 
             // Step 2: Iterate over each document and fetch the nested users collection
-            const announcementHistoryData = await Promise.all(
+            const socialTaskHistoryData = await Promise.all(
                 announcementHistorySnapshot.docs.map(async (announcementDoc) => {
                     // Fetch all documents from the nested users collection within this announcement document
-                    const usersRef = collection(firestore, `announcementHistory/${announcementDoc.id}/users`);
+                    const usersRef = collection(firestore, `socialTasksHistory/${announcementDoc.id}/users`);
                     const usersSnapshot = await getDocs(usersRef);
 
                     // Extract users data
@@ -584,7 +584,7 @@ export const FirebaseProvider = (props) => {
             );
 
             // Step 3: Output the final result
-            setAnnoucementHistory(announcementHistoryData);
+            setSocialTaskHistory(socialTaskHistoryData);
         } catch (error) {
             console.error("Error fetching announcement history and users:", error);
         }
@@ -822,7 +822,13 @@ export const FirebaseProvider = (props) => {
             setSendData,
             sendData,
             annoucementHistory,
-            fetchAnnoucementHistory
+            socialTaskHistory,
+            dailyTaskHistory,
+            fetchAnnoucementHistory,
+            fetchSocialTaskHistory,
+            fetchDailyTaskHistory
+            
+
         }}>
             {props.children}
         </FirebaseContext.Provider>

@@ -37,7 +37,7 @@ const SideBar = () => {
               Welcome Back!
               <p className='text-bluebtn mb-8'>{username}</p>
             </div>
-            <div className='flex flex-col mt-4 w-full overflow-scroll h-96'>
+            <div className='flex flex-col mt-4 w-full overflow-y-scroll h-96'>
               <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/'>Dashboard</Link>
               <hr className='border-1 border-[gray] w-4/5 mx-auto' />
 
