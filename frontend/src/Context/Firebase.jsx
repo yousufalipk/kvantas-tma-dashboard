@@ -247,7 +247,7 @@ export const FirebaseProvider = (props) => {
                 image: values.type,
                 priority: values.priority,
                 title: values.title,
-                link: values.link,
+                link: values.link || "",
                 reward: values.reward,
                 createdAt: new Date()
             });

@@ -168,7 +168,7 @@ const SocialTask = () => {
                       onClick={()=>handleModalOpen(cls.link)} 
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                     >
-                      {cls.link}
+                      {cls.link || "--"}
                     </td>
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.reward}

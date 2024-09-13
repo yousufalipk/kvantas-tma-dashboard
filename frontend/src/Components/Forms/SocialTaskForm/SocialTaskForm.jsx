@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
 const SocialTaskForm = () => {
@@ -52,7 +52,7 @@ const SocialTaskForm = () => {
                         priority: values.priority,
                         type: values.type,
                         title: values.title,
-                        link: values.link,
+                        link: values.link || "",
                         reward: values.reward,
                     });
                     if (response.success) {
@@ -152,19 +152,24 @@ const SocialTaskForm = () => {
                     <div className='text-red-600 text-center'>{formik.errors.title}</div>
                 ) : null}
 
-                <input
-                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
-                    type='text'
-                    id='link'
-                    name='link'
-                    placeholder='Link'
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.link}
-                />
-                {formik.touched.link && formik.errors.link ? (
-                    <div className='text-red-600 text-center'>{formik.errors.link}</div>
-                ) : null}
+
+                {formik.values.title === 'phone' || 'email' && (
+                    <>
+                        <input
+                            className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                            type='text'
+                            id='link'
+                            name='link'
+                            placeholder='Link'
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.link}
+                        />
+                        {formik.touched.link && formik.errors.link ? (
+                            <div className='text-red-600 text-center'>{formik.errors.link}</div>
+                        ) : null}
+                    </>
+                )}
 
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
