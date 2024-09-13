@@ -1,7 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useFirebase } from '../../Context/Firebase';
 
 const History = () => {
     const [filter, setFilter] = useState('annoucement');
+    const [activeId, setActiveId] = useState(null);
+    const [activeAnnoucement, setActiveAnnoucement] = useState(null);
+
+    const { fetchAnnoucementHistory, annoucementHistory } = useFirebase();
+
+    useEffect(() => {
+        fetchAnnoucementHistory();
+        setTimeout(() => {
+            console.log("History", annoucementHistory);
+        }, 1000)
+    }, [])
+
+    const handleClick = (data) => {
+        setActiveId(data.id);
+        setActiveAnnoucement(data);
+    }
+
     return (
         <>
             <div>
@@ -51,21 +69,67 @@ const History = () => {
                                     : 'Daily Tasks'}
                         </span>
                     </h1>
-                    <hr className='m-2'/>
-                    <p>A1</p>
-                    <p>A2</p>
-                    <p>A3</p>
-                    <p>A4</p>
+                    <hr className='m-2' />
+                    {annoucementHistory?.map((data, index) => {
+                        return (
+                            <>
+                                <div
+                                    onClick={() => { handleClick(data) }}
+                                    className={`hover:italic hover:text-md hover:text-bluebtn hover:cursor-pointer flex border-2 my-2 rounded-lg ${data.id === activeId ? 'text-bluebtn' : ''}`}
+                                >
+                                    <h1 className='text-center w-1/5'>{index + 1}</h1>
+                                    <p className='text-center w-4/5'>{data.title}</p>
+                                </div>
+                            </>
+                        )
+                    })}
                 </div>
                 <div className='details border-2 w-3/4 p-5'>
-                    <h1 className='text-center'>
-                        A1
-                    </h1>
-                    <hr className='m-2'/>
-                    <p>Title</p>
-                    <p>Description</p>
-                    <p>Reward</p>
-                    <p>Number of Participants</p>
+                    {activeAnnoucement && (
+                        <>
+                            <div className='flex flex-col gap-2'>
+                                <h1 className='text-center font-bold text-xl'>
+                                    {activeAnnoucement.title}
+                                </h1>
+                                <hr className='m-2' />
+                                <p><span className='font-bold underline mr-2'>Description: </span>{activeAnnoucement.description}</p>
+                                <p><span className='font-bold underline mr-2'>Reward: </span>{activeAnnoucement.reward}</p>
+                            </div>
+                            <div>
+                                {activeAnnoucement.users?.length > 0 ? (
+                                    <>
+                                        <h1 className='text-xl font-semibold text-center'>List of Users</h1>
+                                        <table class="min-w-full table-auto border-collapse overflow-x-scroll m-2">
+                                            <thead>
+                                                <tr class="text-white border-b">
+                                                    <th class="px-6 py-3 text-left text-sm font-medium">Sr.NO</th>
+                                                    <th class="px-6 py-3 text-left text-sm font-medium">ID</th>
+                                                    <th class="px-6 py-3 text-left text-sm font-medium">First Name</th>
+                                                    <th class="px-6 py-3 text-left text-sm font-medium">Last Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {activeAnnoucement.users?.map((user, index) => (
+                                                    <tr class="border-b last:border-none">
+                                                        <td class="px-6 py-4 text-sm">{index + 1}</td>
+                                                        <td class="px-6 py-4 text-sm">{user.id}</td>
+                                                        <td class="px-6 py-4 text-sm">{user.first_name || "not set"}</td>
+                                                        <td class="px-6 py-4 text-sm">{user.last_name || "not set"}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className='mt-40 italic text-xl flex justify-center items-center'>
+                                            <h1>No users found...</h1>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </>

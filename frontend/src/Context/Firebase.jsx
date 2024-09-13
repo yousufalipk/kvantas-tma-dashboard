@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc, orderBy, writeBatch  } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc, orderBy, writeBatch } from 'firebase/firestore';
 import { getStorage, deleteObject } from 'firebase/storage';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import axios from 'axios';
@@ -483,21 +483,36 @@ export const FirebaseProvider = (props) => {
 
     const fetchAnnoucementHistory = async () => {
         try {
-            const tasksRef = collection(firestore, 'announcements');
-            const snapshot = await getDocs(tasksRef);
-            if (snapshot.empty) {
-                return { success: false, message: 'No annoucements found!' };
-            }
+            // Step 1: Get all documents from announcementHistory collection
+            const announcementHistoryRef = collection(firestore, 'announcementHistory');
+            const announcementHistorySnapshot = await getDocs(announcementHistoryRef);
 
-            const tasksData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setAnnoucement(tasksData);
-            return { success: true };
+            // Step 2: Iterate over each document and fetch the nested users collection
+            const announcementHistoryData = await Promise.all(
+                announcementHistorySnapshot.docs.map(async (announcementDoc) => {
+                    // Fetch all documents from the nested users collection within this announcement document
+                    const usersRef = collection(firestore, `announcementHistory/${announcementDoc.id}/users`);
+                    const usersSnapshot = await getDocs(usersRef);
+
+                    // Extract users data
+                    const usersData = usersSnapshot.docs.map(userDoc => ({
+                        id: userDoc.id,
+                        ...userDoc.data(),
+                    }));
+
+                    // Return the announcement document data along with the nested users
+                    return {
+                        id: announcementDoc.id,
+                        ...announcementDoc.data(),
+                        users: usersData,
+                    };
+                })
+            );
+
+            // Step 3: Output the final result
+            setAnnoucementHistory(announcementHistoryData);
         } catch (error) {
-            console.error("Error fetching annoucement:", error);
-            return { success: false, message: "Error fetching annoucements!" };
+            console.error("Error fetching announcement history and users:", error);
         }
     };
 
@@ -583,7 +598,7 @@ export const FirebaseProvider = (props) => {
             }
 
             const response = await axios.get(`${apiUrl}/update-users-status`);
-            if(response.data.success === 'failed'){
+            if (response.data.success === 'failed') {
                 return { success: false, error: response.data.message };
             }
             // Update the status of the current announcement
@@ -731,7 +746,9 @@ export const FirebaseProvider = (props) => {
             setModalOpen,
             isModalOpen,
             setSendData,
-            sendData
+            sendData,
+            annoucementHistory,
+            fetchAnnoucementHistory
         }}>
             {props.children}
         </FirebaseContext.Provider>
