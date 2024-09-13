@@ -69,6 +69,10 @@ export const FirebaseProvider = (props) => {
 
     const [annoucementHistory, setAnnoucementHistory] = useState(null);
 
+    const [socialTaskHistory, setSocialTaskHistory] = useState(null);
+
+    const [dailyTaskHistory, setDailyTaskHistory] = useState(null);
+
     // Function to refresh auth state on page load/refresh
     useEffect(() => {
         setLoading(true);
@@ -482,6 +486,76 @@ export const FirebaseProvider = (props) => {
     };
 
     const fetchAnnoucementHistory = async () => {
+        try {
+            // Step 1: Get all documents from announcementHistory collection
+            const announcementHistoryRef = collection(firestore, 'announcementHistory');
+            const announcementHistorySnapshot = await getDocs(announcementHistoryRef);
+
+            // Step 2: Iterate over each document and fetch the nested users collection
+            const announcementHistoryData = await Promise.all(
+                announcementHistorySnapshot.docs.map(async (announcementDoc) => {
+                    // Fetch all documents from the nested users collection within this announcement document
+                    const usersRef = collection(firestore, `announcementHistory/${announcementDoc.id}/users`);
+                    const usersSnapshot = await getDocs(usersRef);
+
+                    // Extract users data
+                    const usersData = usersSnapshot.docs.map(userDoc => ({
+                        id: userDoc.id,
+                        ...userDoc.data(),
+                    }));
+
+                    // Return the announcement document data along with the nested users
+                    return {
+                        id: announcementDoc.id,
+                        ...announcementDoc.data(),
+                        users: usersData,
+                    };
+                })
+            );
+
+            // Step 3: Output the final result
+            setAnnoucementHistory(announcementHistoryData);
+        } catch (error) {
+            console.error("Error fetching announcement history and users:", error);
+        }
+    };
+
+    const fetchSocialTaskHistory = async () => {
+        try {
+            // Step 1: Get all documents from announcementHistory collection
+            const announcementHistoryRef = collection(firestore, 'announcementHistory');
+            const announcementHistorySnapshot = await getDocs(announcementHistoryRef);
+
+            // Step 2: Iterate over each document and fetch the nested users collection
+            const announcementHistoryData = await Promise.all(
+                announcementHistorySnapshot.docs.map(async (announcementDoc) => {
+                    // Fetch all documents from the nested users collection within this announcement document
+                    const usersRef = collection(firestore, `announcementHistory/${announcementDoc.id}/users`);
+                    const usersSnapshot = await getDocs(usersRef);
+
+                    // Extract users data
+                    const usersData = usersSnapshot.docs.map(userDoc => ({
+                        id: userDoc.id,
+                        ...userDoc.data(),
+                    }));
+
+                    // Return the announcement document data along with the nested users
+                    return {
+                        id: announcementDoc.id,
+                        ...announcementDoc.data(),
+                        users: usersData,
+                    };
+                })
+            );
+
+            // Step 3: Output the final result
+            setAnnoucementHistory(announcementHistoryData);
+        } catch (error) {
+            console.error("Error fetching announcement history and users:", error);
+        }
+    };
+
+    const fetchDailyTaskHistory = async () => {
         try {
             // Step 1: Get all documents from announcementHistory collection
             const announcementHistoryRef = collection(firestore, 'announcementHistory');

@@ -27,13 +27,6 @@ const History = () => {
                     <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
                         History
                     </h1>
-                    <div className='w-2/4 max-10 flex flex-row justify-end'>
-                        {/* <button
-                            className='mx-2 py-1 px-4 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'
-                        >
-                            History
-                        </button> */}
-                    </div>
                 </div>
                 <hr className='my-5 border-1 border-[white] mx-2' />
             </div>
@@ -98,12 +91,13 @@ const History = () => {
                             <div>
                                 {activeAnnoucement.users?.length > 0 ? (
                                     <>
-                                        <h1 className='text-xl font-semibold text-center'>List of Users</h1>
+                                        <h1 className='text-xl font-semibold text-center'>List of Users <span>({activeAnnoucement.users.length})</span></h1>
                                         <table class="min-w-full table-auto border-collapse overflow-x-scroll m-2">
                                             <thead>
                                                 <tr class="text-white border-b">
                                                     <th class="px-6 py-3 text-left text-sm font-medium">Sr.NO</th>
                                                     <th class="px-6 py-3 text-left text-sm font-medium">ID</th>
+                                                    <th class="px-6 py-3 text-left text-sm font-medium">Username</th>
                                                     <th class="px-6 py-3 text-left text-sm font-medium">First Name</th>
                                                     <th class="px-6 py-3 text-left text-sm font-medium">Last Name</th>
                                                 </tr>
@@ -113,8 +107,9 @@ const History = () => {
                                                     <tr class="border-b last:border-none">
                                                         <td class="px-6 py-4 text-sm">{index + 1}</td>
                                                         <td class="px-6 py-4 text-sm">{user.id}</td>
-                                                        <td class="px-6 py-4 text-sm">{user.first_name || "not set"}</td>
-                                                        <td class="px-6 py-4 text-sm">{user.last_name || "not set"}</td>
+                                                        <td class="px-6 py-4 text-sm">{user.username || "not avaliable"}</td>
+                                                        <td class="px-6 py-4 text-sm">{user.first_name || "not avaliable"}</td>
+                                                        <td class="px-6 py-4 text-sm">{user.last_name || "not avaliable"}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
