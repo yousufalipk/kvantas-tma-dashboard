@@ -43,20 +43,22 @@ const MobileNav = () => {
                             Welcome Back!
                             <p className='text-bluebtn mb-8'>{username}</p>
                         </div>
-                        <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/'>Dashboard</Link>
+                        <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/' onClick={toggleSidebar}>Dashboard</Link>
                         <hr className='border-1 border-[gray] w-4/5 mx-auto' />
 
                         {userType === 'admin' ? (
                             <>
-                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-users' >Manage Users</Link>
+                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-users' onClick={toggleSidebar}  >Manage Users</Link>
                                 <hr className='border-1 border-[gray] w-4/5 mx-auto' />
-                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-telegram-users' >Telegram Users</Link>
+                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-telegram-users' onClick={toggleSidebar}  >Telegram Users</Link>
                                 <hr className='border-1 border-[gray] w-4/5 mx-auto' />
-                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/social-tasks' >Social Tasks</Link>
+                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/social-tasks' onClick={toggleSidebar}  >Social Tasks</Link>
                                 <hr className='border-1 border-[gray] w-4/5 mx-auto' />
-                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/daily-tasks' >Daily Tasks</Link>
+                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/daily-tasks' onClick={toggleSidebar}  >Daily Tasks</Link>
                                 <hr className='border-1 border-[gray] w-4/5 mx-auto' />
-                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/annoucements' >Annoucements</Link>
+                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/annoucements' onClick={toggleSidebar}  >Annoucements</Link>
+                                <hr className='border-1 border-[gray] w-4/5 mx-auto' />
+                                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/history' onClick={toggleSidebar}  >History</Link>
                             </>
                         ) : (
                             <>

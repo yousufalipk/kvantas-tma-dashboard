@@ -21,6 +21,7 @@ body {
 
 ::-webkit-scrollbar {
   width: 7px;
+  height: 7px;
 }
 
 /* Track */
@@ -39,4 +40,12 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(30, 64, 175);
+}
+
+/* Mobile view - reduce scrollbar width to 3px */
+@media (max-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
 }

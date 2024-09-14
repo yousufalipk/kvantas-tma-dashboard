@@ -142,8 +142,8 @@ const ManageUser = () => {
             </div>
             <hr className='my-5 border-1 border-[white] mx-2' />
           </div>
-          <div className='mx-2 my-10'>
-            <table className="bg-transparent border-collapse border border-gray-200 w-full table-fixed">
+          <div className='mx-2 md:my-10 my-2 overflow-scroll md:overflow-hidden'>
+            <table className="bg-transparent border-collapse border border-gray-200 md:w-full table-fixed">
               <thead className="thead-dark">
                 <tr>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Sr.No</th>

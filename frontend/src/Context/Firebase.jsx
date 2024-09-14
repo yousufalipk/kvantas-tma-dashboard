@@ -243,7 +243,7 @@ export const FirebaseProvider = (props) => {
                 console.log("Priority taken");
                 return { success: false, message: "Priority is already taken!" };
             }
-            if(values.link === ''){
+            if (values.link === '') {
                 await addDoc(tasksCollection, {
                     image: values.type,
                     priority: values.priority,
@@ -252,7 +252,7 @@ export const FirebaseProvider = (props) => {
                     createdAt: new Date()
                 });
             }
-            else{
+            else {
                 await addDoc(tasksCollection, {
                     image: values.type,
                     priority: values.priority,
@@ -295,19 +295,19 @@ export const FirebaseProvider = (props) => {
                             // Check if the task id exists in announcementHistory
                             const announcementHistoryRef = doc(firestore, `socialTasksHistory/${data.id}`);
                             const announcementHistoryDoc = await getDoc(announcementHistoryRef);
-    
+
                             let numberOfParticipants = 0;
-                            
+
                             // If the task is found in announcementHistory, fetch users
                             if (announcementHistoryDoc.exists()) {
                                 const usersRef = collection(firestore, `socialTasksHistory/${data.id}/users`);
                                 const usersSnapshot = await getDocs(usersRef);
                                 numberOfParticipants = usersSnapshot.docs.length;
                             }
-    
+
                             return { ...data, numberOfParticipants };
                         } catch (error) {
-                            return { ...data, numberOfParticipants: 0 }; 
+                            return { ...data, numberOfParticipants: 0 };
                         }
                     })
                 );
@@ -403,17 +403,17 @@ export const FirebaseProvider = (props) => {
             const tasksRef = collection(firestore, 'dailyTask');
             const q = query(tasksRef, orderBy("priority", "asc"));
             const snapshot = await getDocs(q);
-    
+
             if (snapshot.empty) {
                 console.log("Empty!");
                 return { success: false, message: 'No tasks found!' };
             }
-    
+
             const tasksData = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
             }));
-    
+
             if (tasksData.length > 0) {
                 const updatedTasks = await Promise.all(
                     tasksData.map(async (data) => {
@@ -421,20 +421,20 @@ export const FirebaseProvider = (props) => {
                             // Check if the task id exists in announcementHistory
                             const announcementHistoryRef = doc(firestore, `dailyTasksHistory/${data.id}`);
                             const announcementHistoryDoc = await getDoc(announcementHistoryRef);
-    
+
                             let numberOfParticipants = 0;
-                            
+
                             // If the task is found in announcementHistory, fetch users
                             if (announcementHistoryDoc.exists()) {
                                 const usersRef = collection(firestore, `dailyTasksHistory/${data.id}/users`);
                                 const usersSnapshot = await getDocs(usersRef);
                                 numberOfParticipants = usersSnapshot.docs.length;
                             }
-    
+
                             return { ...data, numberOfParticipants };
                         } catch (error) {
                             console.log("Error fetching history for task ID:", data.id);
-                            return { ...data, numberOfParticipants: 0 }; 
+                            return { ...data, numberOfParticipants: 0 };
                         }
                     })
                 );
@@ -442,13 +442,13 @@ export const FirebaseProvider = (props) => {
                 updatedTasks.sort((a, b) => a.priority - b.priority);
                 setDailyTasks(updatedTasks);
             }
-    
+
             return { success: true };
         } catch (error) {
             console.error("Error fetching tasks:", error);
             return { success: false, message: "Error fetching tasks!" };
         }
-    };    
+    };
 
 
     const updateDailyTask = async ({ uid, type, priority, title, link, reward }) => {
@@ -550,19 +550,19 @@ export const FirebaseProvider = (props) => {
                             // Check if the task id exists in announcementHistory
                             const announcementHistoryRef = doc(firestore, `announcementHistory/${data.id}`);
                             const announcementHistoryDoc = await getDoc(announcementHistoryRef);
-    
+
                             let numberOfParticipants = 0;
-                            
+
                             // If the task is found in announcementHistory, fetch users
                             if (announcementHistoryDoc.exists()) {
                                 const usersRef = collection(firestore, `announcementHistory/${data.id}/users`);
                                 const usersSnapshot = await getDocs(usersRef);
                                 numberOfParticipants = usersSnapshot.docs.length;
                             }
-    
+
                             return { ...data, numberOfParticipants };
                         } catch (error) {
-                            return { ...data, numberOfParticipants: 0 }; 
+                            return { ...data, numberOfParticipants: 0 };
                         }
                     })
                 );
@@ -736,8 +736,18 @@ export const FirebaseProvider = (props) => {
         try {
             setLoading(true);
 
+
             // Fetch the existing announcement document
-            const announcementDocRef = doc(firestore, 'announcements', uid);
+            let announcementDocRef = doc(firestore, 'announcements', uid);
+
+            if (status === true) {
+                // Update the status to false
+                await updateDoc(announcementDocRef, { status: false });
+
+                // Return the updated document data
+                await getDoc(announcementDocRef);
+                return { success: true };
+            }
 
             // Check if there's another active announcement
             const activeAnnouncementQuery = query(

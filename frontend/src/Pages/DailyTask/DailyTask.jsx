@@ -123,7 +123,7 @@ const DailyTask = () => {
                     <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
                         Daily Task
                     </h1>
-                    <div className='w-2/4 max-10 flex flex-row justify-end'>
+                    <div className='md:w-2/4 w-full max-10 flex flex-row justify-end'>
                         <button
                             className='mx-2 py-1 px-4 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn'
                             onClick={handleCreateTask}
@@ -134,8 +134,8 @@ const DailyTask = () => {
                 </div>
                 <hr className='my-5 border-1 border-[white] mx-2' />
             </div>
-            <div className='mx-2 my-10'>
-                <table className="bg-transparent border-collapse border border-gray-200 w-full table-fixed">
+            <div className='mx-2 md:my-10 my-2 overflow-scroll md:overflow-hidden'>
+                <table className="bg-transparent border-collapse border border-gray-200 md:w-full table-fixed">
                     <thead className="thead-dark">
                         <tr>
                             <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Priority</th>
