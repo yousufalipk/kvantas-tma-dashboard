@@ -287,8 +287,34 @@ export const FirebaseProvider = (props) => {
                 id: doc.id,
                 ...doc.data(),
             }));
-            tasksData.sort((a, b) => a.priority - b.priority);
-            setTasks(tasksData); // Store the sorted tasks
+
+            if (tasksData.length > 0) {
+                const updatedTasks = await Promise.all(
+                    tasksData.map(async (data) => {
+                        try {
+                            // Check if the task id exists in announcementHistory
+                            const announcementHistoryRef = doc(firestore, `socialTasksHistory/${data.id}`);
+                            const announcementHistoryDoc = await getDoc(announcementHistoryRef);
+    
+                            let numberOfParticipants = 0;
+                            
+                            // If the task is found in announcementHistory, fetch users
+                            if (announcementHistoryDoc.exists()) {
+                                const usersRef = collection(firestore, `socialTasksHistory/${data.id}/users`);
+                                const usersSnapshot = await getDocs(usersRef);
+                                numberOfParticipants = usersSnapshot.docs.length;
+                            }
+    
+                            return { ...data, numberOfParticipants };
+                        } catch (error) {
+                            return { ...data, numberOfParticipants: 0 }; 
+                        }
+                    })
+                );
+                // Sort tasks by priority after all async operations are complete
+                updatedTasks.sort((a, b) => a.priority - b.priority);
+                setTasks(updatedTasks);
+            }
             return { success: true };
         } catch (error) {
             console.error("Error fetching tasks:", error);
@@ -374,29 +400,55 @@ export const FirebaseProvider = (props) => {
 
     const fetchDailyTask = async () => {
         try {
-            console.log("Fetching data!")
             const tasksRef = collection(firestore, 'dailyTask');
-            // Create a query that orders tasks by priority in ascending order
             const q = query(tasksRef, orderBy("priority", "asc"));
             const snapshot = await getDocs(q);
-
+    
             if (snapshot.empty) {
-                console.log("Empty!")
+                console.log("Empty!");
                 return { success: false, message: 'No tasks found!' };
             }
-
+    
             const tasksData = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
             }));
-            tasksData.sort((a, b) => a.priority - b.priority);
-            setDailyTasks(tasksData); // Store the sorted tasks
+    
+            if (tasksData.length > 0) {
+                const updatedTasks = await Promise.all(
+                    tasksData.map(async (data) => {
+                        try {
+                            // Check if the task id exists in announcementHistory
+                            const announcementHistoryRef = doc(firestore, `dailyTasksHistory/${data.id}`);
+                            const announcementHistoryDoc = await getDoc(announcementHistoryRef);
+    
+                            let numberOfParticipants = 0;
+                            
+                            // If the task is found in announcementHistory, fetch users
+                            if (announcementHistoryDoc.exists()) {
+                                const usersRef = collection(firestore, `dailyTasksHistory/${data.id}/users`);
+                                const usersSnapshot = await getDocs(usersRef);
+                                numberOfParticipants = usersSnapshot.docs.length;
+                            }
+    
+                            return { ...data, numberOfParticipants };
+                        } catch (error) {
+                            console.log("Error fetching history for task ID:", data.id);
+                            return { ...data, numberOfParticipants: 0 }; 
+                        }
+                    })
+                );
+                // Sort tasks by priority after all async operations are complete
+                updatedTasks.sort((a, b) => a.priority - b.priority);
+                setDailyTasks(updatedTasks);
+            }
+    
             return { success: true };
         } catch (error) {
             console.error("Error fetching tasks:", error);
             return { success: false, message: "Error fetching tasks!" };
         }
-    };
+    };    
 
 
     const updateDailyTask = async ({ uid, type, priority, title, link, reward }) => {
@@ -490,7 +542,34 @@ export const FirebaseProvider = (props) => {
                 id: doc.id,
                 ...doc.data(),
             }));
-            setAnnoucement(tasksData);
+
+            if (tasksData.length > 0) {
+                const updatedTasks = await Promise.all(
+                    tasksData.map(async (data) => {
+                        try {
+                            // Check if the task id exists in announcementHistory
+                            const announcementHistoryRef = doc(firestore, `announcementHistory/${data.id}`);
+                            const announcementHistoryDoc = await getDoc(announcementHistoryRef);
+    
+                            let numberOfParticipants = 0;
+                            
+                            // If the task is found in announcementHistory, fetch users
+                            if (announcementHistoryDoc.exists()) {
+                                const usersRef = collection(firestore, `announcementHistory/${data.id}/users`);
+                                const usersSnapshot = await getDocs(usersRef);
+                                numberOfParticipants = usersSnapshot.docs.length;
+                            }
+    
+                            return { ...data, numberOfParticipants };
+                        } catch (error) {
+                            return { ...data, numberOfParticipants: 0 }; 
+                        }
+                    })
+                );
+                // Sort tasks by priority after all async operations are complete
+                updatedTasks.sort((a, b) => a.priority - b.priority);
+                setAnnoucement(updatedTasks);
+            }
             return { success: true };
         } catch (error) {
             console.error("Error fetching annoucement:", error);

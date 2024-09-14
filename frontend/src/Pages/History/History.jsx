@@ -20,16 +20,28 @@ const History = () => {
         } else if (filter === 'daily') {
             fetchDailyTaskHistory();
         }
-    }, [filter, fetchAnnoucementHistory, fetchSocialTaskHistory, fetchDailyTaskHistory]);
+    }, [filter]);
 
     // Update data when the history data changes
     useEffect(() => {
         if (filter === 'annoucement') {
             setData(annoucementHistory);
+            if(annoucementHistory){
+                setActiveId(annoucementHistory[0].id);
+                setActive(annoucementHistory[0]);
+            }
         } else if (filter === 'social') {
             setData(socialTaskHistory);
+            if(socialTaskHistory){
+                setActiveId(socialTaskHistory[0].id);
+                setActive(socialTaskHistory[0]);
+            }
         } else if (filter === 'daily') {
             setData(dailyTaskHistory);
+            if(dailyTaskHistory){
+                setActiveId(dailyTaskHistory[0].id);
+                setActive(dailyTaskHistory[0]);
+            }
         }
     }, [filter, annoucementHistory, socialTaskHistory, dailyTaskHistory]);
 
@@ -118,7 +130,7 @@ const History = () => {
                             <div>
                                 {active.users?.length > 0 ? (
                                     <>
-                                        <h1 className='text-xl font-semibold text-center'>List of Users <span>({active.users.length})</span></h1>
+                                        <h1 className='text-xl font-semibold text-center'>List of Participants <span>({active.users.length})</span></h1>
                                         <table class="min-w-full table-auto border-collapse overflow-y-scroll m-2">
                                             <thead>
                                                 <tr class="text-white border-b">

@@ -111,7 +111,6 @@ const DailyTask = () => {
     const handleModalOpen = (text) => {
         setViewText(text);
         setModalOpen(true);
-        console.log("Openning model", isModalOpen);
     }
 
     return (
@@ -144,6 +143,7 @@ const DailyTask = () => {
                             <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Title</th>
                             <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Link</th>
                             <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Reward</th>
+                            <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Participants</th>
                             <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Update</th>
                             <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Delete</th>
                         </tr>
@@ -178,6 +178,9 @@ const DailyTask = () => {
                                         </td>
                                         <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                                             {cls.reward}
+                                        </td>
+                                        <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                                            {cls.numberOfParticipants}
                                         </td>
                                         <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                                             <button

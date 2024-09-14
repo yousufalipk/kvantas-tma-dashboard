@@ -170,6 +170,7 @@ const Annoucement = () => {
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Subtitle</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Description</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Reward</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Participants</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Toggle Status</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">File Name</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Thumbnail</th>
@@ -207,6 +208,9 @@ const Annoucement = () => {
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.reward}
+                      </td>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        {cls.numberOfParticipants}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}

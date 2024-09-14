@@ -25,12 +25,12 @@ const ViewMore = ({ text }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 overflow-hidden">
             <div className="bg-custom-image bg-cover w-3/4 md:w-1/2 h-3/4 rounded-xl relative p-5">
                 <div className="flex justify-end">
 
                 </div>
-                <div className="overflow-scroll h-full p-5">
+                <div className="overflow-hidden h-full p-5">
                     <div className='flex justify-between'>
                         <h1 className="text-lg text-center font-bold ml-2">View More</h1>
                         <div className='flex gap-2'>
