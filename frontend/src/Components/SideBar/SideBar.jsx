@@ -28,7 +28,7 @@ const SideBar = () => {
         {/* Logo */}
         <div className='flex flex-col items-center mt-4'>
           <Link to='/'>
-            <p className='mt-8 mx-5 px-7 text-5xl text-white'> Kvantas</p>
+            <p className='mt-8 mx-5 px-7 text-5xl text-white'>Kvants</p>
           </Link>
 
           {/* Menu*/}
