@@ -3,6 +3,7 @@ const admin = require('./firebase-admin');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const XLSX = require('xlsx');
+const { format } = require('date-fns');
 
 dotenv.config();
 
@@ -48,7 +49,7 @@ app.post('/registerUser', async (req, res) => {
   const { fname, lname, email, password, confirmPassword } = req.body;
 
   try {
-    if(password !== confirmPassword){
+    if (password !== confirmPassword) {
       return res.status(200).json({
         status: 'failed',
         message: "Password did't match"
@@ -93,7 +94,7 @@ app.get('/downloadUsersData', async (req, res) => {
     const listUsersResult = await admin.auth().listUsers();
 
     // Initialize an array for storing the user data
-    let usersData = [['UID', 'First Name' , 'Last Name', 'Email', 'User Type']];
+    let usersData = [['UID', 'First Name', 'Last Name', 'Email', 'User Type']];
 
     for (const userRecord of listUsersResult.users) {
       // Fetch user data from Firestore
@@ -103,10 +104,10 @@ app.get('/downloadUsersData', async (req, res) => {
       // Add user data to the array
       usersData.push([
         userRecord.uid,
-        userData?.fname || '',  
-        userData?.lname || '',  
-        userRecord.email,       
-        userData?.userType || '' 
+        userData?.fname || '',
+        userData?.lname || '',
+        userRecord.email,
+        userData?.userType || ''
       ]);
     }
 
@@ -134,28 +135,59 @@ app.get('/downloadUsersData', async (req, res) => {
   }
 });
 
+const formatDate = (timestamp) => {
+  if (timestamp && timestamp.toDate) {
+    const date = timestamp.toDate();
+    const formattedDate = format(date, 'MM/dd/yyyy');
+    return `${formattedDate}`;
+  }
+  return 'Invalid Date';
+};
+
+const formatTime = (timestamp) => {
+  if (timestamp && timestamp.toDate) {
+    const date = timestamp.toDate();
+    const formattedTime = format(date, 'hh:mm a');
+    return `${formattedTime}`;
+  }
+  return 'Invalid Time';
+};
+
 app.get('/downloadTelegramUsersData', async (req, res) => {
   try {
     // Initialize an array for storing the user data with headers
-    let usersData = [['UID', 'Telegram Id', 'Username', 'First Name', 'Last Name', 'Wallet Address', 'Twitter Username']];
+    let usersData = [['S.No', 'Time of Joinning', 'Date of Joinning', 'First Name', 'Last Name', 'Username', 'Telegram Id', 'Twitter Id', 'Instagram Id', 'Linkedin Id', 'Discord Id', 'Youtube Id', 'Email Id', 'Phone Number', 'Wallet Address', 'Balance']];
 
     // Fetch all documents from the telegramUsers collection
     const telegramUsersSnapshot = await admin.firestore().collection('telegramUsers').get();
+    let srno = 0;
 
     // Loop through each document
     telegramUsersSnapshot.forEach(doc => {
       const telegramUser = doc.data();
 
-      // Add user data to the array
+      const formatedDate = formatDate(telegramUser.createdAt);
+      const formatedTime = formatTime(telegramUser.createdAt);
+
       usersData.push([
-        doc.id,  // UID (document ID)
-        telegramUser.telegramId || 'notSet',
-        telegramUser.username || 'notSet',
+        srno + 1,
+        formatedTime || 'notSet',
+        formatedDate || 'notSet',
         telegramUser.firstName || 'notSet',
         telegramUser.lastName || 'notSet',
-        telegramUser.tonWalletAddress  || 'notSet',
-        telegramUser.twitterUserName || 'notSet'
+        telegramUser.username || 'notSet',
+        telegramUser.id || 'notSet',
+        telegramUser.twitterUserName || 'notSet',
+        telegramUser.instagramUsername || 'notSet',
+        telegramUser.linkedinUsername || 'notSet',
+        telegramUser.discordUsername || 'notSet',
+        telegramUser.youtubeUsername || 'notSet',
+        telegramUser.email || 'notSet',
+        telegramUser.phoneNumber || 'notSet',
+        telegramUser.tonWalletAddress || 'notSet',
+        telegramUser.balance || 'notSet',
       ]);
+      srno++;
     });
 
     // Create a new workbook and sheet with the user data
@@ -182,19 +214,18 @@ app.get('/downloadTelegramUsersData', async (req, res) => {
   }
 });
 
-
 app.get('/update-users-status', async (req, res) => {
   try {
     // Get a reference to the Firestore database
     const db = admin.firestore();
-    
+
     // Fetch all documents from the 'telegramUsers' collection
     const usersSnapshot = await db.collection('telegramUsers').get();
 
     if (usersSnapshot.empty) {
-      return res.status(200).json({ 
+      return res.status(200).json({
         status: 'failed',
-        message: 'No telegram users found' 
+        message: 'No telegram users found'
       });
     }
 
@@ -219,13 +250,13 @@ app.get('/update-users-status', async (req, res) => {
     await batch.commit();
 
     // Send success response
-    return res.status(200).json({ 
+    return res.status(200).json({
       status: 'success',
-      message: 'Telegram users updated successfully' 
+      message: 'Telegram users updated successfully'
     });
   } catch (error) {
     console.error('Error updating telegram users:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       status: 'failed',
       message: 'Internal server error'
     });

@@ -65,10 +65,21 @@ const ManageTelegramUsers = () => {
       const date = timestamp.toDate();
       const formattedDate = format(date, 'MM/dd/yyyy');
       const formattedTime = format(date, 'hh:mm a');
-      return `${formattedDate}\n${formattedTime}`;
+      return `${formattedDate}`;
     }
     return 'Invalid Date';
   };
+
+  const formatTime = (timestamp) => {
+    if (timestamp && timestamp.toDate) {
+      const date = timestamp.toDate();
+      const formattedDate = format(date, 'MM/dd/yyyy');
+      const formattedTime = format(date, 'hh:mm a');
+      return `${formattedTime}`;
+    }
+    return 'Invalid Time';
+  };
+
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -130,38 +141,46 @@ const ManageTelegramUsers = () => {
             </div>
             <hr className='my-5 border-1 border-[white] mx-2' />
           </div>
-          <div className='mx-2 md:my-10 my-2 overflow-scroll md:overflow-hidden'>
-            <table className="bg-transparent border-collapse border border-gray-200 md:w-full table-fixed">
+          <div className='mx-2 my-10 overflow-x-scroll overflow-y-hidden w-[80vw]'>
+            <table className="bg-transparent border-collapse border border-gray-200 table-fixed">
               <thead className="thead-dark">
                 <tr>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Telegram Id</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Date of Joining</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Username</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">First Name</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Last Name</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Wallet Address</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Twitter Username</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/6' scope="col">Balance</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Sr.No</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Date of Joining</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Time of Joining</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">First Name</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Last Name</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Username</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Telegram Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Twitter Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Instagram Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">LinkedIn Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Discord Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Youtube Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Email Id</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Phone Number</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Wallet Address</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center w-1/4' scope="col">Balance</th>
                 </tr>
               </thead>
               <tbody>
                 {currentUsers.map((cls, key) => (
                   <tr key={key}>
+                    {/* key */}
                     <th scope="row" className='border-b border-gray-200 w-1/6'>
                       <span style={{ fontWeight: "bold", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                        {cls.userId || "undefined"}
+                        {key + 1}
                       </span>
                     </th>
+                    {/* Time of joinning */}
+                    <td className="px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "pre-line" }}>
+                      {formatTime(cls.createdAt) || "undefined"}
+                    </td>
+                    {/* Date of joinning */}
                     <td className="px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "pre-line" }}>
                       {formatDate(cls.createdAt) || "undefined"}
                     </td>
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
-                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.username)}  
-                    >
-                      {cls.username || "undefined"}
-                    </td>
+                    {/* First Name */}
                     <td 
                       className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
@@ -169,6 +188,7 @@ const ManageTelegramUsers = () => {
                     >
                       {cls.firstName || "undefined"}
                     </td>
+                    {/* Last Name */}
                     <td 
                       className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
@@ -176,6 +196,80 @@ const ManageTelegramUsers = () => {
                     >
                       {cls.lastName || "undefined"}
                     </td>
+                    {/* Username */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.username)}  
+                    >
+                      {cls.username || "undefined"}
+                    </td>
+                    {/* Telegram Id */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.userId)}  
+                    >
+                      {cls.userId || "undefined"}
+                    </td>
+                    {/* Twitter Id */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.twitterUsername)}  
+                    >
+                      {cls.twitterUsername || "undefined"}
+                    </td>
+                    {/* Instagram Id */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.instagramUsername)}  
+                    >
+                      {cls.instagramUsername || "undefined"}
+                    </td>
+                    {/* LinkedIn Id */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.instagramUsername)}  
+                    >
+                      {cls.linkedInUsername || "undefined"}
+                    </td>
+                    {/* Discord Id */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.discordUsername)}  
+                    >
+                      {cls.discordUsername || "undefined"}
+                    </td>
+                    {/* Youtube Id */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.youtubeUsername)}  
+                    >
+                      {cls.youtubeUsername || "undefined"}
+                    </td>
+                    {/* Email*/}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.email)}  
+                    >
+                      {cls.email || "undefined"}
+                    </td>
+                    {/* Phone */}
+                    <td 
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                      onClick={()=>handleModalOpen(cls.phoneNumber)}  
+                    >
+                      {cls.phoneNumber || "undefined"}
+                    </td>
+                    
+                    {/* Ton Wallet Address */}
                     <td 
                       className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
@@ -183,13 +277,7 @@ const ManageTelegramUsers = () => {
                     >
                       {cls.tonWalletAddress || "undefined"}
                     </td>
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
-                      style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.twitterUserName)}   
-                    >
-                      {cls.twitterUserName || "undefined"}
-                    </td>
+                    
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.balance || "undefined"}
                     </td>

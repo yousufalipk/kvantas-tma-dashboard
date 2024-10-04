@@ -130,6 +130,8 @@ const SocialTaskForm = () => {
                     <option value='telegram'>Telegram</option>
                     <option value='twitter'>Twitter</option>
                     <option value='instagram'>Instagram</option>
+                    <option value='linkedin'>LinkedIn</option>
+                    <option value='discord'>Discord</option>
                     <option value='youtube'>Youtube</option>
                     <option value='moreLink'>Website</option>
                     <option value='email'>Email</option>
