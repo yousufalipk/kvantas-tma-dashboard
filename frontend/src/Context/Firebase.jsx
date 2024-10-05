@@ -499,6 +499,7 @@ export const FirebaseProvider = (props) => {
             setLoading(true);
 
             let downloadURL = '';
+            let downloadIconURL = '';
 
             if (values.image) {
                 const storageRef = ref(storage, `announcements/${Date.now()}_${values.image.name}`);
@@ -506,6 +507,14 @@ export const FirebaseProvider = (props) => {
                 const snapshot = await uploadBytes(storageRef, values.image);
 
                 downloadURL = await getDownloadURL(snapshot.ref);
+            }
+
+            if (values.icon) {
+                const storageRef = ref(storage, `announcements/${Date.now()}_${values.icon.name}`);
+
+                const snapshot = await uploadBytes(storageRef, values.icon);
+
+                downloadIconURL = await getDownloadURL(snapshot.ref);
             }
 
             // Add the announcement to Firestore
@@ -518,7 +527,9 @@ export const FirebaseProvider = (props) => {
                 reward: values.reward,
                 status: false,
                 image: downloadURL || null,
-                imageName: values.image.name || null
+                imageName: values.image.name || null,
+                icon: downloadIconURL || null,
+                iconName: values.icon.name || null
             });
 
             return { success: true };
@@ -682,7 +693,7 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const updateAnnoucement = async ({ uid, title, subtitle, description, reward, image }) => {
+    const updateAnnoucement = async ({ uid, title, subtitle, description, reward, image, icon }) => {
         try {
             setLoading(true);
 
@@ -704,12 +715,29 @@ export const FirebaseProvider = (props) => {
                 await deleteObject(imageRef); // Delete the existing image
             }
 
+            let downloadURLIcon = announcementData.icon || '';
+            let iconName = announcementData.iconName || '';
+
+            // Delete the existing icon if a new icon is provided
+            if (icon && announcementData.icon) {
+                const iconRef = ref(storage, announcementData.icon);
+                await deleteObject(iconRef); // Delete the existing icon
+            }
+
             // Upload the new image if provided
             if (image) {
                 const storageRef = ref(storage, `announcements/${Date.now()}_${image.name}`);
                 const snapshot = await uploadBytes(storageRef, image);
                 downloadURL = await getDownloadURL(snapshot.ref);
                 imageName = image.name;
+            }
+
+            // Upload the new icon if provided
+            if (image) {
+                const storageRef = ref(storage, `announcements/${Date.now()}_${icon.name}`);
+                const snapshot = await uploadBytes(storageRef, icon);
+                downloadURLIcon = await getDownloadURL(snapshot.ref);
+                iconName = icon.name;
             }
 
             // Update the announcement document in Firestore
@@ -721,6 +749,8 @@ export const FirebaseProvider = (props) => {
                 status: false,
                 image: downloadURL || null,
                 imageName: imageName || null,
+                icon: downloadURLIcon || null,
+                iconName: iconName || null,
             });
 
             return { success: true };
@@ -736,7 +766,6 @@ export const FirebaseProvider = (props) => {
         try {
             setLoading(true);
 
-
             // Fetch the existing announcement document
             let announcementDocRef = doc(firestore, 'announcements', uid);
 
@@ -747,40 +776,17 @@ export const FirebaseProvider = (props) => {
                 // Return the updated document data
                 await getDoc(announcementDocRef);
                 return { success: true };
+            } else if (status === false) {
+                // Update the status to false
+                await updateDoc(announcementDocRef, { status: true });
+
+                const response = await axios.get(`${apiUrl}/update-users-status`);
+                if (response.data.success === 'failed') {
+                    return { success: false, error: response.data.message };
+                }
+
+                return { success: true };
             }
-
-            // Check if there's another active announcement
-            const activeAnnouncementQuery = query(
-                collection(firestore, 'announcements'),
-                where('status', '==', true)
-            );
-            const activeAnnouncementSnapshot = await getDocs(activeAnnouncementQuery);
-
-            // If there's an active announcement other than the current one
-            if (activeAnnouncementSnapshot.size > 0) {
-                // Get all active announcements
-                const batch = writeBatch(firestore);
-
-                activeAnnouncementSnapshot.forEach(docSnapshot => {
-                    const activeAnnouncementRef = docSnapshot.ref;
-                    // Only update announcements that are not the current one
-                    if (activeAnnouncementRef.id !== uid) {
-                        batch.update(activeAnnouncementRef, { status: false });
-                    }
-                });
-
-                // Commit the batch
-                await batch.commit();
-            }
-
-            const response = await axios.get(`${apiUrl}/update-users-status`);
-            if (response.data.success === 'failed') {
-                return { success: false, error: response.data.message };
-            }
-            // Update the status of the current announcement
-            await updateDoc(announcementDocRef, { status: true });
-
-            return { success: true };
         } catch (error) {
             console.error("Error updating announcement:", error);
             return { success: false, error: error.message };
@@ -788,7 +794,6 @@ export const FirebaseProvider = (props) => {
             setLoading(false);
         }
     };
-
 
 
     const deleteAnnoucement = async (uid) => {

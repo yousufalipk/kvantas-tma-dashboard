@@ -46,7 +46,7 @@ const Annoucement = () => {
     }
   }
 
-  const handleUpdateAnnoucment = async (uid, title, subtitle, description, reward, imageName) => {
+  const handleUpdateAnnoucment = async (uid, title, subtitle, description, reward, imageName, iconName) => {
     const annoucementData = {
       tick: false,
       uid: uid,
@@ -54,7 +54,8 @@ const Annoucement = () => {
       subtitle: subtitle,
       description: description,
       reward: reward,
-      imageName: imageName
+      imageName: imageName,
+      iconName: iconName
     }
     try {
       navigate(`/annoucement-form-update`);
@@ -172,8 +173,10 @@ const Annoucement = () => {
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Reward</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Participants</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Toggle Status</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">File Name</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Thumbnail</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Image Name</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Image Thumb</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Icon Name</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Icon Thumb</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Update</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Delete</th>
                 </tr>
@@ -187,22 +190,22 @@ const Annoucement = () => {
                           {key + 1}
                         </span>
                       </th>
-                      <td 
-                        onClick={()=>handleModalOpen(cls.title)} 
-                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                      <td
+                        onClick={() => handleModalOpen(cls.title)}
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                       >
                         {cls.title}
                       </td>
-                      <td 
-                        onClick={()=>handleModalOpen(cls.subtitle)} 
-                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                      <td
+                        onClick={() => handleModalOpen(cls.subtitle)}
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.subtitle}
                       </td>
-                      <td 
-                        onClick={()=>handleModalOpen(cls.description)} 
-                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                      <td
+                        onClick={() => handleModalOpen(cls.description)}
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.description}
                       </td>
@@ -213,7 +216,6 @@ const Annoucement = () => {
                         {cls.numberOfParticipants}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'
-                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                       >
                         <button
                           className="p-2 hover:bg-bluebtn rounded-lg"
@@ -223,18 +225,18 @@ const Annoucement = () => {
                         </button>
                       </td>
                       {cls.imageName ? (
-                        <td 
-                          className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
-                          onClick={()=>handleModalOpen(cls.imageName)}  
+                        <td
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
+                          onClick={() => handleModalOpen(cls.imageName)}
                           style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           {cls.imageName}
                         </td>
                       ) : (
                         <td
-                          className='px-6 py-4 border-b border-gray-200 text-sm text-center text-red-500 italic'
-                        > 
-                          null
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center italic'
+                        >
+                          default
                         </td>
                       )}
                       {cls.image ? (
@@ -243,17 +245,45 @@ const Annoucement = () => {
                             <img src={cls.image} alt={"Thumb"} className='w-10 h-10 m-auto' />
                           </a>
                         </td>
-                      ):(
+                      ) : (
                         <td
-                          className='px-6 py-4 border-b border-gray-200 text-sm text-center text-red-500 italic'
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center italic'
                         >
-                          null
+                          default
+                        </td>
+                      )}
+                      {cls.iconName ? (
+                        <td
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
+                          onClick={() => handleModalOpen(cls.iconName)}
+                          style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                        >
+                          {cls.iconName}
+                        </td>
+                      ) : (
+                        <td
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center italic'
+                        >
+                          default
+                        </td>
+                      )}
+                      {cls.icon ? (
+                        <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                          <a href={cls.icon} target="_blank" rel="noopener noreferrer">
+                            <img src={cls.icon} alt={"Thumb"} className='w-10 h-10 m-auto' />
+                          </a>
+                        </td>
+                      ) : (
+                        <td
+                          className='px-6 py-4 border-b border-gray-200 text-sm text-center italic'
+                        >
+                          default
                         </td>
                       )}
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.description, cls.reward, cls.imageName)}
+                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.description, cls.reward, cls.imageName, cls.iconName)}
                           style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           Edit

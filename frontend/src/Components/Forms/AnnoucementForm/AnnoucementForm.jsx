@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useFirebase } from '../../../Context/Firebase';
 
 const AnnoucementForm = () => {
     const { createAnnoucement, updateAnnoucement, sendData } = useFirebase();
-    
+
     const navigate = useNavigate();
 
     const initialValues = {
@@ -15,7 +15,8 @@ const AnnoucementForm = () => {
         subtitle: sendData.subtitle || '',
         description: sendData.description || '',
         reward: sendData.reward || '',
-        image: sendData.imageName || ''
+        image: sendData.imageName || '',
+        icon: sendData.iconName || ''
     };
 
     const validationSchema = Yup.object({
@@ -24,8 +25,10 @@ const AnnoucementForm = () => {
         description: Yup.string().required('Description is required'),
         reward: Yup.number().required('Reward is required'),
         image: Yup.mixed()
-            .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024)) // 2 MB limit
-            .test('fileType', 'Unsupported file format', value => !value || ['image/jpeg', 'image/png'].includes(value.type))  // Accepts only JPEG and PNG
+            .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024))
+            .test('fileType', 'Unsupported file format', value => !value || ['image/jpeg', 'image/png'].includes(value.type)),
+        icon: Yup.mixed()
+            .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024))
     });
 
     const formik = useFormik({
@@ -55,7 +58,8 @@ const AnnoucementForm = () => {
                         subtitle: values.subtitle,
                         description: values.description,
                         reward: values.reward,
-                        image: values.image
+                        image: values.image,
+                        icon: values.icon
                     });
                     if (response.success) {
                         navigate('/annoucements');
@@ -77,9 +81,14 @@ const AnnoucementForm = () => {
         navigate('/annoucements');
     };
 
-    const handleFileChange = (event) => {
+    const handleImageChange = (event) => {
         const file = event.currentTarget.files[0];
         formik.setFieldValue('image', file);
+    };
+
+    const handleIconChange = (event) => {
+        const file = event.currentTarget.files[0];
+        formik.setFieldValue('icon', file);
     };
 
     return (
@@ -130,9 +139,11 @@ const AnnoucementForm = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.subtitle}
                 />
-                {formik.touched.subtitle && formik.errors.subtitle ? (
-                    <div className='text-red-600 text-center'>{formik.errors.subtitle}</div>
-                ) : null}
+                {
+                    formik.touched.subtitle && formik.errors.subtitle ? (
+                        <div className='text-red-600 text-center'>{formik.errors.subtitle}</div>
+                    ) : null
+                }
 
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
@@ -144,9 +155,11 @@ const AnnoucementForm = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.description}
                 />
-                {formik.touched.description && formik.errors.description ? (
-                    <div className='text-red-600 text-center'>{formik.errors.description}</div>
-                ) : null}
+                {
+                    formik.touched.description && formik.errors.description ? (
+                        <div className='text-red-600 text-center'>{formik.errors.description}</div>
+                    ) : null
+                }
 
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
@@ -158,23 +171,59 @@ const AnnoucementForm = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.reward}
                 />
-                {formik.touched.reward && formik.errors.reward ? (
-                    <div className='text-red-600 text-center'>{formik.errors.reward}</div>
-                ) : null}
-
+                {
+                    formik.touched.reward && formik.errors.reward ? (
+                        <div className='text-red-600 text-center'>{formik.errors.reward}</div>
+                    ) : null
+                }
+                {/* Input Image */}
+                <div className='flex justify-between px-5'>
+                    <label
+                        className='w-1/2 text-sm text-gray-400 italic'
+                        htmlFor="image"
+                    >
+                        {`Announcement Image`}
+                    </label>
+                    <p className='text-xs font-semibold text-gray-400'>{`---( Optional )---`}</p>
+                </div>
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700 bg-white'
                     type='file'
                     id='image'
                     name='image'
-                    onChange={handleFileChange}
+                    onChange={handleImageChange}
                 />
-                {formik.touched.image && formik.errors.image ? (
-                    <div className='text-red-600 text-center'>{formik.errors.image}</div>
-                ) : null}
+                {
+                    formik.touched.image && formik.errors.image ? (
+                        <div className='text-red-600 text-center'>{formik.errors.image}</div>
+                    ) : null
+                }
 
-            </form>
-        </div>
+                {/* Input Icon */}
+                <div className='flex justify-between px-5'>
+                    <label
+                        className='w-1/2 text-sm text-gray-400 italic'
+                        htmlFor="icon"
+                    >
+                        {`Announcement Icon`}
+                    </label>
+                    <p className='text-xs font-semibold text-gray-400'>{`---( Optional )---`}</p>
+                </div>
+                <input
+                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700 bg-white'
+                    type='file'
+                    id='icon'
+                    name='icon'
+                    onChange={handleIconChange}
+                />
+                {
+                    formik.touched.icon && formik.errors.icon ? (
+                        <div className='text-red-600 text-center'>{formik.errors.icon}</div>
+                    ) : null
+                }
+
+            </form >
+        </div >
     );
 };
 
