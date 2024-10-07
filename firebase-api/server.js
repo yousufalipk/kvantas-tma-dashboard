@@ -169,6 +169,7 @@ app.get('/downloadTelegramUsersData', async (req, res) => {
       const formatedDate = formatDate(telegramUser.createdAt);
       const formatedTime = formatTime(telegramUser.createdAt);
 
+      /*
       usersData.push([
         srno + 1,
         formatedTime || 'notSet',
@@ -186,7 +187,28 @@ app.get('/downloadTelegramUsersData', async (req, res) => {
         telegramUser.phoneNumber || 'notSet',
         telegramUser.tonWalletAddress || 'notSet',
         telegramUser.balance || 'notSet',
+      ]);  */
+
+
+      usersData.push([
+        srno + 1,                                   // Serial number
+        formatedTime || 'notSet',                   // Formatted time
+        formatedDate || 'notSet',                   // Formatted date
+        telegramUser.firstName || 'notSet',         // First name
+        telegramUser.lastName || 'notSet',          // Last name
+        telegramUser.username || 'notSet',          // Username
+        telegramUser.userId || 'notSet',            // User ID
+        telegramUser.twitterUsername || 'notSet',   // Twitter username
+        telegramUser.instagramUsername || 'notSet', // Instagram username
+        telegramUser.linkedInUsername || 'notSet',  // LinkedIn username
+        telegramUser.discordUsername || 'notSet',   // Discord username
+        telegramUser.youtubeUsername || 'notSet',   // YouTube username
+        telegramUser.email || 'notSet',             // Email
+        telegramUser.phoneNumber || 'notSet',       // Phone number
+        telegramUser.tonWalletAddress || 'notSet',  // TON wallet address
+        telegramUser.balance || 'notSet',
       ]);
+
       srno++;
     });
 
