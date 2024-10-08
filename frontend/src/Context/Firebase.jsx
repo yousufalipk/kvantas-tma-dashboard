@@ -45,6 +45,8 @@ export const FirebaseProvider = (props) => {
 
     const [username, setUsername] = useState(null);
 
+    const [email, setEmail] = useState(null);
+
     const [userType, setUserType] = useState(null);
 
     const [isAuth, setAuth] = useState(null);
@@ -92,6 +94,7 @@ export const FirebaseProvider = (props) => {
                     const userData = docSnap.data();
                     setUsername(`${userData.fname} ${userData.lname}`);
                     setUserType(userData.userType);
+                    setEmail(userData.email);
                 }
             } else {
                 // Clear the data if the user is not authenticated
@@ -188,7 +191,7 @@ export const FirebaseProvider = (props) => {
 
     const fetchUsers = async () => {
         try {
-            const usersQuery = query(collection(firestore, 'users'), where('userType', '!=', 'admin'));
+            const usersQuery = query(collection(firestore, 'users'), where('email', '!=', email));
             const querySnapshot = await getDocs(usersQuery);
             const nonAdminUsers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setUsers(nonAdminUsers);
