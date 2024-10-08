@@ -519,19 +519,33 @@ export const FirebaseProvider = (props) => {
 
             // Add the announcement to Firestore
             const annoucementCollection = collection(firestore, 'announcements');
-
-            await addDoc(annoucementCollection, {
-                title: values.title,
-                subtitle: values.subtitle,
-                description: values.description,
-                reward: values.reward,
-                status: false,
-                image: downloadURL || null,
-                imageName: values.image.name || null,
-                icon: downloadIconURL || null,
-                iconName: values.icon.name || null
-            });
-
+            if (values.type === 'desc') {
+                await addDoc(annoucementCollection, {
+                    type: values.type,
+                    title: values.title,
+                    subtitle: values.subtitle,
+                    description: values.description,
+                    reward: values.reward,
+                    status: false,
+                    image: downloadURL || null,
+                    imageName: values.image.name || null,
+                    icon: downloadIconURL || null,
+                    iconName: values.icon.name || null
+                });
+            } else {
+                await addDoc(annoucementCollection, {
+                    type: values.type,
+                    title: values.title,
+                    subtitle: values.subtitle,
+                    link: values.link,
+                    reward: values.reward,
+                    status: false,
+                    image: downloadURL || null,
+                    imageName: values.image.name || null,
+                    icon: downloadIconURL || null,
+                    iconName: values.icon.name || null
+                });
+            }
             return { success: true };
         } catch (error) {
             console.error("Error creating announcement:", error);
@@ -693,7 +707,7 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const updateAnnoucement = async ({ uid, title, subtitle, description, reward, image, icon }) => {
+    const updateAnnoucement = async ({ type, uid, title, subtitle, description, link, reward, image, icon }) => {
         try {
             setLoading(true);
 
@@ -740,19 +754,33 @@ export const FirebaseProvider = (props) => {
                 iconName = icon.name;
             }
 
-            // Update the announcement document in Firestore
-            await updateDoc(announcementDocRef, {
-                title: title,
-                subtitle: subtitle,
-                description: description,
-                reward: reward,
-                status: false,
-                image: downloadURL || null,
-                imageName: imageName || null,
-                icon: downloadURLIcon || null,
-                iconName: iconName || null,
-            });
-
+            if (type === 'desc') {
+                await updateDoc(announcementDocRef, {
+                    type: type,
+                    title: title,
+                    subtitle: subtitle,
+                    description: description,
+                    reward: reward,
+                    status: false,
+                    image: downloadURL || null,
+                    imageName: imageName || null,
+                    icon: downloadURLIcon || null,
+                    iconName: iconName || null,
+                });
+            } else {
+                await updateDoc(announcementDocRef, {
+                    type: type,
+                    title: title,
+                    subtitle: subtitle,
+                    link: link,
+                    reward: reward,
+                    status: false,
+                    image: downloadURL || null,
+                    imageName: imageName || null,
+                    icon: downloadURLIcon || null,
+                    iconName: iconName || null,
+                });
+            }
             return { success: true };
         } catch (error) {
             console.error("Error updating announcement:", error);

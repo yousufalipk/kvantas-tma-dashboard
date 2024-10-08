@@ -9,20 +9,35 @@ const AnnoucementForm = () => {
     const { createAnnoucement, updateAnnoucement, sendData } = useFirebase();
 
     const navigate = useNavigate();
-
-    const initialValues = {
-        title: sendData.title || '',
-        subtitle: sendData.subtitle || '',
-        description: sendData.description || '',
-        reward: sendData.reward || '',
-        image: sendData.imageName || '',
-        icon: sendData.iconName || ''
-    };
+    let initialValues;
+    if (sendData.description) {
+        initialValues = {
+            type: sendData.type || 'desc',
+            title: sendData.title || '',
+            subtitle: sendData.subtitle || '',
+            description: sendData.description || '',
+            reward: sendData.reward || '',
+            image: sendData.imageName || '',
+            icon: sendData.iconName || ''
+        };
+    } else {
+        initialValues = {
+            type: sendData.type || 'desc',
+            title: sendData.title || '',
+            subtitle: sendData.subtitle || '',
+            link: sendData.link || '',
+            reward: sendData.reward || '',
+            image: sendData.imageName || '',
+            icon: sendData.iconName || ''
+        };
+    }
 
     const validationSchema = Yup.object({
+        type: Yup.string().required('Type is required!'),
         title: Yup.string().required('Title is required'),
         subtitle: Yup.string().required('Subtitle is required'),
-        description: Yup.string().required('Description is required'),
+        description: Yup.string(),
+        link: Yup.string(),
         reward: Yup.number().required('Reward is required'),
         image: Yup.mixed()
             .test('fileSize', 'File size too large', value => !value || (value && value.size <= 2 * 1024 * 1024))
@@ -53,10 +68,12 @@ const AnnoucementForm = () => {
                     console.log("updating...");
                     // Update Announcement
                     const response = await updateAnnoucement({
+                        type: sendData.type,
                         uid: sendData.uid,
                         title: values.title,
                         subtitle: values.subtitle,
                         description: values.description,
+                        link: values.link,
                         reward: values.reward,
                         image: values.image,
                         icon: values.icon
@@ -115,6 +132,7 @@ const AnnoucementForm = () => {
             </div>
             <hr className='my-5 border-gray-300' />
             <form onSubmit={formik.handleSubmit} className='flex flex-col w-3/4 max-w-md mx-auto'>
+                {/* Title */}
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
@@ -129,6 +147,7 @@ const AnnoucementForm = () => {
                     <div className='text-red-600 text-center'>{formik.errors.title}</div>
                 ) : null}
 
+                {/* Sub Title */}
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
@@ -145,21 +164,68 @@ const AnnoucementForm = () => {
                     ) : null
                 }
 
-                <input
+                {/* Type desc or link */}
+                <div className='flex justify-between px-5'>
+                    <label
+                        className='w-1/2 text-sm text-gray-400 italic'
+                        htmlFor="image"
+                    >
+                        {`Select Announcement Type`}
+                    </label>
+                </div>
+                <select
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
-                    type='text'
-                    id='description'
-                    name='description'
-                    placeholder='Description'
+                    id='type'
+                    name='type'
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.description}
-                />
-                {
-                    formik.touched.description && formik.errors.description ? (
-                        <div className='text-red-600 text-center'>{formik.errors.description}</div>
-                    ) : null
-                }
+                    value={formik.values.type}
+                >
+                    <option value='' disabled>Select Annoucement Type</option>
+                    <option value='desc'>Announcement with description</option>
+                    <option value='link'>Announcement with Link</option>
+                </select>
+                {formik.touched.type && formik.errors.type ? (
+                    <div className='text-red-600 text-center'>{formik.errors.type}</div>
+                ) : null}
+
+                {formik.values.type === 'desc' ? (
+                    <>
+                        <input
+                            className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                            type='text'
+                            id='description'
+                            name='description'
+                            placeholder='Description'
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.description}
+                        />
+                        {
+                            formik.touched.description && formik.errors.description ? (
+                                <div className='text-red-600 text-center'>{formik.errors.description}</div>
+                            ) : null
+                        }
+                    </>
+                ) : (
+                    <>
+                        <input
+                            className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                            type='text'
+                            id='link'
+                            name='link'
+                            placeholder='Link'
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.link}
+                        />
+                        {
+                            formik.touched.link && formik.errors.link ? (
+                                <div className='text-red-600 text-center'>{formik.errors.link}</div>
+                            ) : null
+                        }
+                    </>
+                )}
 
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'

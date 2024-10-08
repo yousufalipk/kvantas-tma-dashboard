@@ -46,16 +46,30 @@ const Annoucement = () => {
     }
   }
 
-  const handleUpdateAnnoucment = async (uid, title, subtitle, description, reward, imageName, iconName) => {
-    const annoucementData = {
-      tick: false,
-      uid: uid,
-      title: title,
-      subtitle: subtitle,
-      description: description,
-      reward: reward,
-      imageName: imageName,
-      iconName: iconName
+  const handleUpdateAnnoucment = async (uid, title, subtitle, type, description, link, reward, imageName, iconName) => {
+    let annoucementData;
+    if (type === 'desc') {
+      annoucementData = {
+        tick: false,
+        uid: uid,
+        title: title,
+        subtitle: subtitle,
+        description: description,
+        reward: reward,
+        imageName: imageName,
+        iconName: iconName
+      }
+    } else {
+      annoucementData = {
+        tick: false,
+        uid: uid,
+        title: title,
+        subtitle: subtitle,
+        link: link,
+        reward: reward,
+        imageName: imageName,
+        iconName: iconName
+      }
     }
     try {
       navigate(`/annoucement-form-update`);
@@ -169,6 +183,7 @@ const Annoucement = () => {
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Sr.No</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Title</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Subtitle</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Type</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Description</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Reward</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Participants</th>
@@ -202,6 +217,12 @@ const Annoucement = () => {
                         className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.subtitle}
+                      </td>
+                      <td
+                        onClick={() => handleModalOpen(cls.type)}
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
+                        style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                        {cls.type}
                       </td>
                       <td
                         onClick={() => handleModalOpen(cls.description)}
@@ -280,10 +301,10 @@ const Annoucement = () => {
                           default
                         </td>
                       )}
-                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.description, cls.reward, cls.imageName, cls.iconName)}
+                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.type, cls.description, cls.link, cls.reward, cls.imageName, cls.iconName)}
                           style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           Edit
