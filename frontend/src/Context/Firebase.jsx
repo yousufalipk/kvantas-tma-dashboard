@@ -531,9 +531,9 @@ export const FirebaseProvider = (props) => {
                     reward: values.reward,
                     status: false,
                     image: downloadURL || null,
-                    imageName: values.image.name || null,
+                    imageName: values.image?.name || null,
                     icon: downloadIconURL || null,
-                    iconName: values.icon.name || null
+                    iconName: values.icon?.name || null
                 });
             } else {
                 await addDoc(annoucementCollection, {
@@ -544,9 +544,9 @@ export const FirebaseProvider = (props) => {
                     reward: values.reward,
                     status: false,
                     image: downloadURL || null,
-                    imageName: values.image.name || null,
+                    imageName: values.image?.name || null,
                     icon: downloadIconURL || null,
-                    iconName: values.icon.name || null
+                    iconName: values.icon?.name || null
                 });
             }
             return { success: true };
@@ -710,60 +710,73 @@ export const FirebaseProvider = (props) => {
         }
     };
 
-    const updateAnnoucement = async ({ type, uid, title, subtitle, description, link, reward, image, icon }) => {
+    const updateAnnoucement = async (data) => {
         try {
             setLoading(true);
 
             // Fetch the existing announcement document
-            const announcementDocRef = doc(firestore, 'announcements', uid);
+            const announcementDocRef = doc(firestore, 'announcements', data.uid);
             const announcementSnapshot = await getDoc(announcementDocRef);
 
             if (!announcementSnapshot.exists()) {
                 throw new Error('Announcement not found');
             }
 
-            const announcementData = announcementSnapshot.data();
-            let downloadURL = announcementData.image || '';
-            let imageName = announcementData.imageName || '';
+            // Image
+            let downloadURL, imageName;
+            // Icon
+            let downloadURLIcon, iconName;
 
-            // Delete the existing image if a new image is provided
-            if (image && announcementData.image) {
-                const imageRef = ref(storage, announcementData.image);
-                await deleteObject(imageRef); // Delete the existing image
+            // Reset Link / Description if type is changing
+            if (data.type === 'desc') {
+                data.link = null;
+            } else {
+                data.description = null;
             }
 
-            let downloadURLIcon = announcementData.icon || '';
-            let iconName = announcementData.iconName || '';
-
-            // Delete the existing icon if a new icon is provided
-            if (icon && announcementData.icon) {
-                const iconRef = ref(storage, announcementData.icon);
-                await deleteObject(iconRef); // Delete the existing icon
-            }
-
-            // Upload the new image if provided
-            if (image) {
-                const storageRef = ref(storage, `announcements/${Date.now()}_${image.name}`);
-                const snapshot = await uploadBytes(storageRef, image);
+            // Check for new image
+            if (data.image) {
+                // 1 - Delete previous image
+                if (data.prevData.prevImage) {
+                    const imageRef = ref(storage, data.prevData.prevImage);
+                    await deleteObject(imageRef);
+                }
+                // 2 - Upload new Image 
+                const storageRef = ref(storage, `announcements/${Date.now()}_${data.image.name}`);
+                const snapshot = await uploadBytes(storageRef, data.image);
                 downloadURL = await getDownloadURL(snapshot.ref);
-                imageName = image.name;
+                imageName = data.image.name;
+            } else {
+                // set image to null 
+                downloadURL = null;
+                imageName = null;
             }
 
-            // Upload the new icon if provided
-            if (image) {
-                const storageRef = ref(storage, `announcements/${Date.now()}_${icon.name}`);
-                const snapshot = await uploadBytes(storageRef, icon);
+            if (data.icon) {
+                // 1 - Delete previous icon 
+                if (data.prevData.prevIcon) {
+                    const iconRef = ref(storage, data.prevData.prevIcon);
+                    await deleteObject(iconRef);
+                }
+                // 2 - Upload new icon 
+                const storageRef = ref(storage, `announcements/${Date.now()}_${data.icon.name}`);
+                const snapshot = await uploadBytes(storageRef, data.icon);
                 downloadURLIcon = await getDownloadURL(snapshot.ref);
-                iconName = icon.name;
+                iconName = data.icon.name;
+            } else {
+                // set icon to null
+                downloadURLIcon = null;
+                iconName = null;
             }
 
-            if (type === 'desc') {
+            if (data.type === 'desc') {
                 await updateDoc(announcementDocRef, {
-                    type: type,
-                    title: title,
-                    subtitle: subtitle,
-                    description: description,
-                    reward: reward,
+                    type: data.type,
+                    title: data.title,
+                    subtitle: data.subtitle,
+                    description: data.description,
+                    link: null,
+                    reward: data.reward,
                     status: false,
                     image: downloadURL || null,
                     imageName: imageName || null,
@@ -772,11 +785,12 @@ export const FirebaseProvider = (props) => {
                 });
             } else {
                 await updateDoc(announcementDocRef, {
-                    type: type,
-                    title: title,
-                    subtitle: subtitle,
-                    link: link,
-                    reward: reward,
+                    type: data.type,
+                    title: data.title,
+                    subtitle: data.subtitle,
+                    description: null,
+                    link: data.link,
+                    reward: data.reward,
                     status: false,
                     image: downloadURL || null,
                     imageName: imageName || null,

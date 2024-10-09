@@ -186,7 +186,7 @@ const Annoucement = () => {
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Title</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Subtitle</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Type</th>
-                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Description</th>
+                  <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Desc/Link</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Reward</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Participants</th>
                   <th className='px-6 py-3 border-b-2 border-gray-300 text-sm text-center' scope="col">Toggle Status</th>
@@ -227,10 +227,10 @@ const Annoucement = () => {
                         {cls.type}
                       </td>
                       <td
-                        onClick={() => handleModalOpen(cls.description)}
+                        onClick={() => handleModalOpen(cls.description || cls.link)}
                         className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                        {cls.description}
+                        {cls.description || cls.link}
                       </td>
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                         {cls.reward}
