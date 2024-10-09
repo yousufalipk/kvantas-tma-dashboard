@@ -12,7 +12,7 @@ const AnnoucementForm = () => {
     let initialValues;
     if (sendData.description) {
         initialValues = {
-            type: sendData.type || 'desc',
+            type: sendData.type || '',
             title: sendData.title || '',
             subtitle: sendData.subtitle || '',
             description: sendData.description || '',

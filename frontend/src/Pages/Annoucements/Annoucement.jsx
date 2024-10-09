@@ -51,6 +51,7 @@ const Annoucement = () => {
     if (type === 'desc') {
       annoucementData = {
         tick: false,
+        type: type,
         uid: uid,
         title: title,
         subtitle: subtitle,
@@ -63,6 +64,7 @@ const Annoucement = () => {
       annoucementData = {
         tick: false,
         uid: uid,
+        type: type,
         title: title,
         subtitle: subtitle,
         link: link,
@@ -109,7 +111,7 @@ const Annoucement = () => {
 
   const handleStatusToggle = async (uid, title, status) => {
     try {
-      const shouldToggle = window.confirm(`Are you sure you want toggle status of ${title}. This will in-Activate all other annoucements & status of all user will be rest!`);
+      const shouldToggle = window.confirm(`Are you sure you want toggle status of ${title}.`);
       if (!shouldToggle) {
         return
       }
