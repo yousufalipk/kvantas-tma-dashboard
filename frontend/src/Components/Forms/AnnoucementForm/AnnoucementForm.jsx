@@ -74,7 +74,7 @@ const AnnouncementForm = () => {
         title: Yup.string().required('Title is required'),
         subtitle: Yup.string().required('Subtitle is required'),
         description: Yup.string(),
-        link: Yup.string(),
+        link: Yup.string().url('Invalid URL format'),
         reward: Yup.number().required('Reward is required'),
     });
 
@@ -258,6 +258,14 @@ const AnnouncementForm = () => {
                     </>
                 ) : (
                     <>
+                        <div className='flex justify-between px-5'>
+                            <label
+                                className='text-sm text-gray-400 italic'
+                                htmlFor="image"
+                            >
+                                {`Link Format: (https://www.google.com)`}
+                            </label>
+                        </div>
                         <input
                             className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                             type='text'

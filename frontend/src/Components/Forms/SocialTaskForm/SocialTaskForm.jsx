@@ -22,10 +22,10 @@ const SocialTaskForm = () => {
         priority: Yup.number().required('Priority is required'),
         type: Yup.string().required('Type is required'),
         title: Yup.string().required('Title is required'),
-        link: Yup.string(),
+        link: Yup.string().url('Invalid URL format'),
         reward: Yup.number().required('Reward is required'),
     });
-    
+
 
     const formik = useFormik({
         initialValues,
@@ -158,6 +158,14 @@ const SocialTaskForm = () => {
 
                 {formik.values.type !== 'phone' && formik.values.type !== 'email' && (
                     <>
+                        <div className='flex justify-between px-5'>
+                            <label
+                                className='text-sm text-gray-400 italic'
+                                htmlFor="image"
+                            >
+                                {`Link Format: (https://www.google.com)`}
+                            </label>
+                        </div>
                         <input
                             className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                             type='text'

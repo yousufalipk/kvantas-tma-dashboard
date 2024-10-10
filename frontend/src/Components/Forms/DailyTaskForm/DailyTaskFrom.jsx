@@ -11,9 +11,9 @@ const DailyTaskForm = () => {
     const navigate = useNavigate();
 
 
-    useEffect(()=> {
+    useEffect(() => {
         console.log("dataaa", sendData);
-    },[])
+    }, [])
     const initialValues = {
         priority: sendData.priority || '',
         type: sendData.type || '',
@@ -26,7 +26,7 @@ const DailyTaskForm = () => {
         priority: Yup.number().required('Priority is required'),
         type: Yup.string().required('Type is required'),
         title: Yup.string().required('Title is required'),
-        link: Yup.string().required('Link is required'),
+        link: Yup.string().url('Invalid URL format'),
         reward: Yup.number().required('Reward is required')
     });
 
@@ -53,7 +53,7 @@ const DailyTaskForm = () => {
                     console.log("Updating!");
                     // Update task
                     const response = await updateDailyTask({
-                        uid : sendData.uid,
+                        uid: sendData.uid,
                         priority: values.priority,
                         type: values.type,
                         title: values.title,
@@ -155,6 +155,15 @@ const DailyTaskForm = () => {
                     <div className='text-red-600 text-center'>{formik.errors.title}</div>
                 ) : null}
 
+
+                <div className='flex justify-between px-5'>
+                    <label
+                        className='text-sm text-gray-400 italic'
+                        htmlFor="image"
+                    >
+                        {`Link Format: (https://www.google.com)`}
+                    </label>
+                </div>
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='text'
