@@ -169,27 +169,6 @@ app.get('/downloadTelegramUsersData', async (req, res) => {
       const formatedDate = formatDate(telegramUser.createdAt);
       const formatedTime = formatTime(telegramUser.createdAt);
 
-      /*
-      usersData.push([
-        srno + 1,
-        formatedTime || 'notSet',
-        formatedDate || 'notSet',
-        telegramUser.firstName || 'notSet',
-        telegramUser.lastName || 'notSet',
-        telegramUser.username || 'notSet',
-        telegramUser.id || 'notSet',
-        telegramUser.twitterUserName || 'notSet',
-        telegramUser.instagramUsername || 'notSet',
-        telegramUser.linkedinUsername || 'notSet',
-        telegramUser.discordUsername || 'notSet',
-        telegramUser.youtubeUsername || 'notSet',
-        telegramUser.email || 'notSet',
-        telegramUser.phoneNumber || 'notSet',
-        telegramUser.tonWalletAddress || 'notSet',
-        telegramUser.balance || 'notSet',
-      ]);  */
-
-
       usersData.push([
         srno + 1,                                   // Serial number
         formatedTime || 'notSet',                   // Formatted time

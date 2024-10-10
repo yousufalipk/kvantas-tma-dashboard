@@ -46,30 +46,34 @@ const Annoucement = () => {
     }
   }
 
-  const handleUpdateAnnoucment = async (uid, title, subtitle, type, description, link, reward, imageName, iconName) => {
+  const handleUpdateAnnoucment = async (uid, title, subtitle, type, description, link, reward, image, imageName, icon, iconName) => {
     let annoucementData;
     if (type === 'desc') {
       annoucementData = {
         tick: false,
-        type: type,
         uid: uid,
         title: title,
         subtitle: subtitle,
+        type: type,
         description: description,
         reward: reward,
+        image: image,
         imageName: imageName,
+        icon: icon,
         iconName: iconName
       }
     } else {
       annoucementData = {
         tick: false,
         uid: uid,
-        type: type,
         title: title,
         subtitle: subtitle,
+        type: type,
         link: link,
         reward: reward,
+        image: image,
         imageName: imageName,
+        icon: icon,
         iconName: iconName
       }
     }
@@ -306,7 +310,7 @@ const Annoucement = () => {
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.type, cls.description, cls.link, cls.reward, cls.imageName, cls.iconName)}
+                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.type, cls.description, cls.link, cls.reward, cls.image, cls.imageName, cls.icon, cls.iconName)}
                           style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           Edit

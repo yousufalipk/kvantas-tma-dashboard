@@ -9,6 +9,9 @@ const AnnouncementForm = () => {
     const { createAnnoucement, updateAnnoucement, sendData } = useFirebase();
     const navigate = useNavigate();
 
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedIcon, setSelectedIcon] = useState(null);
+
     // State for initial values
     const [initialValues, setInitialValues] = useState({
         type: 'desc',
@@ -34,16 +37,35 @@ const AnnouncementForm = () => {
                 icon: null,
             });
         } else {
-            setInitialValues({
-                type: sendData.type || 'desc',
-                title: sendData.title || '',
-                subtitle: sendData.subtitle || '',
-                description: sendData.description || '',
-                link: sendData.link || '',
-                reward: sendData.reward || '',
-                image: sendData.image || null,
-                icon: sendData.icon || null,
-            });
+            if (sendData.type === 'desc') {
+                setInitialValues({
+                    type: sendData.type || '',
+                    title: sendData.title || '',
+                    subtitle: sendData.subtitle || '',
+                    description: sendData.description || '',
+                    link: '',
+                    reward: sendData.reward || '',
+                    image: sendData.image || null,
+                    icon: sendData.icon || null,
+                });
+            } else {
+                setInitialValues({
+                    type: sendData.type || '',
+                    title: sendData.title || '',
+                    subtitle: sendData.subtitle || '',
+                    description: '',
+                    link: sendData.link || '',
+                    reward: sendData.reward || '',
+                    image: sendData.image || null,
+                    icon: sendData.icon || null,
+                });
+            }
+            if (sendData.icon) {
+                setSelectedIcon(sendData.iconName);
+            }
+            if (sendData.imageName) {
+                setSelectedImage(sendData.imageName);
+            }
         }
     }, [sendData]);
 
@@ -80,15 +102,21 @@ const AnnouncementForm = () => {
                         uid: sendData.uid,
                         title: values.title,
                         subtitle: values.subtitle,
-                        description: values.description,
-                        link: values.link,
+                        description: values.description || null,
+                        link: values.link || null,
                         reward: values.reward,
-                        image: values.image,
-                        icon: values.icon,
+                        image: values.image || null,
+                        imageName: values.image?.name || null,
+                        icon: values.icon || null,
+                        iconName: values.icon?.name || null,
                         prevData: {
-                            prevImage: sendData.image,
-                            prevIcon: sendData.icon,
+                            prevImage: sendData.image || null,
+                            prevImageName: sendData.image?.name || null,
+                            prevIcon: sendData.icon || null,
+                            prevIconName: sendData.icon?.name || null
                         },
+                        selectedImage: selectedImage || null,
+                        selectedIcon: selectedIcon || null
                     };
                     const response = await updateAnnoucement(data);
                     if (response.success) {
@@ -113,11 +141,23 @@ const AnnouncementForm = () => {
 
     const handleImageChange = (event) => {
         const file = event.currentTarget.files[0];
+        setSelectedImage(file ? file.name : null);
         formik.setFieldValue('image', file);
+    };
+
+    const handleRemoveImage = () => {
+        setSelectedImage(null);
+        formik.setFieldValue('image', null);
+    };
+
+    const handleRemoveIcon = () => {
+        setSelectedIcon(null);
+        formik.setFieldValue('icon', null);
     };
 
     const handleIconChange = (event) => {
         const file = event.currentTarget.files[0];
+        setSelectedIcon(file ? file.name : null);
         formik.setFieldValue('icon', file);
     };
 
@@ -258,39 +298,78 @@ const AnnouncementForm = () => {
                     </label>
                     <p className='text-xs font-semibold text-gray-400'>{`---( Optional )---`}</p>
                 </div>
-                <input
-                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700 bg-white'
-                    type='file'
-                    id='image'
-                    name='image'
-                    onChange={handleImageChange}
-                />
-                {formik.touched.image && formik.errors.image ? (
-                    <div className='text-red-600 text-center'>{formik.errors.image}</div>
-                ) : null}
+
+                <div>
+                    <input
+                        className='hidden'
+                        type='file'
+                        id='image'
+                        name='image'
+                        onChange={handleImageChange}
+                    />
+                    <div className='w-full flex'>
+                        <label
+                            htmlFor='image'
+                            className='bg-white text-gray-700 p-3 mx-2 my-2 rounded-xl w-1/2 text-center hover:italic'
+                        >
+                            Upload Image
+                        </label>
+                        <p
+                            onClick={() => handleRemoveImage()}
+                            className={`text-white flex justify-center items-center italic w-1/2 ${selectedImage && (`hover:border-2 hover:border-red-600 rounded-xl hover:text-red-600`)}`}
+                        >
+                            {selectedImage ? selectedImage : 'No file chosen'}
+                        </p>
+                    </div>
+                </div>
+                {
+                    formik.touched.image && formik.errors.image ? (
+                        <div className='text-red-600 text-center'>{formik.errors.image}</div>
+                    ) : null
+                }
 
                 {/* Input Icon */}
                 <div className='flex justify-between px-5'>
                     <label
                         className='w-1/2 text-sm text-gray-400 italic'
-                        htmlFor="icon"
+                        htmlFor="image"
                     >
                         {`Announcement Icon`}
                     </label>
                     <p className='text-xs font-semibold text-gray-400'>{`---( Optional )---`}</p>
                 </div>
-                <input
-                    className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700 bg-white'
-                    type='file'
-                    id='icon'
-                    name='icon'
-                    onChange={handleIconChange}
-                />
-                {formik.touched.icon && formik.errors.icon ? (
-                    <div className='text-red-600 text-center'>{formik.errors.icon}</div>
-                ) : null}
-            </form>
-        </div>
+
+                <div>
+                    <input
+                        className='hidden'
+                        type='file'
+                        id='icon'
+                        name='icon'
+                        onChange={handleIconChange}
+                    />
+                    <div className='w-full flex'>
+                        <label
+                            htmlFor='icon'
+                            className='bg-white text-gray-700 p-3 mx-2 my-2 rounded-xl w-1/2 text-center hover:italic'
+                        >
+                            Upload Icon
+                        </label>
+                        <p
+                            onClick={() => handleRemoveIcon()}
+                            className={`text-white flex justify-center items-center italic w-1/2 ${selectedIcon && (`hover:border-2 hover:border-red-600 rounded-xl hover:text-red-600`)}`}
+                        >
+                            {selectedIcon ? selectedIcon : 'No file chosen'}
+                        </p>
+                    </div>
+                </div>
+                {
+                    formik.touched.icon && formik.errors.icon ? (
+                        <div className='text-red-600 text-center'>{formik.errors.icon}</div>
+                    ) : null
+                }
+
+            </form >
+        </div >
     );
 };
 

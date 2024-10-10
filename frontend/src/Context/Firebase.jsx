@@ -735,24 +735,38 @@ export const FirebaseProvider = (props) => {
             }
 
             // Check for new image
-            if (data.image) {
-                // 1 - Delete previous image
+            if (data.selectedImage) {
+                if (data.selectedImage === data.prevData.prevImageName) {
+                    // Keeping the old images
+                    downloadURL = data.prevData.prevImage;
+                    imageName = data.prevData.prevImageName;
+                } else {
+                    // 1 - Delete previous image
+                    if (data.prevData.prevImage) {
+                        const imageRef = ref(storage, data.prevData.prevImage);
+                        await deleteObject(imageRef);
+                    }
+                    // 2 - Upload new Image 
+                    const storageRef = ref(storage, `announcements/${Date.now()}_${data.image.name}`);
+                    const snapshot = await uploadBytes(storageRef, data.image);
+                    downloadURL = await getDownloadURL(snapshot.ref);
+                    imageName = data.image.name;
+                }
+            } else {
+                // Remove old image if any
                 if (data.prevData.prevImage) {
                     const imageRef = ref(storage, data.prevData.prevImage);
                     await deleteObject(imageRef);
                 }
-                // 2 - Upload new Image 
-                const storageRef = ref(storage, `announcements/${Date.now()}_${data.image.name}`);
-                const snapshot = await uploadBytes(storageRef, data.image);
-                downloadURL = await getDownloadURL(snapshot.ref);
-                imageName = data.image.name;
-            } else {
-                // set image to null 
                 downloadURL = null;
                 imageName = null;
             }
 
-            if (data.icon) {
+            if (data.selectedIcon) {
+                if (data.selectedIcon === data.prevData.prevIconName) {
+                    downloadURLIcon = data.prevData.prevIcon;
+                    iconName = data.prevData.prevIconName;
+                }
                 // 1 - Delete previous icon 
                 if (data.prevData.prevIcon) {
                     const iconRef = ref(storage, data.prevData.prevIcon);
@@ -764,10 +778,17 @@ export const FirebaseProvider = (props) => {
                 downloadURLIcon = await getDownloadURL(snapshot.ref);
                 iconName = data.icon.name;
             } else {
-                // set icon to null
+                // Remove old icon if any
+                if (data.prevData.prevIcon) {
+                    const iconRef = ref(storage, data.prevData.prevIcon);
+                    await deleteObject(iconRef);
+                }
                 downloadURLIcon = null;
                 iconName = null;
             }
+
+
+            console.log(" Just before updating: ", downloadURL);
 
             if (data.type === 'desc') {
                 await updateDoc(announcementDocRef, {
