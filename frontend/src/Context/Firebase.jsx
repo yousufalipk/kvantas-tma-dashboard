@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, query, where, addDoc, deleteDoc, orderBy, writeBatch } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteField, query, where, addDoc, deleteDoc, orderBy } from 'firebase/firestore';
 import { getStorage, deleteObject } from 'firebase/storage';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import axios from 'axios';
@@ -504,6 +504,8 @@ export const FirebaseProvider = (props) => {
             let downloadURL = '';
             let downloadIconURL = '';
 
+            console.log("Values received: ", values);
+
             if (values.image) {
                 const storageRef = ref(storage, `announcements/${Date.now()}_${values.image.name}`);
 
@@ -522,6 +524,7 @@ export const FirebaseProvider = (props) => {
 
             // Add the announcement to Firestore
             const annoucementCollection = collection(firestore, 'announcements');
+
             if (values.type === 'desc') {
                 await addDoc(annoucementCollection, {
                     type: values.type,
@@ -531,23 +534,41 @@ export const FirebaseProvider = (props) => {
                     reward: values.reward,
                     status: false,
                     image: downloadURL || null,
-                    imageName: values.image?.name || null,
+                    imageName: values.imageName || null,
                     icon: downloadIconURL || null,
-                    iconName: values.icon?.name || null
+                    iconName: values.iconName || null
                 });
             } else {
-                await addDoc(annoucementCollection, {
-                    type: values.type,
-                    title: values.title,
-                    subtitle: values.subtitle,
-                    link: values.link,
-                    reward: values.reward,
-                    status: false,
-                    image: downloadURL || null,
-                    imageName: values.image?.name || null,
-                    icon: downloadIconURL || null,
-                    iconName: values.icon?.name || null
-                });
+                if (values.linkType === 'input') {
+                    await addDoc(annoucementCollection, {
+                        title: values.title,
+                        subtitle: values.subtitle,
+                        type: values.type,
+                        link: values.link,
+                        linkType: values.linkType,
+                        inputText: values.inputText,
+                        reward: values.reward,
+                        status: false,
+                        image: downloadURL || null,
+                        imageName: values.imageName,
+                        icon: downloadIconURL || null,
+                        iconName: values.iconName,
+                    });
+                } else {
+                    await addDoc(annoucementCollection, {
+                        title: values.title,
+                        subtitle: values.subtitle,
+                        type: values.type,
+                        link: values.link,
+                        linkType: values.linkType,
+                        reward: values.reward,
+                        status: false,
+                        image: downloadURL || null,
+                        imageName: values.imageName,
+                        icon: downloadIconURL || null,
+                        iconName: values.iconName,
+                    });
+                }
             }
             return { success: true };
         } catch (error) {
@@ -710,13 +731,21 @@ export const FirebaseProvider = (props) => {
         }
     };
 
+
+
     const updateAnnoucement = async (data) => {
         try {
             setLoading(true);
 
+            console.log(" I am updating announcment!", data);
+
             // Fetch the existing announcement document
             const announcementDocRef = doc(firestore, 'announcements', data.uid);
             const announcementSnapshot = await getDoc(announcementDocRef);
+
+            const prevData = announcementSnapshot.data()
+            console.log("Prevvvv Data", prevData);
+
 
             if (!announcementSnapshot.exists()) {
                 throw new Error('Announcement not found');
@@ -727,68 +756,57 @@ export const FirebaseProvider = (props) => {
             // Icon
             let downloadURLIcon, iconName;
 
-            // Reset Link / Description if type is changing
-            if (data.type === 'desc') {
-                data.link = null;
-            } else {
-                data.description = null;
-            }
-
-            // Check for new image
+            // Image handling logic
             if (data.selectedImage) {
-                if (data.selectedImage === data.prevData.prevImageName) {
-                    // Keeping the old images
-                    downloadURL = data.prevData.prevImage;
-                    imageName = data.prevData.prevImageName;
-                } else {
-                    // 1 - Delete previous image
-                    if (data.prevData.prevImage) {
-                        const imageRef = ref(storage, data.prevData.prevImage);
+
+                if (data.image) {
+
+                    if (prevData.image) {
+                        const imageRef = ref(storage, prevData.image);
                         await deleteObject(imageRef);
                     }
-                    // 2 - Upload new Image 
+
                     const storageRef = ref(storage, `announcements/${Date.now()}_${data.image.name}`);
                     const snapshot = await uploadBytes(storageRef, data.image);
                     downloadURL = await getDownloadURL(snapshot.ref);
                     imageName = data.image.name;
+
+                } else {
+                    downloadURL = prevData.image;
+                    imageName = prevData.imageName;
                 }
             } else {
-                // Remove old image if any
-                if (data.prevData.prevImage) {
-                    const imageRef = ref(storage, data.prevData.prevImage);
+                if (prevData.image) {
+                    const imageRef = ref(storage, prevData.image);
                     await deleteObject(imageRef);
                 }
-                downloadURL = null;
-                imageName = null;
             }
 
+            // Icon handling logic
             if (data.selectedIcon) {
-                if (data.selectedIcon === data.prevData.prevIconName) {
-                    downloadURLIcon = data.prevData.prevIcon;
-                    iconName = data.prevData.prevIconName;
+
+                if (data.icon) {
+
+                    if (prevData.icon) {
+                        const iconRef = ref(storage, prevData.icon);
+                        await deleteObject(iconRef);
+                    }
+
+                    const storageRef = ref(storage, `announcements/${Date.now()}_${data.icon.name}`);
+                    const snapshot = await uploadBytes(storageRef, data.icon);
+                    downloadURLIcon = await getDownloadURL(snapshot.ref);
+                    iconName = data.icon.name;
+
+                } else {
+                    downloadURLIcon = prevData.icon;
+                    iconName = prevData.iconName;
                 }
-                // 1 - Delete previous icon 
-                if (data.prevData.prevIcon) {
-                    const iconRef = ref(storage, data.prevData.prevIcon);
-                    await deleteObject(iconRef);
-                }
-                // 2 - Upload new icon 
-                const storageRef = ref(storage, `announcements/${Date.now()}_${data.icon.name}`);
-                const snapshot = await uploadBytes(storageRef, data.icon);
-                downloadURLIcon = await getDownloadURL(snapshot.ref);
-                iconName = data.icon.name;
             } else {
-                // Remove old icon if any
-                if (data.prevData.prevIcon) {
-                    const iconRef = ref(storage, data.prevData.prevIcon);
+                if (prevData.icon) {
+                    const iconRef = ref(storage, prevData.icon);
                     await deleteObject(iconRef);
                 }
-                downloadURLIcon = null;
-                iconName = null;
             }
-
-
-            console.log(" Just before updating: ", downloadURL);
 
             if (data.type === 'desc') {
                 await updateDoc(announcementDocRef, {
@@ -796,7 +814,9 @@ export const FirebaseProvider = (props) => {
                     title: data.title,
                     subtitle: data.subtitle,
                     description: data.description,
-                    link: null,
+                    link: deleteField(),
+                    linkType: deleteField(),
+                    inputText: deleteField(),
                     reward: data.reward,
                     status: false,
                     image: downloadURL || null,
@@ -805,23 +825,44 @@ export const FirebaseProvider = (props) => {
                     iconName: iconName || null,
                 });
             } else {
-                await updateDoc(announcementDocRef, {
-                    type: data.type,
-                    title: data.title,
-                    subtitle: data.subtitle,
-                    description: null,
-                    link: data.link,
-                    reward: data.reward,
-                    status: false,
-                    image: downloadURL || null,
-                    imageName: imageName || null,
-                    icon: downloadURLIcon || null,
-                    iconName: iconName || null,
-                });
+                if (data.linkType === 'input') {
+                    await updateDoc(announcementDocRef, {
+                        type: data.type,
+                        title: data.title,
+                        subtitle: data.subtitle,
+                        description: deleteField(),
+                        link: data.link,
+                        linkType: data.linkType,
+                        inputText: data.inputText,
+                        reward: data.reward,
+                        status: false,
+                        image: downloadURL || null,
+                        imageName: imageName || null,
+                        icon: downloadURLIcon || null,
+                        iconName: iconName || null,
+                    });
+                } else {
+                    await updateDoc(announcementDocRef, {
+                        type: data.type,
+                        title: data.title,
+                        subtitle: data.subtitle,
+                        description: deleteField(),
+                        link: data.link,
+                        linkType: data.linkType,
+                        inputText: deleteField(),
+                        reward: data.reward,
+                        status: false,
+                        image: downloadURL || null,
+                        imageName: imageName || null,
+                        icon: downloadURLIcon || null,
+                        iconName: iconName || null,
+                    });
+                }
             }
+
             return { success: true };
         } catch (error) {
-            console.error("Error updating announcement:", error);
+            console.error("Error updating announcementsss:", error);
             return { success: false, error: error.message };
         } finally {
             setLoading(false);
@@ -871,6 +912,7 @@ export const FirebaseProvider = (props) => {
             if (announcementDoc.exists()) {
                 const announcementData = announcementDoc.data();
                 const imagePath = announcementData.image;
+                const iconpath = announcementData.icon;
 
                 await deleteDoc(doc(firestore, 'announcements', uid));
 
@@ -878,8 +920,11 @@ export const FirebaseProvider = (props) => {
                     const imageRef = ref(storage, imagePath);
                     await deleteObject(imageRef);
                 }
+                if (iconpath) {
+                    const iconRef = ref(storage, iconpath);
+                    await deleteObject(iconRef);
+                }
             }
-
             return { success: true };
         } catch (error) {
             console.error("Error deleting announcement:", error);

@@ -46,35 +46,54 @@ const Annoucement = () => {
     }
   }
 
-  const handleUpdateAnnoucment = async (uid, title, subtitle, type, description, link, reward, image, imageName, icon, iconName) => {
+  const handleUpdateAnnoucment = async (data) => {
     let annoucementData;
-    if (type === 'desc') {
+    if (data.type === 'desc') {
       annoucementData = {
         tick: false,
-        uid: uid,
-        title: title,
-        subtitle: subtitle,
-        type: type,
-        description: description,
-        reward: reward,
-        image: image,
-        imageName: imageName,
-        icon: icon,
-        iconName: iconName
+        uid: data.id,
+        title: data.title,
+        subtitle: data.subtitle,
+        type: data.type,
+        description: data.description,
+        reward: data.reward,
+        image: data.image,
+        imageName: data.imageName,
+        icon: data.icon,
+        iconName: data.iconName
       }
     } else {
-      annoucementData = {
-        tick: false,
-        uid: uid,
-        title: title,
-        subtitle: subtitle,
-        type: type,
-        link: link,
-        reward: reward,
-        image: image,
-        imageName: imageName,
-        icon: icon,
-        iconName: iconName
+      if (data.linkType === 'input') {
+        annoucementData = {
+          tick: false,
+          uid: data.id,
+          title: data.title,
+          subtitle: data.subtitle,
+          type: data.type,
+          link: data.link,
+          linkType: data.linkType,
+          inputText: data.inputText,
+          reward: data.reward,
+          image: data.image,
+          imageName: data.imageName,
+          icon: data.icon,
+          iconName: data.iconName
+        }
+      } else {
+        annoucementData = {
+          tick: false,
+          uid: data.id,
+          title: data.title,
+          subtitle: data.subtitle,
+          type: data.type,
+          link: data.link,
+          linkType: data.linkType,
+          reward: data.reward,
+          image: data.image,
+          imageName: data.imageName,
+          icon: data.icon,
+          iconName: data.iconName
+        }
       }
     }
     try {
@@ -310,7 +329,7 @@ const Annoucement = () => {
                       <td className='px-6 py-4 border-b border-gray-200 text-sm text-center'>
                         <button
                           className="p-2 rounded-md bg-bluebtn text-gray-700 hover:bg-transparent hover:border-2 hover:border-bluebtn hover:text-bluebtn"
-                          onClick={() => handleUpdateAnnoucment(cls.id, cls.title, cls.subtitle, cls.type, cls.description, cls.link, cls.reward, cls.image, cls.imageName, cls.icon, cls.iconName)}
+                          onClick={() => handleUpdateAnnoucment(cls)}
                           style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                         >
                           Edit

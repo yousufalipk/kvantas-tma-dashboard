@@ -19,19 +19,23 @@ const AnnouncementForm = () => {
         subtitle: '',
         description: '',
         link: '',
+        linkType: '',
         reward: '',
         image: null,
         icon: null,
+        inputText: null
     });
 
     useEffect(() => {
         if (sendData.tick === true) {
             setInitialValues({
-                type: 'desc',
                 title: '',
                 subtitle: '',
+                type: 'desc',
                 description: '',
                 link: '',
+                linkType: '',
+                inputText: '',
                 reward: '',
                 image: null,
                 icon: null,
@@ -44,21 +48,39 @@ const AnnouncementForm = () => {
                     subtitle: sendData.subtitle || '',
                     description: sendData.description || '',
                     link: '',
+                    linkType: '',
+                    inputText: '',
                     reward: sendData.reward || '',
-                    image: sendData.image || null,
-                    icon: sendData.icon || null,
+                    image: '',
+                    icon: '',
                 });
             } else {
-                setInitialValues({
-                    type: sendData.type || '',
-                    title: sendData.title || '',
-                    subtitle: sendData.subtitle || '',
-                    description: '',
-                    link: sendData.link || '',
-                    reward: sendData.reward || '',
-                    image: sendData.image || null,
-                    icon: sendData.icon || null,
-                });
+                if (sendData.linkType === 'input') {
+                    setInitialValues({
+                        type: sendData.type || '',
+                        title: sendData.title || '',
+                        subtitle: sendData.subtitle || '',
+                        description: '',
+                        link: sendData.link || '',
+                        linkType: sendData.linkType,
+                        inputText: sendData.inputText,
+                        reward: sendData.reward || '',
+                        image: '',
+                        icon: '',
+                    });
+                } else {
+                    setInitialValues({
+                        type: sendData.type || '',
+                        title: sendData.title || '',
+                        subtitle: sendData.subtitle || '',
+                        description: '',
+                        link: sendData.link || '',
+                        linkType: sendData.linkType,
+                        reward: sendData.reward || '',
+                        image: '',
+                        icon: '',
+                    });
+                }
             }
             if (sendData.icon) {
                 setSelectedIcon(sendData.iconName);
@@ -76,17 +98,65 @@ const AnnouncementForm = () => {
         description: Yup.string(),
         link: Yup.string().url('Invalid URL format'),
         reward: Yup.number().required('Reward is required'),
+        inputText: Yup.string()
     });
 
     const formik = useFormik({
         initialValues,
         validationSchema,
-        enableReinitialize: true, // Allow initialValues to be updated
+        enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
             try {
+                let data;
                 if (sendData.tick === true) {
                     // Create Announcement
-                    const response = await createAnnoucement(values);
+                    if (values.type === 'desc') {
+                        data = {
+                            title: values.title,
+                            subtitle: values.subtitle,
+                            type: values.type,
+                            description: values.description,
+                            reward: values.reward,
+                            status: false,
+                            icon: values.icon || null,
+                            iconName: values.icon?.name || null,
+                            image: values.image || null,
+                            imageName: values.image?.name || null,
+                        }
+                    } else {
+                        // Annoucment type link
+                        if (values.linkType === 'input') {
+                            data = {
+                                title: values.title,
+                                subtitle: values.subtitle,
+                                type: values.type,
+                                link: values.link,
+                                linkType: values.linkType,
+                                inputText: values.inputText,
+                                reward: values.reward,
+                                status: false,
+                                icon: values.icon || null,
+                                iconName: values.icon?.name || null,
+                                image: values.image || null,
+                                imageName: values.image?.name || null,
+                            }
+                        } else {
+                            data = {
+                                title: values.title,
+                                subtitle: values.subtitle,
+                                type: values.type,
+                                link: values.link,
+                                linkType: values.linkType,
+                                reward: values.reward,
+                                status: false,
+                                icon: values.icon || null,
+                                iconName: values.icon?.name || null,
+                                image: values.image || null,
+                                imageName: values.image?.name || null,
+                            }
+                        }
+                    }
+                    const response = await createAnnoucement(data);
                     if (response.success) {
                         navigate('/annoucements');
                         setTimeout(() => {
@@ -96,29 +166,66 @@ const AnnouncementForm = () => {
                         toast.error("Error Creating Announcement!");
                     }
                 } else {
+                    console.log("Send data for updating", sendData);
                     // Update Announcement
-                    const data = {
-                        type: values.type,
-                        uid: sendData.uid,
-                        title: values.title,
-                        subtitle: values.subtitle,
-                        description: values.description || null,
-                        link: values.link || null,
-                        reward: values.reward,
-                        image: values.image || null,
-                        imageName: values.image?.name || null,
-                        icon: values.icon || null,
-                        iconName: values.icon?.name || null,
-                        prevData: {
-                            prevImage: sendData.image || null,
-                            prevImageName: sendData.image?.name || null,
-                            prevIcon: sendData.icon || null,
-                            prevIconName: sendData.icon?.name || null
-                        },
-                        selectedImage: selectedImage || null,
-                        selectedIcon: selectedIcon || null
-                    };
+                    if (values.type === 'desc') {
+                        data = {
+                            uid: sendData.uid,
+                            title: values.title,
+                            subtitle: values.subtitle,
+                            type: values.type,
+                            description: values.description,
+                            reward: values.reward,
+                            status: false,
+                            icon: values.icon || null,
+                            iconName: values.icon?.name || null,
+                            image: values.image || null,
+                            imageName: values.image?.name || null,
+                            selectedImage: selectedImage || null,
+                            selectedIcon: selectedIcon || null
+                        }
+                    } else {
+                        // Annoucment type link
+                        if (values.linkType === 'input') {
+                            data = {
+                                uid: sendData.uid,
+                                title: values.title,
+                                subtitle: values.subtitle,
+                                type: values.type,
+                                link: values.link,
+                                linkType: values.linkType,
+                                inputText: values.inputText,
+                                reward: values.reward,
+                                status: false,
+                                icon: values.icon || null,
+                                iconName: values.icon?.name || null,
+                                image: values.image || null,
+                                imageName: values.image?.name || null,
+                                selectedImage: selectedImage || null,
+                                selectedIcon: selectedIcon || null
+                            }
+                        } else {
+                            data = {
+                                uid: sendData.uid,
+                                title: values.title,
+                                subtitle: values.subtitle,
+                                type: values.type,
+                                link: values.link,
+                                linkType: values.linkType,
+                                reward: values.reward,
+                                status: false,
+                                icon: values.icon || null,
+                                iconName: values.icon?.name || null,
+                                image: values.image || null,
+                                imageName: values.image?.name || null,
+                                selectedImage: selectedImage || null,
+                                selectedIcon: selectedIcon || null
+                            }
+                        }
+                    }
+                    console.log("Before updating!");
                     const response = await updateAnnoucement(data);
+                    console.log("After updating!");
                     if (response.success) {
                         navigate('/annoucements');
                         toast.success("Announcement Updated Successfully!");
@@ -185,6 +292,7 @@ const AnnouncementForm = () => {
             </div>
             <hr className='my-5 border-gray-300' />
             <form onSubmit={formik.handleSubmit} className='flex flex-col w-3/4 max-w-md mx-auto overflow-scroll overflow-x-hidden h-[70vh]'>
+
                 {/* Title */}
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
@@ -240,6 +348,7 @@ const AnnouncementForm = () => {
                     <div className='text-red-600 text-center'>{formik.errors.type}</div>
                 ) : null}
 
+                {/* If Type is description or else link */}
                 {formik.values.type === 'desc' ? (
                     <>
                         <input
@@ -282,6 +391,56 @@ const AnnouncementForm = () => {
                     </>
                 )}
 
+                {formik.values.type === 'link' && (
+                    <>
+
+                        <div className='flex justify-between px-5'>
+                            <label
+                                className='w-1/2 text-sm text-gray-400 italic'
+                                htmlFor="type"
+                            >
+                                {`Link with user input / without`}
+                            </label>
+                        </div>
+                        <select
+                            className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                            id='linkType'
+                            name='linkType'
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.linkType}
+                        >
+                            <option value='' disabled>Select Link Type</option>
+                            <option value='input'>Link with input</option>
+                            <option value='noInput'>Link without input</option>
+                        </select>
+                        {formik.touched.linkType && formik.errors.linkType ? (
+                            <div className='text-red-600 text-center'>{formik.errors.linkType}</div>
+                        ) : null}
+                    </>
+                )}
+
+
+                {formik.values.linkType === 'input' && (
+                    <>
+                        {/* Input text */}
+                        <input
+                            className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
+                            type='text'
+                            id='inputText'
+                            name='inputText'
+                            placeholder='Input Text'
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.inputText}
+                        />
+                        {formik.touched.inputText && formik.errors.inputText ? (
+                            <div className='text-red-600 text-center'>{formik.errors.inputText}</div>
+                        ) : null}
+                    </>
+                )}
+
+                {/* Reward */}
                 <input
                     className='p-3 mx-2 my-3 border-2 rounded-xl placeholder:text-gray-700 text-gray-700'
                     type='number'
