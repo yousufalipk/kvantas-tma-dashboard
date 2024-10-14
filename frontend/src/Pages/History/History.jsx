@@ -38,10 +38,14 @@ const History = () => {
             }
         } else if (filter === 'daily') {
             setData(dailyTaskHistory);
-            if (dailyTaskHistory) {
+
+            if (dailyTaskHistory?.length > 0) {
                 setActiveId(dailyTaskHistory[0].id);
                 setActive(dailyTaskHistory[0]);
             }
+        } else {
+            setActive(null);
+            setActiveId(null);
         }
     }, [filter, annoucementHistory, socialTaskHistory, dailyTaskHistory]);
 
@@ -64,27 +68,27 @@ const History = () => {
                 <button
                     className={`p-2 border-2 rounded-xl hover:text-sm ${filter === 'annoucement' && `bg-bluebtn text-gray-900 border-none`}`}
                     onClick={() => {
-                        setFilter('annoucement'); 
+                        setFilter('annoucement');
                         setActive(null);
-                    }} 
+                    }}
                 >
                     Annoucements
                 </button>
                 <button
                     className={`p-2 border-2 rounded-xl hover:text-sm ${filter === 'social' && `bg-bluebtn text-gray-900 border-none`}`}
                     onClick={() => {
-                        setFilter('social'); 
+                        setFilter('social');
                         setActive(null);
-                    }} 
+                    }}
                 >
                     Social Tasks
                 </button>
                 <button
                     className={`p-2 border-2 rounded-xl hover:text-sm ${filter === 'daily' && `bg-bluebtn text-gray-900 border-none`}`}
                     onClick={() => {
-                        setFilter('daily'); 
+                        setFilter('daily');
                         setActive(null);
-                    }} 
+                    }}
                 >
                     Daily Tasks
                 </button>

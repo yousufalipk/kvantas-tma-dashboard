@@ -504,8 +504,6 @@ export const FirebaseProvider = (props) => {
             let downloadURL = '';
             let downloadIconURL = '';
 
-            console.log("Values received: ", values);
-
             if (values.image) {
                 const storageRef = ref(storage, `announcements/${Date.now()}_${values.image.name}`);
 
@@ -690,6 +688,7 @@ export const FirebaseProvider = (props) => {
             );
 
             // Step 3: Output the final result
+            console.log("=====> Daily Tasks History: ", dailyTaskHistoryData);
             setDailyTaskHistory(dailyTaskHistoryData);
         } catch (error) {
             console.error("Error fetching announcement history and users:", error);
@@ -862,7 +861,7 @@ export const FirebaseProvider = (props) => {
 
             return { success: true };
         } catch (error) {
-            console.error("Error updating announcementsss:", error);
+            console.error("Error updating announcement:", error);
             return { success: false, error: error.message };
         } finally {
             setLoading(false);
