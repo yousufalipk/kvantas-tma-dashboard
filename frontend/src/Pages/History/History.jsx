@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { act, useEffect, useState } from 'react';
 import { useFirebase } from '../../Context/Firebase';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { saveAs } from 'file-saver';
 
 const History = () => {
+
+    const apiUrl = process.env.REACT_APP_API_URL;
+
     const [data, setData] = useState();
 
     const [filter, setFilter] = useState('annoucement');
@@ -54,6 +60,59 @@ const History = () => {
         setActive(data);
     }
 
+    const handleDownloadData = async () => {
+        try {
+            let data;
+            if (filter === 'annoucement') {
+                data = {
+                    type: 'announcement',
+                    title: active.title,
+                    description: active.description,
+                    reward: active.reward,
+                    users: active.users,
+                };
+            } else {
+                data = {
+                    type: 'other',
+                    title: active.title,
+                    link: active.link,
+                    reward: active.reward,
+                    users: active.users,
+                };
+            }
+
+            const res = await axios.post(`${apiUrl}/download-history`, {
+                data: data,
+            }, {
+                responseType: 'arraybuffer',
+            });
+
+            if (res.data.status === 'failed') {
+                setTimeout(() => {
+                    toast.error(res.data.message);
+                }, 500);
+            } else {
+                const contentDisposition = res.headers['content-disposition'];
+                let filename = 'data.xlsx';
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="?(.+)"?/);
+                    if (match) {
+                        filename = match[1];
+                    }
+                }
+
+                const blob = new Blob([res.data], { type: res.headers['content-type'] });
+                saveAs(blob, filename);
+                toast.success("Data Downloaded Successfully!");
+            }
+        } catch (error) {
+            console.log("Error downloading data!", error);
+            toast.error("Internal Server Error!");
+        }
+    };
+
+
     return (
         <>
             <div>
@@ -64,7 +123,7 @@ const History = () => {
                 </div>
                 <hr className='my-5 border-1 border-[white] mx-2' />
             </div>
-            <div className='flex gap-3'>
+            <div className='flex justify-start gap-3'>
                 <button
                     className={`p-2 border-2 rounded-xl hover:text-sm ${filter === 'annoucement' && `bg-bluebtn text-gray-900 border-none`}`}
                     onClick={() => {
@@ -130,8 +189,20 @@ const History = () => {
                                 {active.title}
                             </h1>
                             <hr className='m-2' />
-                            <p><span className='font-bold underline mr-2'>{filter !== 'annoucement' ? (<>Link: </>) : (<>Description:</>)}</span>{filter !== 'annoucement' ? (<>{active.link}</>) : (<>{active.description}</>)}</p>
-                            <p><span className='font-bold underline mr-2'>Reward: </span>{active.reward}</p>
+                            <div className='w-full flex justify-between'>
+                                <div className='w-1/2'>
+                                    <p><span className='font-bold underline mr-2'>{filter !== 'annoucement' ? (<>Link: </>) : (<>Description:</>)}</span>{filter !== 'annoucement' ? (<>{active.link}</>) : (<>{active.description}</>)}</p>
+                                    <p><span className='font-bold underline mr-2'>Reward: </span>{active.reward}</p>
+                                </div>
+                                <div className='w-1/2 flex justify-end h-10'>
+                                    <button
+                                        className='mx-2 py-1 px-4 rounded-md bg-blue-800 text-white hover:bg-transparent hover:border-2 hover:border-blue-800 hover:text-blue-800'
+                                        onClick={handleDownloadData}
+                                    >
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
 
                             {active.users?.length > 0 ? (
                                 <>

@@ -264,7 +264,64 @@ app.get('/update-users-status', async (req, res) => {
   }
 });
 
+app.post('/download-history', (req, res) => {
+  try {
+    const { data } = req.body;
 
+    if (!data) {
+      return res.status(200).json({
+        status: 'failed',
+        message: 'No data found!',
+      });
+    }
+
+    let headerData;
+    if (data.type === 'announcement') {
+      headerData = [
+        ['Title', data.title],
+        ['Description', data.description],
+        ['Reward', data.reward],
+      ];
+    } else {
+      headerData = [
+        ['Title', data.title],
+        ['Link', data.link],
+        ['Reward', data.reward],
+      ];
+    }
+
+    let participantsData = [['S.No', 'Telegram Id', 'First Name', 'Last Name']];
+    data.users.forEach((user, index) => {
+      participantsData.push([
+        index + 1,
+        user.id,
+        user.first_name || 'not set',
+        user.last_name || 'not set',
+      ]);
+    });
+
+    const wb = XLSX.utils.book_new();
+
+    const combinedData = [...headerData, [], ...participantsData];
+
+    const ws = XLSX.utils.aoa_to_sheet(combinedData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Telegram Users Data');
+
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+    res.setHeader('Content-Disposition', 'attachment; filename="users_data.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    // Send the Excel buffer
+    res.send(Buffer.from(excelBuffer));
+  } catch (error) {
+    console.log("Error downloading history.", error);
+    return res.status(500).json({
+      status: 'failed',
+      message: 'Internal server Error!',
+    });
+  }
+});
 
 app.get('/', (req, res) => {
   res.send("Firebase API runs correctly!");
