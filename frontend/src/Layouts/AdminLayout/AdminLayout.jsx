@@ -57,7 +57,7 @@ const AdminLayout = () => {
             <MobileNav />
           </div>
 
-          <div className='md:p-10 p-2 w-screen'>
+          <div className='md:p-10 p-2 w-screen h-[100vh] overflow-y-scroll scrollbar-hide'>
             <Routes>
               <Route path='*' element={<HomePage />} />
               {/* Admin Routes */}
@@ -87,7 +87,7 @@ const AdminLayout = () => {
 
               {/* History */}
               <Route path='/history' element={<UserProtected ><History /></UserProtected>} />
-              
+
             </Routes>
           </div>
         </div>

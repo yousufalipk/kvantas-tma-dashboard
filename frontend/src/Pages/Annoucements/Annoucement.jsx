@@ -16,7 +16,7 @@ const Annoucement = () => {
   const [viewText, setViewText] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 50;
 
   const fetchData = async () => {
     try {

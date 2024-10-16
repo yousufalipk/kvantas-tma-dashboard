@@ -16,7 +16,7 @@ const DailyTask = () => {
     const [viewText, setViewText] = useState();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 50;
 
     const fetchData = async () => {
         try {
@@ -162,16 +162,16 @@ const DailyTask = () => {
                                         <td className='px-6 py-4 border-b border-gray-200 text-sm text-center' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                                             {cls.image}
                                         </td>
-                                        <td 
-                                            className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:cursor-pointer hover:text-bluebtn' 
-                                            onClick={()=>handleModalOpen(cls.title)} 
+                                        <td
+                                            className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:cursor-pointer hover:text-bluebtn'
+                                            onClick={() => handleModalOpen(cls.title)}
                                             style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                                         >
                                             {cls.title}
                                         </td>
                                         <td
                                             className='px-6 py-4 border-b border-gray-200 text-sm text-center cursor-pointer hover:text-bluebtn'
-                                            onClick={()=>handleModalOpen(cls.link)} 
+                                            onClick={() => handleModalOpen(cls.link)}
                                             style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
                                         >
                                             {cls.link}

@@ -17,7 +17,7 @@ const ManageTelegramUsers = () => {
 
   const [filter, setFilter] = useState('balance');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 50;
 
   const fetchData = async () => {
     try {
@@ -141,7 +141,7 @@ const ManageTelegramUsers = () => {
             </div>
             <hr className='my-5 border-1 border-[white] mx-2' />
           </div>
-          <div className='mx-2 my-10 overflow-x-scroll overflow-y-hidden w-[80vw]'>
+          <div className='mx-2 my-10 overflow-x-scroll w-[80vw]'>
             <table className="bg-transparent border-collapse border border-gray-200 table-fixed">
               <thead className="thead-dark">
                 <tr>
@@ -181,103 +181,103 @@ const ManageTelegramUsers = () => {
                       {formatDate(cls.createdAt) || "undefined"}
                     </td>
                     {/* First Name */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.firstName)} 
+                      onClick={() => handleModalOpen(cls.firstName)}
                     >
                       {cls.firstName || "undefined"}
                     </td>
                     {/* Last Name */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.lastName)} 
+                      onClick={() => handleModalOpen(cls.lastName)}
                     >
                       {cls.lastName || "undefined"}
                     </td>
                     {/* Username */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.username)}  
+                      onClick={() => handleModalOpen(cls.username)}
                     >
                       {cls.username || "undefined"}
                     </td>
                     {/* Telegram Id */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.userId)}  
+                      onClick={() => handleModalOpen(cls.userId)}
                     >
                       {cls.userId || "undefined"}
                     </td>
                     {/* Twitter Id */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.twitterUsername)}  
+                      onClick={() => handleModalOpen(cls.twitterUsername)}
                     >
                       {cls.twitterUsername || "undefined"}
                     </td>
                     {/* Instagram Id */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.instagramUsername)}  
+                      onClick={() => handleModalOpen(cls.instagramUsername)}
                     >
                       {cls.instagramUsername || "undefined"}
                     </td>
                     {/* LinkedIn Id */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.instagramUsername)}  
+                      onClick={() => handleModalOpen(cls.instagramUsername)}
                     >
                       {cls.linkedInUsername || "undefined"}
                     </td>
                     {/* Discord Id */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.discordUsername)}  
+                      onClick={() => handleModalOpen(cls.discordUsername)}
                     >
                       {cls.discordUsername || "undefined"}
                     </td>
                     {/* Youtube Id */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.youtubeUsername)}  
+                      onClick={() => handleModalOpen(cls.youtubeUsername)}
                     >
                       {cls.youtubeUsername || "undefined"}
                     </td>
                     {/* Email*/}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.email)}  
+                      onClick={() => handleModalOpen(cls.email)}
                     >
                       {cls.email || "undefined"}
                     </td>
                     {/* Phone */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.phoneNumber)}  
+                      onClick={() => handleModalOpen(cls.phoneNumber)}
                     >
                       {cls.phoneNumber || "undefined"}
                     </td>
-                    
+
                     {/* Ton Wallet Address */}
-                    <td 
-                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer' 
+                    <td
+                      className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6 hover:text-bluebtn hover:cursor-pointer'
                       style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                      onClick={()=>handleModalOpen(cls.tonWalletAddress)}   
+                      onClick={() => handleModalOpen(cls.tonWalletAddress)}
                     >
                       {cls.tonWalletAddress || "undefined"}
                     </td>
-                    
+
                     <td className='px-6 py-4 border-b border-gray-200 text-sm text-center w-1/6' style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                       {cls.balance || "undefined"}
                     </td>
@@ -286,7 +286,7 @@ const ManageTelegramUsers = () => {
               </tbody>
             </table>
             <div className='flex mt-5'>
-              <div className='my-5 w-1/2'> 
+              <div className='my-5 w-1/2'>
                 {/* Buttons */}
                 <Stack spacing={2} className='text-white'>
                   <Pagination
@@ -299,8 +299,8 @@ const ManageTelegramUsers = () => {
                         color: 'white',
                       },
                       '& .MuiPaginationItem-root.Mui-selected': {
-                        backgroundColor: '#1E40AF', 
-                        color: 'white', 
+                        backgroundColor: '#1E40AF',
+                        color: 'white',
                       },
                       '& .MuiPaginationItem-root:hover': {
                         backgroundColor: '#fff !important',
@@ -310,10 +310,10 @@ const ManageTelegramUsers = () => {
                   />
                 </Stack>
               </div>
-            <div className='my-5 w-1/2 text-white text-end'> 
+              <div className='my-5 w-1/2 text-white text-end'>
                 {/* Page of Pages  */}
-                  Page {currentPage} of {totalPages}
-            </div>
+                Page {currentPage} of {totalPages}
+              </div>
             </div>
           </div>
         </>

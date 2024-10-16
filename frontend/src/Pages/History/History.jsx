@@ -3,10 +3,15 @@ import { useFirebase } from '../../Context/Firebase';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { saveAs } from 'file-saver';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 const History = () => {
 
     const apiUrl = process.env.REACT_APP_API_URL;
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 50;
 
     const [data, setData] = useState();
 
@@ -133,6 +138,19 @@ const History = () => {
         }
     };
 
+    // Pagination Logic
+    let totalPages, startIndex, endIndex, currentUser;
+    if (active?.users) {
+        totalPages = Math.ceil(active.users?.length / itemsPerPage);
+        startIndex = (currentPage - 1) * itemsPerPage;
+        endIndex = startIndex + itemsPerPage;
+        currentUser = active.users?.slice(startIndex, endIndex);
+    }
+
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+    };
+
 
     return (
         <>
@@ -174,7 +192,7 @@ const History = () => {
                 </button>
             </div>
             {/* Box */}
-            <div className='md:h-[75vh] md:w-[170vh] md:overflow-hidden border-2 flex my-5 overflow-scroll'>
+            <div className='md:w-[170vh] md:overflow-x-hidden border-2 flex my-5 overflow-x-hidden'>
                 {/* Sidebar list */}
                 <div className='list md:w-[42.5vh] p-5 border-r-2'>
                     <h1 className='text-center'>
@@ -306,7 +324,7 @@ const History = () => {
                                 </div>
                             </div>
 
-                            {active.users?.length > 0 ? (
+                            {currentUser?.length > 0 ? (
                                 <>
                                     <h1 className='text-xl font-semibold text-center'>List of Participants <span>({active.users.length})</span></h1>
                                     <table className="min-w-full table-auto border-collapse m-2">
@@ -333,7 +351,7 @@ const History = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {active.users?.map((user, index) => (
+                                            {currentUser?.map((user, index) => (
                                                 <tr key={user.id} className="border-b last:border-none">
                                                     <td className="px-6 py-4 text-sm">{index + 1}</td>
                                                     <td className="px-6 py-4 text-sm">{user.id}</td>
@@ -347,6 +365,36 @@ const History = () => {
                                             ))}
                                         </tbody>
                                     </table>
+                                    <div className='flex mt-5'>
+                                        <div className='my-5 w-1/2'>
+                                            {/* Buttons */}
+                                            <Stack spacing={2} className='text-white'>
+                                                <Pagination
+                                                    count={totalPages}
+                                                    page={currentPage}
+                                                    shape="rounded"
+                                                    onChange={handlePageChange}
+                                                    sx={{
+                                                        '& .MuiPaginationItem-root': {
+                                                            color: 'white',
+                                                        },
+                                                        '& .MuiPaginationItem-root.Mui-selected': {
+                                                            backgroundColor: '#1E40AF',
+                                                            color: 'white',
+                                                        },
+                                                        '& .MuiPaginationItem-root:hover': {
+                                                            backgroundColor: '#fff !important',
+                                                            color: '#000 !important',
+                                                        },
+                                                    }}
+                                                />
+                                            </Stack>
+                                        </div>
+                                        <div className='my-5 w-1/2 text-white text-end'>
+                                            {/* Page of Pages  */}
+                                            Page {currentPage} of {totalPages}
+                                        </div>
+                                    </div>
                                 </>
                             ) : (
                                 <div className='mt-40 italic text-xl flex justify-center items-center'>

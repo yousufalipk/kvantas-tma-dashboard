@@ -20,14 +20,14 @@ const ManageUser = () => {
   const [viewText, setViewText] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 50;
 
   const fetchData = async () => {
     try {
       await fetchUsers();
     } catch (error) {
       console.log('Error', error);
-    } 
+    }
   }
 
   useEffect(() => {
@@ -116,12 +116,12 @@ const ManageUser = () => {
   return (
     <>
       {users ? (
-        <>  
+        <>
           {isModalOpen && (
-              <ViewMore text={viewText} />
+            <ViewMore text={viewText} />
           )}
           <div>
-            <div className='flex flex-row justify-between overflow-hidden'>
+            <div className='flex flex-row justify-between'>
               <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
                 Manage Users
               </h1>
@@ -163,24 +163,24 @@ const ManageUser = () => {
                           {key + 1}
                         </span>
                       </th>
-                      <td 
-                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                      <td
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                        onClick={()=>handleModalOpen(cls.fname)}
+                        onClick={() => handleModalOpen(cls.fname)}
                       >
                         {cls.fname}
                       </td>
-                      <td 
-                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                      <td
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                        onClick={()=>handleModalOpen(cls.lname)}
+                        onClick={() => handleModalOpen(cls.lname)}
                       >
                         {cls.lname}
                       </td>
-                      <td 
-                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer' 
+                      <td
+                        className='px-6 py-4 border-b border-gray-200 text-sm text-center hover:text-bluebtn hover:cursor-pointer'
                         style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
-                        onClick={()=>handleModalOpen(cls.email)}
+                        onClick={() => handleModalOpen(cls.email)}
                       >
                         {cls.email}
                       </td>
@@ -207,7 +207,7 @@ const ManageUser = () => {
               </tbody>
             </table>
             <div className='flex mt-5'>
-              <div className='my-5 w-1/2'> 
+              <div className='my-5 w-1/2'>
                 {/* Buttons */}
                 <Stack spacing={2} className='text-white'>
                   <Pagination
@@ -220,8 +220,8 @@ const ManageUser = () => {
                         color: 'white',
                       },
                       '& .MuiPaginationItem-root.Mui-selected': {
-                        backgroundColor: '#1E40AF', 
-                        color: 'white', 
+                        backgroundColor: '#1E40AF',
+                        color: 'white',
                       },
                       '& .MuiPaginationItem-root:hover': {
                         backgroundColor: '#fff !important',
@@ -231,10 +231,10 @@ const ManageUser = () => {
                   />
                 </Stack>
               </div>
-            <div className='my-5 w-1/2 text-white text-end'> 
+              <div className='my-5 w-1/2 text-white text-end'>
                 {/* Page of Pages  */}
-                  Page {currentPage} of {totalPages}
-            </div>
+                Page {currentPage} of {totalPages}
+              </div>
             </div>
           </div>
         </>
