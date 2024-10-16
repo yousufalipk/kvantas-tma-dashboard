@@ -191,8 +191,89 @@ const History = () => {
                             <hr className='m-2' />
                             <div className='w-full flex justify-between'>
                                 <div className='w-1/2'>
-                                    <p><span className='font-bold underline mr-2'>{filter !== 'annoucement' ? (<>Link: </>) : (<>Description:</>)}</span>{filter !== 'annoucement' ? (<>{active.link}</>) : (<>{active.description}</>)}</p>
-                                    <p><span className='font-bold underline mr-2'>Reward: </span>{active.reward}</p>
+                                    <p>
+                                        <span className='font-bold underline mr-2'>
+                                            Type:
+                                        </span>
+                                        {active.type}
+                                    </p>
+
+                                    {active.type === 'link' && (
+                                        <>
+                                            <p>
+                                                <span className='font-bold underline mr-2'>
+                                                    Link Type:
+                                                </span>
+                                                {active.linkType}
+                                            </p>
+                                        </>
+                                    )}
+
+                                    <p>
+                                        <span className='font-bold underline mr-2'>
+                                            {filter !== 'annoucement' ? (
+                                                <>
+                                                    Link:
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {active.type === 'desc' ? (
+                                                        <>
+                                                            Description:
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            link:
+                                                        </>
+                                                    )}
+
+                                                </>
+                                            )}
+                                        </span>
+                                        {filter !== 'annoucement' ? (
+                                            <>
+                                                {active.link}
+                                            </>
+                                        ) : (
+                                            <>
+                                                {active.type === 'desc' ? (
+                                                    <>
+                                                        {active.description}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {active.linkType === 'input' ? (
+                                                            <>
+                                                                {active.link}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {active.link}
+                                                            </>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </p>
+
+                                    {active.linkType === 'input' && (
+                                        <>
+                                            <p>
+                                                <span className='font-bold underline mr-2'>
+                                                    Input Text:
+                                                </span>
+                                                {active.inputText}
+                                            </p>
+                                        </>
+                                    )}
+
+                                    <p>
+                                        <span className='font-bold underline mr-2'>
+                                            Reward:
+                                        </span>
+                                        {active.reward}
+                                    </p>
                                 </div>
                                 <div className='w-1/2 flex justify-end h-10'>
                                     <button
@@ -215,6 +296,19 @@ const History = () => {
                                                 <th className="px-6 py-3 text-left text-sm font-medium">Username</th>
                                                 <th className="px-6 py-3 text-left text-sm font-medium">First Name</th>
                                                 <th className="px-6 py-3 text-left text-sm font-medium">Last Name</th>
+                                                {active.linkType !== 'noInput' && (
+                                                    <th className="px-6 py-3 text-left text-sm font-medium">
+                                                        {active.type === 'desc' ? (
+                                                            <>
+                                                                Tweet Link
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                User Input
+                                                            </>
+                                                        )}
+                                                    </th>
+                                                )}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -225,6 +319,9 @@ const History = () => {
                                                     <td className="px-6 py-4 text-sm">{user.username || "not available"}</td>
                                                     <td className="px-6 py-4 text-sm">{user.first_name || "not available"}</td>
                                                     <td className="px-6 py-4 text-sm">{user.last_name || "not available"}</td>
+                                                    {active.linkType !== 'noInput' && (
+                                                        <td className="px-6 py-4 text-sm">{user.userInput || "not available"}</td>
+                                                    )}
                                                 </tr>
                                             ))}
                                         </tbody>
