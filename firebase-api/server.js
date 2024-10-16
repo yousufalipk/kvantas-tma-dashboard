@@ -276,29 +276,85 @@ app.post('/download-history', (req, res) => {
     }
 
     let headerData;
-    if (data.type === 'announcement') {
+    if (data.type === 'desc') {
       headerData = [
+        ['Type', data.type],
         ['Title', data.title],
         ['Description', data.description],
         ['Reward', data.reward],
       ];
     } else {
-      headerData = [
-        ['Title', data.title],
-        ['Link', data.link],
-        ['Reward', data.reward],
-      ];
+      if (data.type === 'input') {
+        headerData = [
+          ['Type', data.type],
+          ['Title', data.title],
+          ['Link Type', data.linkType],
+          ['Link', data.link],
+          ['Input Text', data.inputText],
+          ['Reward', data.reward],
+        ];
+      } else if (data.type === 'noinput') {
+        headerData = [
+          ['Type', data.type],
+          ['Title', data.title],
+          ['Link Type', data.linkType],
+          ['Link', data.link],
+          ['Reward', data.reward],
+        ];
+      } else {
+        headerData = [
+          ['Type', data.type],
+          ['Title', data.title],
+          ['Link', data.link],
+          ['Reward', data.reward],
+        ];
+      }
     }
 
-    let participantsData = [['S.No', 'Telegram Id', 'First Name', 'Last Name']];
-    data.users.forEach((user, index) => {
-      participantsData.push([
-        index + 1,
-        user.id,
-        user.first_name || 'not set',
-        user.last_name || 'not set',
-      ]);
-    });
+    let participantsData;
+    if (data.type === 'desc') {
+      participantsData = [['S.No', 'Telegram Id', 'First Name', 'Last Name', 'Tweet Link']];
+      data.users.forEach((user, index) => {
+        participantsData.push([
+          index + 1,
+          user.id,
+          user.first_name || 'not set',
+          user.last_name || 'not set',
+          user.userInput || 'not set',
+        ]);
+      });
+    } else if (data.type === 'input') {
+      participantsData = [['S.No', 'Telegram Id', 'First Name', 'Last Name', 'User Input']];
+      data.users.forEach((user, index) => {
+        participantsData.push([
+          index + 1,
+          user.id,
+          user.first_name || 'not set',
+          user.last_name || 'not set',
+          user.userInput || 'not set',
+        ]);
+      });
+    } else if (data.type === 'noInput') {
+      participantsData = [['S.No', 'Telegram Id', 'First Name', 'Last Name']];
+      data.users.forEach((user, index) => {
+        participantsData.push([
+          index + 1,
+          user.id,
+          user.first_name || 'not set',
+          user.last_name || 'not set',
+        ]);
+      });
+    } else if (data.type === 'other') {
+      participantsData = [['S.No', 'Telegram Id', 'First Name', 'Last Name']];
+      data.users.forEach((user, index) => {
+        participantsData.push([
+          index + 1,
+          user.id,
+          user.first_name || 'not set',
+          user.last_name || 'not set',
+        ]);
+      });
+    }
 
     const wb = XLSX.utils.book_new();
 

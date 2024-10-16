@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFirebase } from '../../Context/Firebase';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -64,13 +64,34 @@ const History = () => {
         try {
             let data;
             if (filter === 'annoucement') {
-                data = {
-                    type: 'announcement',
-                    title: active.title,
-                    description: active.description,
-                    reward: active.reward,
-                    users: active.users,
-                };
+                if (active.linkType === 'input') {
+                    data = {
+                        type: 'input',
+                        title: active.title,
+                        link: active.link,
+                        linkType: active.linkType,
+                        inputText: active.inputText,
+                        reward: active.reward,
+                        users: active.users,
+                    };
+                } else if (active.linkType === 'noInput') {
+                    data = {
+                        type: 'noInput',
+                        title: active.title,
+                        link: active.link,
+                        linkType: active.linkType,
+                        reward: active.reward,
+                        users: active.users,
+                    };
+                } else if (active.type === 'desc') {
+                    data = {
+                        type: 'desc',
+                        title: active.title,
+                        description: active.description,
+                        reward: active.reward,
+                        users: active.users,
+                    };
+                }
             } else {
                 data = {
                     type: 'other',
@@ -296,7 +317,7 @@ const History = () => {
                                                 <th className="px-6 py-3 text-left text-sm font-medium">Username</th>
                                                 <th className="px-6 py-3 text-left text-sm font-medium">First Name</th>
                                                 <th className="px-6 py-3 text-left text-sm font-medium">Last Name</th>
-                                                {active.linkType !== 'noInput' && (
+                                                {filter === 'annoucement' && active.linkType !== 'noInput' && (
                                                     <th className="px-6 py-3 text-left text-sm font-medium">
                                                         {active.type === 'desc' ? (
                                                             <>
@@ -319,7 +340,7 @@ const History = () => {
                                                     <td className="px-6 py-4 text-sm">{user.username || "not available"}</td>
                                                     <td className="px-6 py-4 text-sm">{user.first_name || "not available"}</td>
                                                     <td className="px-6 py-4 text-sm">{user.last_name || "not available"}</td>
-                                                    {active.linkType !== 'noInput' && (
+                                                    {filter === 'annoucement' && active.linkType !== 'noInput' && (
                                                         <td className="px-6 py-4 text-sm">{user.userInput || "not available"}</td>
                                                     )}
                                                 </tr>
