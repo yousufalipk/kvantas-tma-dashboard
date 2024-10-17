@@ -94,7 +94,7 @@ const AnnouncementForm = () => {
     const validationSchema = Yup.object({
         type: Yup.string().required('Type is required!'),
         title: Yup.string().required('Title is required'),
-        subtitle: Yup.string().required('Subtitle is required'),
+        subtitle: Yup.string().required('Subtitle is required').max(60),
         description: Yup.string(),
         link: Yup.string().url('Invalid URL format'),
         reward: Yup.number().required('Reward is required'),
